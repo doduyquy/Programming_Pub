@@ -1,4 +1,6 @@
+#include <bits/stdc++.h>    // It include all library in C/C++
 #include <iostream>
+
 
 void getValue(long int arr[], int length) {
     for (int i = 0; i < length; i++) {
