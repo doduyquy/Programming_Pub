@@ -1,6 +1,7 @@
 * {
     padding: 0;
     margin: 0;
+    border: none;
     box-sizing: border-box;
 }
 :root {
@@ -21,7 +22,10 @@ li {
 body {
     background: var(--grey);
 }
-
+#wrap{
+	display: flex;
+	flex-wrap: wrap;
+}
 /* SIDEBAR */
 #sidebar {
     width: 250px;
@@ -325,9 +329,10 @@ body {
 
 /* MAIN__PRODUCTS*/
 #container {
-    display: flex;
     width: 100%;
-    height: 875px;
+    min-height: calc(100vh - 56px);
+    display: flex;
+    flex-wrap: wrap;
     background-color: var(--grey);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -336,14 +341,17 @@ body {
 
 #container #leftsection {
     width: 70%;
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
 }
 
 #container #leftsection #product-list {
+    width: 100%;
+    min-height: 830px;
     background-color: var(--light);
     border-radius: 8px;
     padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    overflow-x: auto;
 }
 
 #container #leftsection #product-list .product-table {
@@ -371,8 +379,17 @@ body {
 #container #leftsection #product-list .product-table tr:hover {
     background-color: var(--table-hover);
 }
-
-.edit-btn {
+/*css cho nút XÓA sản phẩm ở DS SẢN PHẨM và XÓA-clear toàn bộ thông tin nhập ở THÊM SẢN PHẨM*/
+#container .delete-btn {
+    background-color: #d9534f;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
+#container #leftsection #product-list .product-table .edit-btn {
     background-color: var(--blue);
     color: #fff;
     border: none;
@@ -409,17 +426,24 @@ body {
     border: 1px solid var(--blue);
 }
 
+
 #container #rightsection {
     width: 30%;
     padding: 20px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
 }
 
-
+#container #rightsection .subsection {
+    background-color: var(--light);
+    width: 100%;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
 /* #container #rightsection. h2 */
-/* #rightsection h2*/ 
 #container #rightsection h2 {
     text-align: center;
     background-color: #d3d3d3;
@@ -427,36 +451,46 @@ body {
     border-radius: 5px;
     font-size: 18px;
 }
-
-#container #rightsection .subsection {
-    background-color: var(--light);
-    width: 100%;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+#container #rightsection .subsection form{
+    width: calc(100% - 50px);
+    margin: 0 auto;
 }
-
-form label {
-    font-size: 14px;
+#container #rightsection .subsection label {
+    font-size: 14pt;
     margin-bottom: 5px;
+    /* display: block; xem xét lại sau có nên giữ hay không*/
+    cursor: pointer;
+}
+
+/* css phần lựa chọn thương hiệu */
+#container #rightsection .subsection select {
+    height: 35px;
+	width: 173px;
+    padding: 8px;
+    margin: 10px 0px;
+    border: 1px solid var(--grey);
+    border-radius: 5px;
+    border-bottom: 2px solid var(--dark);
+}
+
+#container #rightsection .subsection input {
     display: block;
-}
-
-form select {
-    width: 30%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid var(--grey);
-    border-radius: 5px;
-}
-
-form input {
     width: 100%;
+    height: 35px;
     padding: 8px;
-    margin-bottom: 10px;
+    margin: 10px 0px;
     border: 1px solid var(--grey);
     border-radius: 5px;
+}
+
+/* Khi nhấn vào sẽ hiện lên viền xanh ở ô nhập */
+#content #rightsection .subsection input:focus{
+	outline: none;
+	border: 2px solid var(--blue)
+}
+.image-upload-container__info{
+    width: calc(100% - 90px);
+    margin: 0px 10px;
 }
 
 .image-upload {
@@ -465,27 +499,35 @@ form input {
     margin-top: 10px;
 }
 
-button.done {
+.image-upload-container {
     width: 100%;
-    padding: 10px;
-    background-color: #8fdc84;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    
 }
 
-.delete-btn {
-    background-color: #d9534f;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.product-image-container {
+    width: 70px; /* Chiều rộng cố định */
+    height: 70px; /* Chiều cao cố định */
+    overflow: hidden; /* Ẩn phần ảnh vượt quá khung */
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd; /* Tùy chọn: để hiển thị khung */
+    border-radius: 5px; /* Tùy chọn: bo tròn góc khung */
 }
 
-.add-btn{
+.product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo ảnh lấp đầy khung mà không bị méo */
+    border-radius: 5px; /* Tùy chọn: bo tròn góc ảnh */
+}
+
+
+/* Nút thêm sản phẩm (có thể đem đi nơi khác sử dụng) */
+#container .add-btn{
     background-color: var(--blue);
     color: #fff;
     padding: 5px 10px;
@@ -506,86 +548,65 @@ button.done {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
-.modal-content {
-    background-color: #fff;
+#modal1 #changeproduct {
+    width: 600px;
+    height: auto;
     padding: 20px;
     border-radius: 8px;
-    width: 500px;
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: flex;/*  có thể xóa */
+    flex-direction: column;/*  có thể xóa */
     align-items: center;
+    background-color: #fff;
+    animation: topdown 0.5s;
 }
 
-.close {
+#modal1 #changeproduct .close {
     position: absolute;
     top: 10px;
     right: 15px;
-    font-size: 24px;
+    font-size: 40px;
+    background: none;
+    outline: none;
     cursor: pointer;
+    transform: rotate(45deg);
 }
-
-.image {
+#modal1 #changeproduct .close:hover{
+    color: #EE0000;
+}
+#modal1 #changeproduct .image {
     display: flex;
-    gap: 10px;
-    width: 200px; /* Fixed width */
-    height: 200px; /* Fixed height */
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ddd; /* Optional: to visualize the container */
+	align-items: flex-start;
+	justify-content: space-around;
+    margin-top: 50px;
 }
 
-.image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 5px;
+#modal1 #changeproduct .image img {
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+    border:  1px solid #000;
+    padding: 20px;
+    margin: 0px 20px;
 }
 
-.image-upload-container {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Khoảng cách giữa các phần tử */
-}
-
-.short-file-input {
-    width: 200px; /* Đặt chiều rộng cụ thể cho ô chọn tệp */
-}
-.product-image-container {
-    width: 70px; /* Chiều rộng cố định */
-    height: 70px; /* Chiều cao cố định */
-    overflow: hidden; /* Ẩn phần ảnh vượt quá khung */
-    display: flex;
-    margin: auto;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ddd; /* Tùy chọn: để hiển thị khung */
-    border-radius: 5px; /* Tùy chọn: bo tròn góc khung */
-}
-
-.product-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Đảm bảo ảnh lấp đầy khung mà không bị méo */
-    border-radius: 5px; /* Tùy chọn: bo tròn góc ảnh */
-}
-
-.info {
+#modal1 #changeproduct .info {
     width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
 }
 
-.info label {
+#modal1 #changeproduct .info label {
     font-weight: bold;
     margin-top: 10px;
 }
 
-.info input[type="text"],
-.info input[type="file"] {
+#modal1 #changeproduct .info input[type="text"],
+#modal1 #changeproduct .info input[type="file"] {
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ddd;
@@ -593,7 +614,7 @@ button.done {
     width: 100%;
 }
 
-#save {
+#modal1 #changeproduct #save {
     margin-top: 20px;
     padding: 10px;
     background-color: #ff7f50;
@@ -627,50 +648,86 @@ button.done {
 /* END MAIN */
 /* END CONTENT */
 
+@keyframes fadein {
+    from {top: 0; opacity: 0;}
+    to {top: 30px; opacity: 1;}
+}
+@keyframes fadeout {
+    from {top: 30px; opacity: 1;}
+    to {top: 0; opacity: 0;}
+}
+@keyframes topdown{
+	0% {transform: translateY(-800px)}
+	100% {transform: translateY(0)}
+}
 /* Thêm transition cho các phần tử cần thay đổi kích thước */
-#sidebar, #content, #container #leftsection, #container #rightsection, #container #rightsection .subsection {
-    transition: all 0.3s ease;
+@media only screen and (min-width: 901px) and (max-width: 1060px) {
+    #container #leftsection{
+		width: 100%;
+	}
+	#container #rightsection{
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	#container #rightsection .subsection{
+		width: 48%;
+		padding: 10px;
+	
+	}
 }
-
-/* Media queries với animation */
-@media only screen and (min-width: 901px) and (max-width: 1360px) {
-    #main-item #leftsection {
-        width: 100%;
-    }
-    #main-item #rightsection {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    #main-item #rightsection .subsection {
-        width: 48%;
-        padding: 10px;
-    }
-}
-
 @media only screen and (min-width: 601px) and (max-width: 900px) {
-    #sidebar {
-        display: none;
+    /* #nav #btnmenu{
+		display: block;
+	} */
+	#content {
+        width: calc(100% - 70px);
+        left: 70px;
     }
-    #content {
-        width: 100vw;
-        margin: 0;
+    #container #leftsection{
+		width: 100%;
+		padding: 40px 20px 0px;
+	}
+	#container #leftsection #product-list{
+		padding: 20px;
+	}
+	#container #rightsection{
+		width: 100%;
+		flex-wrap: wrap;
+		padding: 40px 20px 0px;
+	}
+	#container #rightsection .subsection{
+		width: 100%;
+		padding: 10px;
+	}
+}
+@media only screen  and (min-width: 0px) and (max-width: 600px) {
+	/* #nav #btnmenu{
+		display: block;
+	} */
+	#content {
+        width: calc(100% - 70px);
+        left: 70px;
     }
-    #container #leftsection {
-        width: 100%;
-        padding: 40px 20px 0px;
-    }
-    #container #leftsection #product-list {
-        padding: 20px;
-    }
-    #container #rightsection {
-        width: 100%;
-        flex-wrap: wrap;
-        padding: 40px 20px 0px;
-    }
-    #container #rightsection .subsection {
-        width: 100%;
-        padding: 10px;
-    }
+    #container #leftsection{
+		width: 100%;
+		padding: 10px 0px;
+	}
+	#container #leftsection #product-list{
+		padding: 0px;
+		box-shadow: none;
+	}
+	#container #rightsection{
+		width: 100%;
+		flex-wrap: wrap;
+		padding: 10px 0px;
+	}
+	#container #rightsection .subsection{
+		width: 100%;
+		padding: 10px;
+		border: 2px solid var(--blue);
+        background-color: var(--grey);
+		box-shadow: none;
+	}
 }

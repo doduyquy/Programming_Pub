@@ -20,6 +20,28 @@ function changeActiveSideBar(){
 }
 changeActiveSideBar();
 
+// Thêm sự kiện khi thay đổi kích thước màn hình
+window.addEventListener('resize', handleResize);
+document.addEventListener('DOMContentLoaded', handleResize);
+
+function handleResize() {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const sidebarItems = document.querySelectorAll('#sidebar .side-menu li');
+    
+    if (window.innerWidth < 1360) {
+        sidebar.classList.add('hide');
+        content.style.width = 'calc(100% - 70px)';
+        content.style.left = '70px';
+        sidebarItems.forEach(item => item.classList.add('disable'));
+    } else {
+        sidebar.classList.remove('hide');
+        content.style.width = 'calc(100% - 250px)';
+        content.style.left = '250px';
+        sidebarItems.forEach(item => item.classList.remove('disable'));
+    }
+}
+
 // TOGGLE SIDEBAR
 function zoomInSideBar(){
     const menuBar = document.querySelector('#content nav #hidden-sidebar-btn');
@@ -28,10 +50,23 @@ function zoomInSideBar(){
     if (menuBar && sideBar) {
         menuBar.addEventListener('click', () => {
             sideBar.classList.toggle('hide');
+            updateContentWidth(); // Gọi hàm để cập nhật kích thước content
         });
     }
 }
 zoomInSideBar();
+function updateContentWidth() {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    
+    if (sidebar.classList.contains('hide')) {
+        content.style.width = 'calc(100% - 70px)';
+        content.style.left = '70px';
+    } else {
+        content.style.width = 'calc(100% - 250px)';
+        content.style.left = '250px';
+    }
+}
 /* END SIDEBAR */ 
 
 /** HIỆN TỪNG MAIN-ITEM TƯƠNG ỨNG KHI ẤN VÀO THANH SIDEBAR 
@@ -314,7 +349,7 @@ function showChangeProductBox(productIndex) {
     document.getElementById('edit-name').value = product.name;
     document.getElementById('edit-price').value = product.oldPrice;
     document.getElementById('imgbefore').src = product.img;
-    document.getElementById('imgafter').src = 'img-prd/img-add.jpg';
+    document.getElementById('imgafter').src = 'img-prd/add-img-phone.webp';
 
     // Cập nhật sự kiện lưu
     const saveButton = document.getElementById('save');
