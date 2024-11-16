@@ -152,7 +152,7 @@ function filterProducts() {
 }
 // Sau khi tạo bảng sản phẩm
 function displayPage(page) {
-    const tableBody = document.getElementById('product-table__body');
+    const tableBody = document.getElementById('table-content__body');
     if (!tableBody) return;
     tableBody.innerHTML = '';
 
@@ -182,8 +182,11 @@ function displayPage(page) {
             <td>${brand}</td>
             <td>${price}</td>
             <td>
+                <button class="detail-btn" onclick="">Chi tiết</button>
+            </td>
+            <td>
                 <button class="delete-btn">Xóa</button>
-                <button class="change edit-btn" data-index="${id - 1}">Sửa</button>
+                <button class="edit-btn" data-index="${id - 1}">Sửa</button>
             </td>
         `;
 
@@ -320,7 +323,7 @@ function addNewProduct(e) {
 }
 
 // Xóa sản phẩm
-document.getElementById('product-table__body').addEventListener('click', function(event) {
+document.getElementById('table-content__body').addEventListener('click', function(event) {
     if (event.target.classList.contains('delete-btn')) {
         const row = event.target.closest('tr');
         const productIndex = parseInt(row.getAttribute('data-id'));
@@ -390,7 +393,7 @@ function saveProductChanges(productIndex) {
 }
 
 // Đóng modal
-function closeChangeBox() {
+function closeChangeProductBox() {
     const modal = document.getElementById('modal1');
     if (modal) {
         modal.style.display = 'none';
@@ -419,10 +422,19 @@ function previewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 }
+// MAIN_CUSTOMERS
+function closeChangeCustomerBox() {
+    const modal = document.getElementById('modal2');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 window.showChangeProductBox = showChangeProductBox;
-window.closeChangeBox = closeChangeBox;
+window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;
 window.previewImage = previewImage;
+
+window.closeChangeCustomerBox = closeChangeCustomerBox;
 
 window.saveProductChanges = saveProductChanges;
 
