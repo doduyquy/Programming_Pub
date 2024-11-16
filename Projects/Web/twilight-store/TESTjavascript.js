@@ -217,6 +217,7 @@ function Dangnhap()
     if(true == checkValidAccount(username, password)){
         // Khi đăng nhập thành công, load Cart tưng ứng lên từ localStorage
         cart = new Cart(username);
+        updateCartCount();
         isSignIn = true;        
         //-----------
         alert("Đã đăng nhập thành công với tài khoản: " + username);  
@@ -877,20 +878,23 @@ function giohang(product){
         isPicked: false,
         brandId: product.brandId,
         img: product.img,
-        pb: product.pb,
-        price: newPrice(product.oldPrice),
+        pb: vs,
+        price: gia,
+        // pb: product.pb,
+        // price: newPrice(product.oldPrice),
         chip: product.chip,
         pin: product.pin,
         size: product.size,
         f: product.f,
     };  
-
+    console.log(product);
+    console.log(addProduct);
     // addToCart sản phẩm được người dùng chọn
     cart.addToCart(addProduct); 
 
     // slproductPicked += addQuantity;
-    console.log(cart.counterProducts);
     updateCartCount();   
+    console.log(cart.counterProducts);
 
 }
 // function giohang(product) 
@@ -918,6 +922,7 @@ function updateCartCount()
 {   
     const cartBadge = document.querySelector('.cart-badge');  
     cartBadge.textContent = cart.counterProducts; // Cập nhật số lượng sản phẩm  
+    console.log(cart.counterProducts);
 }
 
 
