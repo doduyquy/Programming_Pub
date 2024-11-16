@@ -6,11 +6,12 @@ export class Cart {
     localStorageKey;        // private
     cartItem = [];          // mảng các products
     counterProducts;         // Tổng số lượng product trong Cart
+    
     // Khởi tạo cart ban đầu: load lên từ localStorage
     constructor(localStorageKey){
         this.localStorageKey = localStorageKey;
-        this.counterProducts = 0;
         this.loadCartFromStorage();
+
     }
 
     // Private method
@@ -19,39 +20,33 @@ export class Cart {
          * Lấy cart JSON từ localStorage thông qua key
          * Parse -> array để lưu vào cartItem
          */ 
-        this.cartItem = JSON.parse(localStorage.getItem(this.localStorageKey));
-        
-        // Nếu cart null (chưa có product), gán giá trị mặc định hoặc thông báo (có thể)...
-        if(!this.cartItem){
+        // this.cartItem = JSON.parse(localStorage.getItem(this.localStorageKey));
+        const localCart = JSON.parse(localStorage.getItem(this.localStorageKey));
+        if(localCart){
+            // Nếu localCart tồn tại, lấy giá trị từ đó.
+            this.cartItem = localCart.cartItem || [];
+            this.counterProducts = localCart.counterProducts || 0;
+        } else {
+            // Nếu ko tồn tại, thì lấy giá trị mặc định:
+            this.cartItem = [];
+            this.counterProducts = 0;
             console.log('Cart null');
-            this.cartItem = [
-                // {
-                //     productId: '',
-                //     quantity: 0,
-                //     isPicked: false,        // Đánh dấu product được chọn để mua.
-                //     //-----FOR USER-----
-                //     brandId: '',
-                //     img: '',
-                //     name: '',
-                //     pb: '',
-                //     price: 0,
-                //     chip: '',
-                //     pin: '',
-                //     size: '',
-                //     f: '',
-                //     //------------------
-                // },
-            ];
         }
 
         console.log('Loaded cart of ' + this.localStorageKey);
+        console.log('Counter products   : ' + this.counterProducts);
     }
     /** SAVE CART TO localStorage: 
      * Chuyển cartItem về string
      * Lưu vào localStorage
      */
     saveCartToStorage(){
-        localStorage.setItem(this.localStorageKey, JSON.stringify(this.cartItem));
+        const cartData = {
+            cartItem: this.cartItem,
+            counterProducts: this.counterProducts,
+        }
+        localStorage.setItem(this.localStorageKey, JSON.stringify(cartData));
+        // localStorage.setItem(this.localStorageKey, JSON.stringify(this.cartItem));
 
         console.log('Saved cart of ' + this.localStorageKey);
     }
@@ -64,6 +59,7 @@ export class Cart {
         let matchingProduct;
         this.cartItem.forEach((item) => {
             if(item.productId === product.productId && item.pb === product.pb){
+                console.log(item.pb);
                 matchingProduct = item;
             }
         });
