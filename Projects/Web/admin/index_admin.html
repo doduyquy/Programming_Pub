@@ -14,7 +14,7 @@
                 <img src="./img/logo.jpg" alt="Admin">
             </a> -->
             <a href="#" class="brand">
-                <img src="./img/logo.jpg" alt="Logo">
+                <img src="./img/twilight-logo.png" alt="Logo">
                 <!-- <span class="text">Admin</span> -->
             </a>
             <ul class="side-menu">
@@ -233,13 +233,10 @@
                         <div id="rightsection">
                             <div class="subsection">
                                 <h2>TÌM KIẾM SẢN PHẨM</h2>
-                                <br>
                                 <form>
                                     <label for="product-name">Tên sản phẩm</label>
-                                    <br>
                                     <input type="text" id="product-name" placeholder="Nhập tên sản phẩm...">
-                                    <label for="brand" class="">Thương hiệu</label>
-                                    <br>
+                                    <label for="brand">Thương hiệu</label>
                                     <select id="brand">
                                         <option value="all">TẤT CẢ</option>
                                         <option value="APPLE">APPLE</option>
@@ -251,12 +248,11 @@
                                 </form>
                             </div>
                             <div class="subsection">
-                                <h2>THÊM SẢN PHẨM</h2><br>
+                                <h2>THÊM SẢN PHẨM</h2>
                                 <form>
                                     <label for="new-product-name">Tên sản phẩm</label>
                                     <input type="text" id="new-product-name" placeholder="Nhập tên sản phẩm...">
                                     <label for="new-brand">Thương hiệu</label>
-                                    <br>
                                     <select id="new-brand">
                                         <option value="APPLE">APPLE</option>
                                         <option value="SAMSUNG">SAMSUNG</option>
@@ -264,7 +260,6 @@
                                         <option value="Bphone">BPHONE</option>
                                         <option value="VIVO">VIVO</option>
                                     </select>
-                                    <br>
                                     <label for="price">Giá</label>
                                     <input type="text" id="price" placeholder="Nhập giá sản phẩm...">
                                     <div class="image-upload-container">
@@ -275,7 +270,7 @@
                                         <div class="product-image-container">
                                             <img id="img-preview" src="./img-prd/img-add2.png" alt="Product Image">
                                         </div>
-                                    </div><br>
+                                    </div>
                                     <div class="buttons">
                                         <button type="reset" class="delete-btn">Xóa</button>
                                         <button type="submit" class="add-btn">Thêm</button>
@@ -283,6 +278,7 @@
                                 </form>
                             </div>
                         </div>
+                        
                     </div>
                     <!-- POP-UP SỬA SẢN PHẨM -->
                     <div id="modal1" class="modal">
@@ -314,7 +310,78 @@
                             <div id="user-mode">User</div>
                         </div>
                     </nav>
-                    <h1>CUSTOMERS</h1>
+                    <div id="user">
+                        <!-- PRODUCTS TABLE -->
+                        <div id="leftsection">
+                            <div id="product-list">
+                                <table class="product-table">
+                                    <thead class="product-header">
+                                        <tr>
+                                            <!-- <th>#ID</th> -->
+                                            <th>Khách hàng</th>
+                                            <th>Thời điểm đặt hàng</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Chi tiết</th>
+                                            <th>Tình trạng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
+                                        <tr data-id="10042">
+                                            <td>Tên khách hàng</td>
+                                            <td>11/11/2024</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td>
+                                                <button class="detail-btn" onclick="">Chi tiết</button>
+                                            </td>
+                                            <td>
+                                                <select name="order__status" id="order__status">
+                                                    <option value="unprocessed">Chưa xử lý</option>
+                                                    <option value="confirmed">Đã xác nhận</option>
+                                                    <option value="succeeded">Thành công</option>
+                                                    <option value="failed">Thất bại</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="rightsection">
+                            <div class="filter-section">
+                                <h2 class="main-title">Bộ lọc</h2>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Thời gian</h3>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-start">Từ ngày</label>
+                                        <input type="date" id="time-start" class="date-input">
+                                    </div>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-end">Đến ngày</label>
+                                        <input type="date" id="time-end" class="date-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Tình trạng</h3>
+                                    <select class="status-select">
+                                        <option value="all">All</option>
+                                        <option value="unprocessed">Chưa xử lý</option>
+                                        <option value="confirmed">Đã xác nhận</option>
+                                        <option value="succeeded">Thành công</option>
+                                        <option value="failed">Thất bại</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <button type="button" class="btn">Sắp xếp theo quận</button>
+                                    <button type="button" class="btn reset-btn">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                 </div>
                 
@@ -368,32 +435,36 @@
                             </div>
                         </div>
                         <div id="rightsection">
-                            <h2>BỘ LỌC</h2>
-                            <div class="filter">
-                                <br>
-                                <h3>Thời gian</h3>
-                                <label for="time-start">Từ ngày</label>
-                                <input type="date" id="time-start">
-                                <br>
-                                <label for="time-end">Đến ngày</label>
-                                <input type="date" id="time-end">
-                            </div>
-                            <div class="status">
-                                <h3>Tình trạng</h3>
-                                <select name="" id="">
-                                    <!-- Mặc định là chọn All -->
-                                    <option value="all" selected="selected">All</option>
-                                    <option value="unprocessed">Chưa xử lý</option>
-                                    <option value="confirmed">Đã xác nhận</option>
-                                    <option value="succeeded">Thành công</option>
-                                    <option value="failed">Thất bại</option>
-                                </select>
-                            </div>
-                            <div class="sort-by-district">
-                                <button type="button">Sắp xếp theo quận</button>
-                            </div>
-                            <div class="reset">
-                                <button type="button">Reset</button>
+                            <div class="filter-section">
+                                <h2 class="main-title">Bộ lọc</h2>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Thời gian</h3>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-start">Từ ngày</label>
+                                        <input type="date" id="time-start" class="date-input">
+                                    </div>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-end">Đến ngày</label>
+                                        <input type="date" id="time-end" class="date-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Tình trạng</h3>
+                                    <select class="status-select">
+                                        <option value="all">All</option>
+                                        <option value="unprocessed">Chưa xử lý</option>
+                                        <option value="confirmed">Đã xác nhận</option>
+                                        <option value="succeeded">Thành công</option>
+                                        <option value="failed">Thất bại</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <button type="button" class="btn">Sắp xếp theo quận</button>
+                                    <button type="button" class="btn reset-btn">Reset</button>
+                                </div>
                             </div>
                         </div>
                     </div>
