@@ -1,4 +1,5 @@
-import productArray from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
+import {allProducts} from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
+// import {Customer, Address} from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
 
 // SIDEBAR 
 function updateContentWidth() {
@@ -108,14 +109,14 @@ showCorrespondingMain();
 showMainItem('main__dashboard');
 
 // Lưu mảng sản phẩm vào localStorage
-localStorage.setItem('productArray', JSON.stringify(productArray));
+localStorage.setItem('productArray', JSON.stringify(allProducts));
 
 
 /* MAIN__PRODUCTS */
 // Hiển thị modal và tải thông tin sản phẩm vào modal để chỉnh sửa
 
 // Lấy productArray từ localStorage
-let allProducts = JSON.parse(localStorage.getItem('productArray')) || [];
+
 let filteredProducts = [];
 const itemsPerPage = 8;
 let currentPage = 1;
@@ -182,7 +183,7 @@ function displayPage(page) {
             <td>${brand}</td>
             <td>${price}</td>
             <td>
-                <button class="detail-btn" onclick="">Chi tiết</button>
+                <button class="detail-btn" data-index="${id - 1}">Chi tiết</button>
             </td>
             <td>
                 <button class="delete-btn">Xóa</button>
@@ -195,6 +196,14 @@ function displayPage(page) {
 
     tableBody.appendChild(fragment);
     updatePagination();
+
+    // Thêm event listeners cho các nút xem chi tiết
+    document.querySelectorAll('.detail-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productIndex = parseInt(this.getAttribute('data-index'));
+            showDetailProductBox(productIndex);
+        });
+    });
 
     // Thêm event listeners cho các nút sửa
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -345,7 +354,7 @@ document.getElementById('table-content__body').addEventListener('click', functio
 // Hiển thị modal chỉnh sửa sản phẩm
 function showChangeProductBox(productIndex) {
     // Hiển thị modal
-    const modal = document.getElementById('modal1');
+    const modal = document.getElementById('modal-changeproduct');
     if (modal) {
         modal.style.display = 'flex';
     }
@@ -394,7 +403,7 @@ function saveProductChanges(productIndex) {
 
 // Đóng modal
 function closeChangeProductBox() {
-    const modal = document.getElementById('modal1');
+    const modal = document.getElementById('modal-changeproduct');
     if (modal) {
         modal.style.display = 'none';
     }
@@ -422,13 +431,60 @@ function previewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 }
-// MAIN_CUSTOMERS
+// Hàm hiển thị chi tiết sản phẩm
+function showProductDetails(productIndex) {
+    const modal = document.getElementById('modal-detailproduct');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    
+    // Lấy thông tin sản phẩm
+    const product = allProducts[productIndex];
+
+    // Điền dữ liệu vào pop-up
+    document.getElementById('detail-img').src = product.img;
+    document.getElementById('detail-name').innerText = product.name;
+    document.getElementById('detail-brand').innerText = product.brandId;
+    document.getElementById('detail-price').innerText = product.oldPrice;
+    document.getElementById('detail-pb1').innerText = product.pb1;
+    document.getElementById('detail-pb2').innerText = product.pb2;
+    document.getElementById('detail-chip').innerText = product.chip;
+    document.getElementById('detail-pin').innerText = product.pin;
+    document.getElementById('detail-size').innerText = product.size;
+    document.getElementById('detail-f').innerText = product.f;
+}
+
+
+// Hàm đóng pop-up
+function closeDetailProductBox() {
+    document.getElementById('modal-detailproduct').style.display = 'none';
+}
+
+
+// // MAIN_CUSTOMERS
+// function showChangeCustomerBox(customerIndex) {
+//     const modal = document.getElementById('modal2');
+//     if (modal) {
+//         modal.style.display = 'flex';
+//     }
+
+//     const customer = allCustomers[customerIndex];
+//     document.getElementById('edit-name').value = customer.name;
+//     document.getElementById('edit-phone').value = customer.phone;
+//     document.getElementById('edit-email').value = customer.email;
+//     document.getElementById('edit-address').value = customer.address;
+//     document.getElementById('edit-birthday').value = customer.birthday;
+//     document.getElementById
+
+
 function closeChangeCustomerBox() {
     const modal = document.getElementById('modal2');
     if (modal) {
         modal.style.display = 'none';
     }
 }
+window.showDetailProductBox = showProductDetails;
+window.closeDetailProductBox = closeDetailProductBox;
 window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;

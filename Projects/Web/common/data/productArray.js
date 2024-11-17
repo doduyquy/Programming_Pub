@@ -50,4 +50,8 @@ const productArray = [
     {brandId: 'XIAOMI', img: 'img-prd/xm10.png', name: 'Xiaomi 14', oldPrice: 22990000, pb1: '12GB/256GB', pb2: '16GB/512GB', chip: 'Snap 8 Gen 3', pin: '4.610mAh', size: '6.36"', f: '120Hz'},
     {brandId: 'XIAOMI', img: 'img-prd/xm11.png', name: 'Xiaomi 11 Lite 5G NE', oldPrice: 8990000, pb1: '6GB/128GB', pb2: '12GB/256GB', chip: 'Dimensity 7200', pin: '5.000mAh', size: '6.77"', f: '120Hz'}
 ]; 
-export default productArray;
+export let allProducts = JSON.parse(localStorage.getItem('productArray')) || productArray;
+export function saveProductArrayToStorage() {
+    localStorage.setItem('productArray', JSON.stringify(allProducts));
+    console.log('Saved allProducts to localStorage');
+}

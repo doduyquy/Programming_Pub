@@ -392,7 +392,7 @@ body {
 }
 
 /*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
-#container #leftsection #table_list .table-content .edit-btn, .add-customer-btn{
+#container #leftsection #table_list .table-content .edit-btn, .detail-btn, .add-customer-btn{
     background-color: var(--blue);
     color: #fff;
     border: none;
@@ -562,7 +562,7 @@ body {
     z-index: 1000;
 }
 
-#modal1 #changeproduct {
+#modal-changeproduct #changeproduct {
     width: 600px;
     height: auto;
     padding: 20px;
@@ -574,8 +574,7 @@ body {
     background-color: #fff;
     animation: topdown 0.5s;
 }
-
-#modal1 #changeproduct .close {
+.close-pop {
     position: absolute;
     top: 10px;
     right: 15px;
@@ -585,17 +584,17 @@ body {
     cursor: pointer;
     transform: rotate(45deg);
 }
-#modal1 #changeproduct .close:hover{
+.close-pop:hover{
     color: #EE0000;
 }
-#modal1 #changeproduct .image {
+#modal-changeproduct #changeproduct .image {
     display: flex;
 	align-items: flex-start;
 	justify-content: space-around;
     margin-top: 50px;
 }
 
-#modal1 #changeproduct .image img {
+#modal-changeproduct #changeproduct .image img {
     height: 200px;
     width: 200px;
     border-radius: 10px;
@@ -604,20 +603,20 @@ body {
     margin: 0px 20px;
 }
 
-#modal1 #changeproduct .info {
+#modal-changeproduct #changeproduct .info {
     width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
 }
 
-#modal1 #changeproduct .info label {
+#modal-changeproduct #changeproduct .info label {
     font-weight: bold;
     margin-top: 10px;
 }
 
-#modal1 #changeproduct .info input[type="text"],
-#modal1 #changeproduct .info input[type="file"] {
+#modal-changeproduct #changeproduct .info input[type="text"],
+#modal-changeproduct #changeproduct .info input[type="file"] {
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ddd;
@@ -625,7 +624,7 @@ body {
     width: 100%;
 }
 
-#modal1 #changeproduct #save {
+#modal-changeproduct #changeproduct #save {
     margin-top: 20px;
     padding: 10px;
     background-color: #ff7f50;
@@ -635,6 +634,57 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
+}
+
+
+#modal-detailproduct #detailproduct {
+    width: 800px;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    
+    display: flex;
+    flex-direction: row; /* Đặt các phần tử con theo chiều ngang */
+    gap: 20px; /* Khoảng cách giữa hình ảnh và thông tin */
+    background-color: #fff;
+    animation: topdown 0.5s;
+}
+
+#modal-detailproduct #detailproduct img {
+    height: 250px;
+    width: 250px;
+    border-radius: 10px;
+    border:  1px solid #000;
+    padding: 20px;
+    /* margin: 0px 20px; */
+}
+
+#modal-detailproduct #detailproduct .product-details {
+    flex: 1; /* Để phần thông tin chiếm toàn bộ không gian còn lại */
+    display: flex;
+    align-self: start;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#modal-detailproduct #detailproduct .product-details h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#modal-detailproduct #detailproduct .product-details p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+#modal-detailproduct #detailproduct .product-details span {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-weight: bold;
 }
 
 /* END POP-UP SỬA SẢN PHẨM */
@@ -705,7 +755,7 @@ body {
 }
 /* END MAIN__CUSTOMERS*/
 
-#modal1 #changeproduct {
+#modal-changecustomer #changecustomer {
     width: 600px;
     height: auto;
     padding: 20px;
@@ -716,26 +766,6 @@ body {
     align-items: center;
     background-color: #fff;
     animation: topdown 0.5s;
-}
-
-#modal1 #changeproduct .close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 40px;
-    background: none;
-    outline: none;
-    cursor: pointer;
-    transform: rotate(45deg);
-}
-#modal1 #changeproduct .close:hover{
-    color: #EE0000;
-}
-#modal1 #changeproduct .image {
-    display: flex;
-	align-items: flex-start;
-	justify-content: space-around;
-    margin-top: 50px;
 }
 
 #modal1 #changeproduct .image img {
