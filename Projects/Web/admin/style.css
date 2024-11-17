@@ -403,13 +403,15 @@ body {
 }
 
 /*pagination web*/
-#container #leftsection #pagination {
+#container #leftsection #pagination-products,
+#container #leftsection #pagination-customers {
     display: flex;
     justify-content: center;
     padding: 10px 0;
 }
 
-#container #leftsection #pagination a {
+#container #leftsection #pagination-products a,
+#container #leftsection #pagination-customers a {
     color: var(--dark);
     float: left;
     padding: 8px 16px;
@@ -419,11 +421,13 @@ body {
     margin: 0 4px;
     border-radius: 5px;
 }
-#container #leftsection #pagination a.active {
+#container #leftsection #pagination-products a.active,
+#container #leftsection #pagination-customers a.active {
     background-color: #333;
     color: white;
 }
-#container #leftsection #pagination a:hover {
+#container #leftsection #pagination-products a:hover,
+#container #leftsection #pagination-customers a:hover {
     background-color: var(--blue);
     color: white;
     border: 1px solid var(--blue);
@@ -712,7 +716,7 @@ body {
     gap: 5px;
 }
 .key-customer-btn {
-    width: 80px;
+    width: 100px;
     height: 60px;
     background-color: red;
     border: none;
@@ -725,33 +729,38 @@ body {
     cursor: pointer;
     
 }
-
-
-/*pagination web*/
-#container #leftsection #pagination {
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
+/* CSS cho ô mật khẩu */
+.table-cell-password {
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    user-select: none; /* Ngăn người dùng chọn văn bản */
+    position: relative; /* Để chứa ::after */
 }
 
-#container #leftsection #pagination a {
+/* Thêm hiệu ứng khi ô mật khẩu được active (đang được nhấn) */
+.table-cell-password.active {
+    background-color: #f0f0f0; /* Màu nền khi active */
+}
+#container #leftsection #table_list .table-content tr.locked td {
+    background-color: var(--dark-grey); /* Màu đen khi khóa */
     color: var(--dark);
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color .3s;
-    border: 1px solid var(--light-blue);
-    margin: 0 4px;
-    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    border-right: 1px solid var(--blue);
+    
 }
-#container #leftsection #pagination a.active {
-    background-color: #333;
-    color: white;
+.locked {
+    pointer-events: none; /* Ngăn không cho các nút khác được nhấn */
 }
-#container #leftsection #pagination a:hover {
-    background-color: var(--blue);
-    color: white;
-    border: 1px solid var(--blue);
+.locked .edit-btn,
+.locked .add-customer-btn {
+    opacity: 0.5;
+}
+
+.locked .key-customer-btn {
+    pointer-events: auto;
+    opacity: 1;
 }
 /* END MAIN__CUSTOMERS*/
 
