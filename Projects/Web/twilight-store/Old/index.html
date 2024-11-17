@@ -7,12 +7,17 @@
     <title>Twilight Store | Phone Agency</title>
     <link rel="icon" href="./accessts/img/twilight-logo-icon.png">
     
-
+    <!--RESET TOÀN BỘ TRANG HTML-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 
     <!--LINK ĐẾN CÁC FILE CSS / ICON-FONT-->
     <link rel="stylesheet" href="./accessts/css/main.css">
     <link rel="stylesheet" href="./accessts/fonts/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
 
+    <!--LINK ĐẾN CÁC FONT ROBOTO GOOGLE-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
@@ -138,7 +143,7 @@
                 <!--GIỎ HÀNG-->
                 <li class="nav-item">
                     <div class="cart-button-wrapper">
-                        <button type="button" class="cart-button" onclick="window.location.href = './store.html';">  
+                        <button type="button" class="cart-button" onclick="window.location.href = './fillend.html';">  
                             <i class="icon-cart fa-solid fa-cart-shopping"></i>  
                             <span class="cart-badge"></span>  
                         </button>  
@@ -185,6 +190,13 @@
                             <input type="password" class="auto-form__input" placeholder="Mật khẩu của bạn">
                         </div>
                     </div>
+                    <div class="auto-form__aside">
+                        <div class="auto-form__help">
+                            <a href="" class="auto-form__help-link auto-form__help-forgot">Quên mật khẩu?</a>
+                            <span class="auto-form__help-separate"></span>
+                            <a href="/twilight-store/" class="auto-form__help-link auto-form__help-help">Cần trợ giúp</a>
+                        </div>
+                    </div>
                     <div class="auto-form__controls">
                         <button class="btn auto-form__controls-back">TRỞ VỀ</button>
                         <button onclick="Dangnhap();" class="btn btn--primary">ĐĂNG NHẬP</button>
@@ -209,6 +221,12 @@
                         <div class="auto-form__group">
                             <input type="password" class="auto-form__input" placeholder="Nhập lại mật khẩu">
                         </div>
+                    </div>
+                    <div class="auto-form__aside">
+                        <p class="auto-form__policy-text">Bằng việc đăng kí, bạn đã đồng ý với Twilight Store về
+                            <a href="" class="auto-form__policy-link">Điều khoản dịch vụ</a> &
+                            <a href="" class="auto-form__policy-link">Chính sách bảo mật</a>
+                        </p>
                     </div>
                     <div class="auto-form__controls">
                         <button class="btn auto-form__controls-back">TRỞ VỀ</button>

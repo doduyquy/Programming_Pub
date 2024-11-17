@@ -198,7 +198,6 @@
                 </div>
 
                 <!-- PRODUCTS PAGE -->
-                
                 <div class="main-item" id="main__products">
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
@@ -328,13 +327,12 @@
                             <div id="user-mode">User</div>
                         </div>
                     </nav>
-                    <!-- <h1>ORDERS</h1> -->
                     <div id="container">
                         <!-- PRODUCTS TABLE -->
                         <div id="leftsection">
-                            <div id="product-list">
-                                <table class="product-table">
-                                    <thead class="product-header">
+                            <div id="order-list">
+                                <table class="order-table">
+                                    <thead class="order-table__header">
                                         <tr>
                                             <!-- <th>#ID</th> -->
                                             <th>Khách hàng</th>
@@ -368,32 +366,37 @@
                             </div>
                         </div>
                         <div id="rightsection">
-                            <h2>BỘ LỌC</h2>
-                            <div class="filter">
-                                <br>
-                                <h3>Thời gian</h3>
-                                <label for="time-start">Từ ngày</label>
-                                <input type="date" id="time-start">
-                                <br>
-                                <label for="time-end">Đến ngày</label>
-                                <input type="date" id="time-end">
+                            <div class="subsection">
+                                <h2>Theo thời gian</h2>
+                                <div class="order__filter">
+                                    <br>
+                                    <label for="time-start">Từ ngày</label>
+                                    <input type="date" id="time-start">
+                                    <br>
+                                    <label for="time-end">Đến ngày</label>
+                                    <input type="date" id="time-end">
+                                </div>
                             </div>
-                            <div class="status">
-                                <h3>Tình trạng</h3>
-                                <select name="" id="">
-                                    <!-- Mặc định là chọn All -->
-                                    <option value="all" selected="selected">All</option>
-                                    <option value="unprocessed">Chưa xử lý</option>
-                                    <option value="confirmed">Đã xác nhận</option>
-                                    <option value="succeeded">Thành công</option>
-                                    <option value="failed">Thất bại</option>
-                                </select>
+                            <div class="subsection">
+                                <h2>Theo tình trạng</h2>
+                                <div class="order__status">
+                                    <select name="" id="">
+                                        <!-- Mặc định là chọn All -->
+                                        <option value="all" selected="selected">All</option>
+                                        <option value="unprocessed">Chưa xử lý</option>
+                                        <option value="confirmed">Đã xác nhận</option>
+                                        <option value="succeeded">Thành công</option>
+                                        <option value="failed">Thất bại</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="sort-by-district">
-                                <button type="button">Sắp xếp theo quận</button>
-                            </div>
-                            <div class="reset">
-                                <button type="button">Reset</button>
+                            <div class="subsection">
+                                <div class="order__sort">
+                                    <button id="sort-by-district-btn" type="button">Sắp xếp theo quận</button>
+                                </div>
+                                <div class="order__reset-btn">
+                                    <button id="reset" type="button">Reset</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -424,11 +427,11 @@
 
                     <!-- Theo sản phẩm -->
                     <div id="container">
-                        <!-- PRODUCTS TABLE -->
+                        <!-- STATISTICS TABLE -->
                         <div id="leftsection">
-                            <div id="product-list">
-                                <table class="product-table">
-                                    <thead class="product-header">
+                            <div id="statistic-list">
+                                <table class="statistic-table">
+                                    <thead class="statistic-table__header">
                                         <th>DOANH THU THEO SẢN PHẨM</th>
                                         <tr>
                                             <!-- <th>#ID</th> -->
@@ -436,7 +439,7 @@
                                             <th>Tên sản phẩm</th>
                                             <th>Doanh số</th>
                                             <th>Doanh thu</th>
-                                            <th>Hóa đơn</th>
+                                            <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -456,21 +459,24 @@
                             </div>
                         </div>
                         <div id="rightsection">
-                            <!-- Tổng doanh thu của các sản phẩm -->
-                            <div class="total-revenue">
-                                <h2>Tổng doanh thu</h2>
-                                <div>123.456.789.000 VND</div>
+                            <div class="subsection">
+                                <!-- Tổng doanh thu của các sản phẩm -->
+                                <div class="total-revenue">
+                                    <h2>Tổng doanh thu</h2>
+                                    <div>123.456.789.000 VND</div>
+                                </div>
                             </div>
-
-                            <!-- Chỉ ra sản phẩm chạy nhất và ế nhất (theo số lượng bán ra (doanh số)) -->
-                            <div class="special-product">
-                                <h2>Sản phẩm chạy nhất</h2>
-                                <p>Tên: <span>Samsung S24</span> </p>
-                                <p>Doanh số: <span>123456</span> </p>
-
-                                <h2>Sản phẩm ế nhất</h2>
-                                <p>Tên: <span>Bphone 10</span> </p>
-                                <p>Doanh số: <span>10</span> </p>
+                            <div class="subsection">
+                                <!-- Chỉ ra sản phẩm chạy nhất và ế nhất (theo số lượng bán ra (doanh số)) -->
+                                <div class="special-product">
+                                    <h2>Sản phẩm chạy nhất</h2>
+                                    <p>Tên: <span>Samsung S24</span> </p>
+                                    <p>Doanh số: <span>123456</span> </p>
+    
+                                    <h2>Sản phẩm ế nhất</h2>
+                                    <p>Tên: <span>Bphone 10</span> </p>
+                                    <p>Doanh số: <span>10</span> </p>
+                                </div>
                             </div>
                             
                         </div>
@@ -478,22 +484,26 @@
 
                     <!-- Theo khách hàng -->
                     <div id="container">
-                        <!-- PRODUCTS TABLE -->
+                        <!-- CUSTOMER TABLE -->
                         <div id="leftsection">
-                            <div id="product-list">
-                                <table class="product-table">
-                                    <thead class="product-header">
+                            <div id="customer-list">
+                                <table class="customer-table">
+                                    <thead class="customer-table__header">
                                         <th>DOANH THU KHÁCH HÀNG</th>
                                         <tr>
+                                            <th>Username</th>
                                             <th>Tên khách hàng</th>
+                                            <th>Số điện thoại</th>
                                             <th>Doanh thu</th>
-                                            <th>Hóa đơn</th>
+                                            <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
                                         <tr data-id="10042">
+                                            <td>quy</td>
                                             <td>doduyquy</td>
+                                            <td>0123456789</td>
                                             <td>123.456.789 VND</td>
                                             <td>
                                                 <button type="button">Hóa đơn</button>
@@ -504,19 +514,22 @@
                             </div>
                         </div>
                         <div id="rightsection">
-                            <!-- Tổng doanh thu của khách hàng -->
-                            <div class="total-revenue">
-                                <h2>Tổng doanh thu</h2>
-                                <div>123.456.789.000 VND</div>
+                            <div class="subsection">
+                                <!-- Tổng doanh thu của khách hàng -->
+                                <div class="total-revenue">
+                                    <h2>Tổng doanh thu</h2>
+                                    <div>123.456.789.000 VND</div>
+                                </div>
                             </div>
-                            
-                            <!-- Liệt kê top [n] khách hàng có mang lại doanh thu cao nhất -->
-                            <div class="top-customers">
-                                <h2>Top khách hàng</h2>
-                                <p>Top: 
-                                    <input type="number" name="" id=""> 
-                                </p>
-                            </div>
+                            <div class="subsection">
+                                <!-- Liệt kê top [n] khách hàng có mang lại doanh thu cao nhất -->
+                                <div class="top-customers">
+                                    <h2>Top khách hàng</h2>
+                                    <p>Top: 
+                                        <input type="number" name="" id=""> 
+                                    </p>
+                                </div>
+                            </div>                            
                             
                         </div>
                     </div>
