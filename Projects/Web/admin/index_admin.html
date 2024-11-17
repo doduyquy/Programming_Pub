@@ -282,21 +282,42 @@
                         
                     </div>
                     <!-- POP-UP SỬA SẢN PHẨM -->
-                    <div id="modal1" class="modal">
+                    <div id="modal-changeproduct" class="modal">
                         <div id="changeproduct">
-                            <button class="close" onclick="closeChangeProductBox()">+</button>
+                            <button class="close-pop" onclick="closeChangeProductBox()">+</button>
                             <div class="image">
                                 <img id="imgbefore" src="" alt="Ảnh trước">
                                 <img id="imgafter" src="" alt="Ảnh sau">
                             </div>
                             <div class="info">
                                 <label for="edit-name">Tên sản phẩm</label>
-                                <input type="text" id="edit-name" value=""><br>
+                                <input type="text" id="edit-name"><br>
                                 <label for="edit-price">Giá</label>
-                                <input type="text" id="edit-price" value=""><br>
+                                <input type="text" id="edit-price"><br>
                                 <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
                             </div>
                             <button id="save">Lưu chỉnh sửa</button>
+                        </div>
+                    </div>
+                    <!-- POP-UP XEM CHI TIẾT SẢN PHẨM -->
+                    <div id="modal-detailproduct" class="modal">
+                        <div id="detailproduct">
+                            <button class="close-pop" onclick="closeDetailProductBox()">+</button>
+                            <div class="product-details">
+                                <img id="detail-img" alt="Hình ảnh sản phẩm">
+                                <div>
+                                    <h2>Thông số điện thoại</h2>
+                                    <p>Tên sản phẩm: <span id="detail-name"></span></p>
+                                    <p>Thương hiệu: <span id="detail-brand"></span></p>
+                                    <p>Giá bán: <span id="detail-price"></span></p>
+                                    <p>Phiên bản 1: <span id="detail-pb1"></span></p>
+                                    <p>Phiên bản 2: <span id="detail-pb2"></span></p>
+                                    <p>Vi xử lý: <span id="detail-chip"></span></p>
+                                    <p>Dung lượng pin: <span id="detail-pin"></span></p>
+                                    <p>Kích thước màn hình: <span id="detail-size"></span></p>
+                                    <p>Tần số quét: <span id="detail-f"></span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -495,23 +516,37 @@
                             </div>
                         </div>
                         <!-- POP-UP SỬA KHÁCH HÀNG -->
-                    <div id="modal2" class="modal">
-                        <div id="changeproduct">
-                            <button class="close" onclick="closeChangeCustomerBox()">+</button>
-                            <div class="image">
-                                <img id="imgbefore" src="" alt="Ảnh trước">
-                                <img id="imgafter" src="" alt="Ảnh sau">
+                        <div id="modal-changecustomer" class="modal">
+                            <div id="changecustomer">
+                                <button class="close-pop" onclick="closeChangeCustomerBox()">+</button>
+                                <div class="info">
+                                    <label for="edit-name">Tên sản phẩm</label>
+                                    <input type="text" id="edit-name" value=""><br>
+                                    <label for="edit-price">Giá</label>
+                                    <input type="text" id="edit-price" value=""><br>
+                                    <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
+                                </div>
+                                <button id="save">Lưu chỉnh sửa</button>
                             </div>
-                            <div class="info">
-                                <label for="edit-name">Tên sản phẩm</label>
-                                <input type="text" id="edit-name" value=""><br>
-                                <label for="edit-price">Giá</label>
-                                <input type="text" id="edit-price" value=""><br>
-                                <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
-                            </div>
-                            <button id="save">Lưu chỉnh sửa</button>
                         </div>
-                    </div>
+                        <!-- POP-UP THÊM KHÁCH HÀNG -->
+                        <div id="modal2" class="modal">
+                            <div id="changeproduct">
+                                <button class="close-pop" onclick="closeChangeCustomerBox()">+</button>
+                                <div class="image">
+                                    <img id="imgbefore" src="" alt="Ảnh trước">
+                                    <img id="imgafter" src="" alt="Ảnh sau">
+                                </div>
+                                <div class="info">
+                                    <label for="edit-name">Tên sản phẩm</label>
+                                    <input type="text" id="edit-name" value=""><br>
+                                    <label for="edit-price">Giá</label>
+                                    <input type="text" id="edit-price" value=""><br>
+                                    <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
+                                </div>
+                                <button id="save">Lưu chỉnh sửa</button>
+                            </div>
+                        </div>
                     </div>
                     
                 </div>
