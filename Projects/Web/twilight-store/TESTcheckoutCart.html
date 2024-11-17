@@ -1,0 +1,368 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Giỏ Hàng</title> 
+    <link rel="stylesheet" href="./accessts/fonts/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
+    <link rel="stylesheet" href="./style_checkoutCart.css">
+
+</head> 
+
+<body> 
+    <header class="header"> 
+        <div class="grid1">
+            <div class="left">
+                <div class="header__logo">
+                    <a href="./TESTindex.html" class="header__logo-link">
+                        <img src="./accessts/img/twilight-logo.png" alt="" class="header__logo-img">
+                    </a>
+                </div>
+                <div class="line"></div>
+                <div class="GIOHANG">
+                    <i class="GIOHANGICON fa-brands fa-shopify"></i>
+                    <span class="GIOHANGTEXT">GIỎ HÀNG</span>
+                </div>
+            </div>
+            <div class="right">
+                <div class="nav-text" id="taikhoan">
+                    <div class="nav-label">Thông tin</div>
+                    <div class="nav-value">Tài Khoản</div>
+                </div>
+                <div class="line2"></div>
+                <div class="nav-text" id="the">
+                    <div class="nav-label-2">Thông tin</div>
+                    <div class="nav-value">Thẻ tín dụng</div>
+                </div>
+            </div>
+        </div>
+
+    </header> 
+
+    <div class="cart-container">
+
+        <div class="grid2">
+            <div class="cart-header"> 
+                <span>SẢN PHẨM</span> 
+                <span>Phiên bản</span> 
+                <span>Đơn Giá</span> 
+                <span>Số Lượng</span> 
+                <span>Số Tiền</span> 
+                <span>Thao Tác</span> 
+            </div> 
+        </div>
+        <div class="grid2" id="containProducts">
+            <!--Hiển thị sản phẩm trong giỏ hàng-->
+        </div>
+        <div class="grid2">
+            <div class="cart-summary"> 
+                <div class="cart-actions">
+                    <label><input type="checkbox" id="select-all-footer" onchange="toggleSelectAll()"> Chọn Tất Cả</label> 
+                    <button class="buy-btn" id="delete-button" style="background-color: #ff4d4d; margin-left: 10px;">Xóa</button>
+        
+                </div>
+                <div class="cart-total">
+                    <div class="total-info2"> 
+                        <span>Tổng thanh toán:</span> 
+                        <span class="total-price-footer"></span> 
+                    </div> 
+                    <button class="buy-btn" id="buy-button">Thanh toán</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="modal__overlay"></div>
+
+        <div class="modal__body">
+            
+            <div class="auto-form" id="login-form"> 
+                <div class="auto-form__container">
+                    <div class="auto-form__line"></div>
+                    <div class="auto-form__header">
+                        <h3 class="auto-form__heading">Đăng nhập</h3>
+                        <span class="auto-form_switch-btn">Đăng ký</span>
+                    </div>
+                    <div class="auto-form__form">
+                        <div class="auto-form__group">
+                            <input type="username" class="auto-form__input" placeholder="Tài khoản của bạn">
+                        </div>
+                        <div class="auto-form__group">
+                            <input type="password" class="auto-form__input" placeholder="Mật khẩu của bạn">
+                        </div>
+
+                    </div>
+                    <div class="auto-form__aside">
+                        <div class="auto-form__help">
+                            <a href="" class="auto-form__help-link auto-form__help-forgot">Quên mật khẩu?</a>
+                            <span class="auto-form__help-separate"></span>
+                            <a href="/twilight-store/" class="auto-form__help-link auto-form__help-help">Cần trợ giúp</a>
+                        </div>
+                    </div>
+                    <div class="auto-form__controls">
+                        <button class="btn auto-form__controls-back">TRỞ VỀ</button>
+                        <button onclick="Dangnhap();" class="btn btn--primary">ĐĂNG NHẬP</button>
+                    </div>
+                </div>
+            </div>  
+                
+            <div class="auto-form" id="register-form">
+                <div class="auto-form__container">
+                    <div class="auto-form__line"></div>
+                    <div class="auto-form__header">
+                        <h3 class="auto-form__heading">Đăng ký</h3>
+                        <span class="auto-form_switch-btn">Đăng nhập</span>
+                    </div>
+                    <div class="auto-form__form">
+                        <div class="auto-form__group">
+                            <input type="username" class="auto-form__input" placeholder="Tài khoản của bạn">
+                        </div>
+                        <div class="auto-form__group">
+                            <input type="password" class="auto-form__input" placeholder="Mật khẩu của bạn">
+                        </div>
+                        <div class="auto-form__group">
+                            <input type="password" class="auto-form__input" placeholder="Nhập lại mật khẩu">
+                        </div>
+                    </div>
+                    <div class="auto-form__aside">
+                        <p class="auto-form__policy-text">Bằng việc đăng kí, bạn đã đồng ý với Twilight Store về
+                            <a href="" class="auto-form__policy-link">Điều khoản dịch vụ</a> &
+                            <a href="" class="auto-form__policy-link">Chính sách bảo mật</a>
+                        </p>
+                    </div>
+                    <div class="auto-form__controls">
+                        <button class="btn auto-form__controls-back">TRỞ VỀ</button>
+                        <button onclick="Dangky();" class="btn btn--primary">ĐĂNG KÝ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-profile-a ">
+        <div class="modal__overlay-profile"></div>
+        <div class="modal__body-profile">
+          <form>
+            <div class="form-container">
+              <h2 class="form-title">Thông tin khách hàng</h2>
+              
+              <label class="form-label">Tên đăng nhập</label>
+              <input type="text" class="form-input" disabled>
+              
+              <label class="form-label">Họ và tên</label>
+              <input type="text" class="form-input">
+              
+              <label class="form-label">Số điện thoại</label>
+              <input type="text" class="form-input">
+              
+              <label class="form-label">Tỉnh/Thành phố</label>
+              <select class="form-input" id="province">
+                <option value="">Chọn Tỉnh/Thành phố</option>
+                <option value="tp-hcm">Thành phố Hồ Chí Minh</option>
+                <option value="long-an">Long An</option>
+                <option value="binh-dinh">Bình Định</option>
+              </select>
+              
+              <label class="form-label">Quận/Huyện</label>
+              <select class="form-input" id="district">
+                <option value="">Chọn Quận/Huyện</option>
+              </select>
+              
+              <label class="form-label">Phường/Xã</label>
+              <input type="text" class="form-input">
+              
+              <div class="button-container">
+                <input type="button" class="goback" value="Quay lại">
+                <input type="submit" value="Lưu thông tin" class="submit-button">
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+    <div class="modal-profile-b">
+        <div class="modal__overlay-profile"></div>
+        <div class="modal__body-profile">
+          <form>
+            <div class="form-container">
+              <h2 class="form-title">Thông tin Thẻ Tín dụng/Ghi nợ</h2>
+              
+              <label class="form-label">Số thẻ</label>
+              <input type="text" class="form-control card-number" placeholder="XXXX XXXX XXXX XXXX">
+              
+              <div class="row">
+                <div class="col">
+                  <label class="form-label">Ngày hết hạn</label>
+                  <input type="text" class="form-control expiry-date" placeholder="MM/YY">
+                </div>
+                <div class="col">
+                  <label class="form-label">Mã CVV</label>
+                  <input type="text" class="form-control cvv" placeholder="XXX">
+                </div>
+              </div>
+              
+              <label class="form-label">Họ và tên chủ thẻ</label>
+              <input type="text" class="form-control cardholder-name">
+              
+              <label class="form-label">Địa chỉ đăng ký thẻ Tín dụng/Ghi nợ</label>
+              <input type="text" class="form-control billing-address">
+              
+              <label class="form-label">Mã bưu chính</label>
+              <input type="text" class="form-control zip-code">
+              
+              <div class="button-container">
+                <input type="button" class="goback" value="Quay lại">
+                <input type="submit" value="Lưu thông tin" class="submit-button">
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay">
+        <div class="modal-box">
+            <span class="modal-close-btn" id="close-modal">&times;</span>
+            <h3 class="modal-header">Hóa Đơn Thanh Toán</h3>
+    
+            <div class="section payment-address">
+                <h4 class="section-header">Địa Chỉ Giao Hàng</h4>
+                <label class="address-option">
+                    <div class="ad">
+                        <input type="radio" name="address" id="default-address" checked>
+                        <p class="option-text">Địa chỉ từ tài khoản:</p>
+                    </div>
+                    <div class="ad">
+                        <p class="address-name">Nguyễn Đình Sơn</p>
+                        <p class="number-phone">0862860692</p>
+                    </div>
+                    <p class="address-detail">Số 965a, Đường Huỳnh Tấn Phát, Khu Phố 2, Phường Phú Thuận, Quận 7, TP. Hồ Chí Minh</p>
+                </label>
+                <label class="address-option">
+                    <div class="ad">
+                        <input type="radio" name="address" id="new-address-option">
+                        <p class="option-text">Nhập địa chỉ mới</p>
+                    </div>
+                </label>
+                <form>
+                    <div id="new-address-form" class="new-address-form" style="display: none;">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text" class="form-input">
+                      
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-input">
+                      
+                        <label class="form-label">Tỉnh/Thành phố</label>
+                        <select class="form-input" id="province2">
+                          <option value="">Chọn Tỉnh/Thành phố</option>
+                          <option value="tp-hcm">Thành phố Hồ Chí Minh</option>
+                          <option value="long-an">Long An</option>
+                          <option value="binh-dinh">Bình Định</option>
+                        </select>
+                      
+                        <label class="form-label">Quận/Huyện</label>
+                        <select class="form-input" id="district2">
+                          <option value="">Chọn Quận/Huyện</option>
+                        </select>
+                      
+                        <label class="form-label">Phường/Xã</label>
+                        <input type="text" class="form-input">
+                      </div>
+                </form>
+                  
+                  
+    
+            <div class="section product-details">
+                <h4 class="section-header">Chi tiết sản phẩm</h4>
+                <div class="payment-section" bis_skin_checked="1">
+                    <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/avatar-anh-meo-cute-11.jpg" alt="Áo Khoác Lovito" style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;">
+                    <strong>Áo Khoác Lovito</strong>
+                    <p>Phiên bản: 32GB</p>
+                    <p>Giá: 280,000 ₫</p>
+                    <p>Số lượng: 1</p>
+                </div>
+            </div>
+    
+            <div class="section shipping-method">
+                <h4 class="section-header">Phương thức vận chuyển</h4>
+                <p class="shipping-text">Standard Express (Miễn phí)</p>
+            </div>
+    
+            <div class="section payment-method">
+                <h4 class="section-header">Phương thức thanh toán</h4>
+
+                <div class="vd"><p><input type="radio" name="payment" value="cash" checked> Thanh toán khi nhận hàng</p></div>
+                <div class="vd"><p><input type="radio" name="payment" value="bank"> Thanh toán bằng chuyển khoản</p></div>
+                <div class="vd">
+                    <p>
+                        <input type="radio" name="payment" value="card" id="card-payment-option" checked>
+                        <label for="card-payment-option">Thanh toán qua thẻ tín dụng</label>
+                    </p>
+                </div>
+                
+                <div class="payment-options" id="additional-options">
+                    <!-- Option 2: Thẻ từ tài khoản -->
+                    <div class="payment-option">
+                        <input type="radio" name="payment" value="account-card" id="account-card-payment">
+                        <label for="account-card-payment">Thanh toán bằng thẻ tín dụng từ tài khoản</label>
+                    </div>
+                    <!-- Option 1: Thẻ tín dụng -->
+                    <div class="payment-option">
+                        <input type="radio" name="payment" value="credit-card" id="credit-card-payment">
+                        <label for="credit-card-payment">Thanh toán qua thẻ tín dụng mới</label>
+                    </div>
+                </div>
+                
+                <!-- Form thanh toán thẻ tín dụng -->
+                <div id="card-payment-form" class="card-payment-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Số thẻ</label>
+                        <input type="text" class="form-control card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">Ngày hết hạn</label>
+                            <input type="text" class="form-control expiry-date" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Mã CVV</label>
+                            <input type="text" class="form-control cvv" placeholder="XXX" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Họ và tên chủ thẻ</label>
+                        <input type="text" class="form-control cardholder-name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa chỉ đăng ký thẻ</label>
+                        <input type="text" class="form-control billing-address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã bưu chính</label>
+                        <input type="text" class="form-control zip-code">
+                    </div>
+                </div>
+                
+                
+    
+            <div class="section total-amount">
+                Tổng thanh toán: <span id="total-amount">₫0</span>
+            </div>
+    
+            <div class="section summary">
+                <h4 class="section-header">Tóm tắt thông tin</h4>
+                <div id="summary-content">
+                    <strong><p>Địa chỉ giao hàng:</p></strong> <span id="summary-address"></span><br>
+                    <strong><p>Phương thức thanh toán:</p></strong> <span id="summary-payment"></span><br>
+                </div>
+                <div class="product-summary" id="summary-products">
+                    <strong>Sản phẩm:</strong><br>
+                </div>
+            </div>
+    
+            <button class="btn-buy" id="place-order-btn">Đặt hàng</button>
+        </div>
+    </div>
+    <script type="module" src="./TESTjs_checkoutCart.js"></script>
+</body> 
+</html>

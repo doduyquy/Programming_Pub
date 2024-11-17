@@ -1,8 +1,8 @@
 /** ORDER CLASS: đối tượng hóa đơn, sau khi user chọn product trong cart và thanh toán. */
 class Order {
     customerId = undefined;
-    checkoutCart = undefined;       // Array
-    date = undefined;               // Date object
+    checkoutCart = [];      // Array
+    date = undefined;       // Date object
     // Tình trạng đơn hàng: UNPROCESSED | CONFIRMED | SUCCEEDED | FAILED
     status = undefined;             
 
@@ -29,6 +29,7 @@ class Order {
                 // Nếu chưa xử lí -> CONFIRMED | FAILED
                 if(newStatus === 'SUCCEEDED'){
                     //...
+                    alert('Failed: Đơn hàng chưa được xác nhận');
                     console.log('Failed: Đơn hàng chưa được xác nhận');
                 } else {
                     this.status = newStatus;
@@ -37,11 +38,13 @@ class Order {
             case 'CONFIRMED':
                 // Nếu đã xác nhận -> SUCCEEDED | FAILED
                 if(newStatus === 'UNPROCESSED'){
+                    alert('Failed: Đơn hàng đã được xác nhận');
                     console.log('Failed: Trạng thái không hợp lệ (Đơn hàng đã được xác nhận)');
                 } else {
                     this.status = newStatus;
                 }
                 break;
+            /** Khi đã ở trạng thái SUCCEEDED | FAILED: trạng thái bị vô hiệu hóa. */
             case 'SUCCEEDED':
                 console.log('Failed: đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
