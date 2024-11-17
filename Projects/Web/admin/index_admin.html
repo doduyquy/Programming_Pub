@@ -14,7 +14,7 @@
                 <img src="./img/logo.jpg" alt="Admin">
             </a> -->
             <a href="#" class="brand">
-                <img src="./img/logo.jpg" alt="Logo">
+                <img src="./img/twilight-logo.png" alt="Logo">
                 <!-- <span class="text">Admin</span> -->
             </a>
             <ul class="side-menu">
@@ -210,19 +210,20 @@
                     <div id="container">
                         <!-- PRODUCTS TABLE -->
                         <div id="leftsection">
-                            <div id="product-list">
-                                <table class="product-table">
-                                    <thead class="product-table__header">
+                            <div id="table_list">
+                                <table class="table-content">
+                                    <thead class="table-content__header">
                                         <tr>
                                             <th>#ID</th>
                                             <th>Ảnh</th>
                                             <th>Tên sản phẩm</th>
                                             <th>Thương hiệu</th>
                                             <th>Giá</th>
+                                            <th>Thông tin</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="product-table__body">
+                                    <tbody id="table-content__body">
                                         <!-- Sản Phẩm ở đây -->
                                     </tbody>
                                 </table>
@@ -232,13 +233,10 @@
                         <div id="rightsection">
                             <div class="subsection">
                                 <h2>TÌM KIẾM SẢN PHẨM</h2>
-                                <br>
                                 <form>
                                     <label for="product-name">Tên sản phẩm</label>
-                                    <br>
                                     <input type="text" id="product-name" placeholder="Nhập tên sản phẩm...">
-                                    <label for="brand" class="">Thương hiệu</label>
-                                    <br>
+                                    <label for="brand">Thương hiệu</label>
                                     <select id="brand">
                                         <option value="all">TẤT CẢ</option>
                                         <option value="APPLE">APPLE</option>
@@ -250,12 +248,11 @@
                                 </form>
                             </div>
                             <div class="subsection">
-                                <h2>THÊM SẢN PHẨM</h2><br>
+                                <h2>THÊM SẢN PHẨM</h2>
                                 <form>
                                     <label for="new-product-name">Tên sản phẩm</label>
                                     <input type="text" id="new-product-name" placeholder="Nhập tên sản phẩm...">
                                     <label for="new-brand">Thương hiệu</label>
-                                    <br>
                                     <select id="new-brand">
                                         <option value="APPLE">APPLE</option>
                                         <option value="SAMSUNG">SAMSUNG</option>
@@ -263,7 +260,6 @@
                                         <option value="Bphone">BPHONE</option>
                                         <option value="VIVO">VIVO</option>
                                     </select>
-                                    <br>
                                     <label for="price">Giá</label>
                                     <input type="text" id="price" placeholder="Nhập giá sản phẩm...">
                                     <div class="image-upload-container">
@@ -274,7 +270,7 @@
                                         <div class="product-image-container">
                                             <img id="img-preview" src="./img-prd/img-add2.png" alt="Product Image">
                                         </div>
-                                    </div><br>
+                                    </div>
                                     <div class="buttons">
                                         <button type="reset" class="delete-btn">Xóa</button>
                                         <button type="submit" class="add-btn">Thêm</button>
@@ -282,11 +278,12 @@
                                 </form>
                             </div>
                         </div>
+                        
                     </div>
                     <!-- POP-UP SỬA SẢN PHẨM -->
                     <div id="modal1" class="modal">
                         <div id="changeproduct">
-                            <button class="close" onclick="closeChangeBox()">+</button>
+                            <button class="close" onclick="closeChangeProductBox()">+</button>
                             <div class="image">
                                 <img id="imgbefore" src="" alt="Ảnh trước">
                                 <img id="imgafter" src="" alt="Ảnh sau">
@@ -313,7 +310,208 @@
                             <div id="user-mode">User</div>
                         </div>
                     </nav>
-                    <h1>CUSTOMERS</h1>
+                    <div id="container">
+                        <!-- CUSTOMERS TABLE -->
+                        <div id="leftsection">
+                            <div id="table_list">
+                                <table class="table-content">
+                                    <thead class="table-content__header">
+                                        <tr>
+                                            <th>NO.</th>
+                                            <th>Tên đăng nhập</th>
+                                            <th>Tên khách hàng</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Email</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-content__body">
+                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
+                                        <tr data-id="10042">
+                                            <td>1</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>2</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>3</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>4</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>5</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>6</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>7</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>8</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>9</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                            
+                                        </tr>
+                                        <tr data-id="10042">
+                                            <td>10</td>
+                                            <td>Irthn1311</td>
+                                            <td>Nguyễn Hữu Tri</td>
+                                            <td>0582837353</td>
+                                            <td>nhuutri1311@gmail.com</td>
+                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
+                                            <td class="action-customer">
+                                                <div class="action-customer__left">
+                                                    <button class="edit-btn">Sửa</button>
+                                                    <button class="add-customer-btn">Thêm</button>
+                                                </div>
+                                                <button class="key-customer-btn">KHÓA</button>
+                                            </td>
+                                            
+                                        </tr>
+                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
+                                    </tbody>
+                                </table>
+                                <div id="pagination">
+                                    <a href="#"><<</a>
+                                    <a href="#">1</a>
+                                    <a href="#">2</a>
+                                    <a href="#">3</a>
+                                    <a href="#">4</a>
+                                    <a href="#">>></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- POP-UP SỬA KHÁCH HÀNG -->
+                    <div id="modal2" class="modal">
+                        <div id="changeproduct">
+                            <button class="close" onclick="closeChangeCustomerBox()">+</button>
+                            <div class="image">
+                                <img id="imgbefore" src="" alt="Ảnh trước">
+                                <img id="imgafter" src="" alt="Ảnh sau">
+                            </div>
+                            <div class="info">
+                                <label for="edit-name">Tên sản phẩm</label>
+                                <input type="text" id="edit-name" value=""><br>
+                                <label for="edit-price">Giá</label>
+                                <input type="text" id="edit-price" value=""><br>
+                                <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
+                            </div>
+                            <button id="save">Lưu chỉnh sửa</button>
+                        </div>
+                    </div>
+                    </div>
                     
                 </div>
                 
@@ -330,9 +528,9 @@
                     <div id="container">
                         <!-- PRODUCTS TABLE -->
                         <div id="leftsection">
-                            <div id="order-list">
-                                <table class="order-table">
-                                    <thead class="order-table__header">
+                            <div id="table_list">
+                                <table class="table-content">
+                                    <thead class="product-header">
                                         <tr>
                                             <!-- <th>#ID</th> -->
                                             <th>Khách hàng</th>
@@ -366,36 +564,35 @@
                             </div>
                         </div>
                         <div id="rightsection">
-                            <div class="subsection">
-                                <h2>Theo thời gian</h2>
-                                <div class="order__filter">
-                                    <br>
-                                    <label for="time-start">Từ ngày</label>
-                                    <input type="date" id="time-start">
-                                    <br>
-                                    <label for="time-end">Đến ngày</label>
-                                    <input type="date" id="time-end">
+                            <div class="filter-section">
+                                <h2 class="main-title">Bộ lọc</h2>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Thời gian</h3>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-start">Từ ngày</label>
+                                        <input type="date" id="time-start" class="date-input">
+                                    </div>
+                                    <div class="date-group">
+                                        <label class="date-label" for="time-end">Đến ngày</label>
+                                        <input type="date" id="time-end" class="date-input">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="subsection">
-                                <h2>Theo tình trạng</h2>
-                                <div class="order__status">
-                                    <select name="" id="">
-                                        <!-- Mặc định là chọn All -->
-                                        <option value="all" selected="selected">All</option>
+                                
+                                <div class="filter-group">
+                                    <h3 class="filter-title">Tình trạng</h3>
+                                    <select class="status-select">
+                                        <option value="all">All</option>
                                         <option value="unprocessed">Chưa xử lý</option>
                                         <option value="confirmed">Đã xác nhận</option>
                                         <option value="succeeded">Thành công</option>
                                         <option value="failed">Thất bại</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="subsection">
-                                <div class="order__sort">
-                                    <button id="sort-by-district-btn" type="button">Sắp xếp theo quận</button>
-                                </div>
-                                <div class="order__reset-btn">
-                                    <button id="reset" type="button">Reset</button>
+                                
+                                <div class="filter-group">
+                                    <button type="button" class="btn">Sắp xếp theo quận</button>
+                                    <button type="button" class="btn reset-btn">Reset</button>
                                 </div>
                             </div>
                         </div>
@@ -429,9 +626,9 @@
                     <div id="container">
                         <!-- STATISTICS TABLE -->
                         <div id="leftsection">
-                            <div id="statistic-list">
-                                <table class="statistic-table">
-                                    <thead class="statistic-table__header">
+                            <div id="table_list">
+                                <table class="table-content">
+                                    <thead class="product-header">
                                         <th>DOANH THU THEO SẢN PHẨM</th>
                                         <tr>
                                             <!-- <th>#ID</th> -->
@@ -486,9 +683,9 @@
                     <div id="container">
                         <!-- CUSTOMER TABLE -->
                         <div id="leftsection">
-                            <div id="customer-list">
-                                <table class="customer-table">
-                                    <thead class="customer-table__header">
+                            <div id="table_list">
+                                <table class="table-content">
+                                    <thead class="product-header">
                                         <th>DOANH THU KHÁCH HÀNG</th>
                                         <tr>
                                             <th>Username</th>

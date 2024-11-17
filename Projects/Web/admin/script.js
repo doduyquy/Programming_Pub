@@ -1,6 +1,58 @@
 import productArray from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 
 // SIDEBAR 
+function updateContentWidth() {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    
+    if (sidebar.classList.contains('hide')) {
+        content.style.width = 'calc(100% - 70px)';
+        content.style.left = '70px';
+    } else {
+        content.style.width = 'calc(100% - 250px)';
+        content.style.left = '250px';
+    }
+}
+// TOGGLE SIDEBAR
+function zoomInSideBar(){
+    const menuBars = document.querySelectorAll('#hidden-sidebar-btn');
+    const sideBar = document.getElementById('sidebar');
+
+    if (menuBars.length > 0 && sideBar) {
+        menuBars.forEach(menuBar => {
+            menuBar.addEventListener('click', () => {
+                sideBar.classList.toggle('hide');
+                updateContentWidth(); // Gọi hàm để cập nhật kích thước content
+            });
+        });
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    zoomInSideBar();
+    handleResize();
+});
+// Hàm thay đổi kích thước khi thay đổi kích thước màn hình
+function handleResize() {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const sidebarItems = document.querySelectorAll('#sidebar .side-menu li');
+    
+    if (window.innerWidth < 1360) {
+        sidebar.classList.add('hide');
+        content.style.width = 'calc(100% - 70px)';
+        content.style.left = '70px';
+        sidebarItems.forEach(item => item.classList.add('disable'));
+    } else {
+        sidebar.classList.remove('hide');
+        content.style.width = 'calc(100% - 250px)';
+        content.style.left = '250px';
+        sidebarItems.forEach(item => item.classList.remove('disable'));
+    }
+}
+
+// Sự kiện khi thay đổi kích thước màn hình
+window.addEventListener('resize', handleResize);
+
 // Thay đổi trạng thái "active | disable" cho các <li>: 
 // click -> active, remove active cho các <li> khác
 function changeActiveSideBar(){
@@ -20,53 +72,6 @@ function changeActiveSideBar(){
 }
 changeActiveSideBar();
 
-// Thêm sự kiện khi thay đổi kích thước màn hình
-window.addEventListener('resize', handleResize);
-document.addEventListener('DOMContentLoaded', handleResize);
-
-function handleResize() {
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    const sidebarItems = document.querySelectorAll('#sidebar .side-menu li');
-    
-    if (window.innerWidth < 1360) {
-        sidebar.classList.add('hide');
-        content.style.width = 'calc(100% - 70px)';
-        content.style.left = '70px';
-        sidebarItems.forEach(item => item.classList.add('disable'));
-    } else {
-        sidebar.classList.remove('hide');
-        content.style.width = 'calc(100% - 250px)';
-        content.style.left = '250px';
-        sidebarItems.forEach(item => item.classList.remove('disable'));
-    }
-}
-
-// TOGGLE SIDEBAR
-function zoomInSideBar(){
-    const menuBar = document.querySelector('#content nav #hidden-sidebar-btn');
-    const sideBar = document.getElementById('sidebar');
-    
-    if (menuBar && sideBar) {
-        menuBar.addEventListener('click', () => {
-            sideBar.classList.toggle('hide');
-            updateContentWidth(); // Gọi hàm để cập nhật kích thước content
-        });
-    }
-}
-zoomInSideBar();
-function updateContentWidth() {
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    
-    if (sidebar.classList.contains('hide')) {
-        content.style.width = 'calc(100% - 70px)';
-        content.style.left = '70px';
-    } else {
-        content.style.width = 'calc(100% - 250px)';
-        content.style.left = '250px';
-    }
-}
 /* END SIDEBAR */ 
 
 /** HIỆN TỪNG MAIN-ITEM TƯƠNG ỨNG KHI ẤN VÀO THANH SIDEBAR 
@@ -147,7 +152,7 @@ function filterProducts() {
 }
 // Sau khi tạo bảng sản phẩm
 function displayPage(page) {
-    const tableBody = document.getElementById('product-table__body');
+    const tableBody = document.getElementById('table-content__body');
     if (!tableBody) return;
     tableBody.innerHTML = '';
 
@@ -177,8 +182,11 @@ function displayPage(page) {
             <td>${brand}</td>
             <td>${price}</td>
             <td>
+                <button class="detail-btn" onclick="">Chi tiết</button>
+            </td>
+            <td>
                 <button class="delete-btn">Xóa</button>
-                <button class="change edit-btn" data-index="${id - 1}">Sửa</button>
+                <button class="edit-btn" data-index="${id - 1}">Sửa</button>
             </td>
         `;
 
@@ -315,7 +323,7 @@ function addNewProduct(e) {
 }
 
 // Xóa sản phẩm
-document.getElementById('product-table__body').addEventListener('click', function(event) {
+document.getElementById('table-content__body').addEventListener('click', function(event) {
     if (event.target.classList.contains('delete-btn')) {
         const row = event.target.closest('tr');
         const productIndex = parseInt(row.getAttribute('data-id'));
@@ -385,7 +393,7 @@ function saveProductChanges(productIndex) {
 }
 
 // Đóng modal
-function closeChangeBox() {
+function closeChangeProductBox() {
     const modal = document.getElementById('modal1');
     if (modal) {
         modal.style.display = 'none';
@@ -414,10 +422,19 @@ function previewImage(event) {
     };
     reader.readAsDataURL(input.files[0]);
 }
+// MAIN_CUSTOMERS
+function closeChangeCustomerBox() {
+    const modal = document.getElementById('modal2');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 window.showChangeProductBox = showChangeProductBox;
-window.closeChangeBox = closeChangeBox;
+window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;
 window.previewImage = previewImage;
+
+window.closeChangeCustomerBox = closeChangeCustomerBox;
 
 window.saveProductChanges = saveProductChanges;
 
