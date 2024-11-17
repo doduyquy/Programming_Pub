@@ -1,3 +1,6 @@
+// LOAD CART TƯƠNG ỨNG VỚI USERNAME TỪ localStorage
+import {Cart} from '../common/data/cart.js'
+
 function loadPage(){
 document.addEventListener('DOMContentLoaded', () => 
     {  
@@ -66,33 +69,32 @@ document.addEventListener('DOMContentLoaded', () =>
 }
 loadPage();
 
+
+// Lấy {username, password} của người dùng tương ứng.
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+// Load Cart object của người dùng tương ứng.
+const currentCart = new Cart(currentUser.username);
+
+// // Hàm hiển thị sản phẩm giỏ hàng
+// let productPicked = [];      
+// let slproductPicked = 0;
+
 // Format price currency VND format
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND'
     }).format(price);
-
 }
 
-// Hàm hiển thị sản phẩm giỏ hàng
-let productPicked = [];      
-let slproductPicked = 0;
-
 function displayProducts() {  
-    const picked = localStorage.getItem('productPicked');  
-    if (picked) productPicked = JSON.parse(picked);
-    slproductPicked = 0;
-    productPicked.forEach(product => {
-        slproductPicked+=product.sl;
-    });
-    localStorage.setItem('soluong', JSON.stringify(slproductPicked));
     
     const productsContainer = document.getElementById('containProducts');   
     productsContainer.innerHTML = '';
-    if (productPicked.length > 0) {  
-        productPicked.forEach(product => {  
-            const totalPrice = product.price * product.sl;  
+    if (currentCart.cartItem.length > 0) {  
+        currentCart.cartItem.forEach(product => {  
+            console.log(product.name);
+            const totalPrice = product.price * product.quantity;  
             const pickedHTML = `  
                 <div class="cart-item" data-product-name="${product.name}">   
                     <div class="item-left">   
@@ -106,7 +108,7 @@ function displayProducts() {
                     <span class="price" data-unit-price="${product.price}">${formatPrice(product.price)}</span>   
                     <div class="quantity-control">   
                         <button class="decrease" onclick="changeQuantity('${product.name}','${product.pb}', -1)">-</button>   
-                        <input type="text" class="quantity" value="${product.sl}" readonly>   
+                        <input type="text" class="quantity" value="${product.quantity}" readonly>   
                         <button class="increase" onclick="changeQuantity('${product.name}','${product.pb}', 1)">+</button>   
                     </div>   
                     <span class="total-price">${formatPrice(totalPrice)}</span>   
@@ -120,7 +122,50 @@ function displayProducts() {
     }  
 }  
 
+// function displayProducts() {  
+//     const picked = localStorage.getItem('productPicked');  
+//     if (picked) productPicked = JSON.parse(picked);
+//     slproductPicked = 0;
+//     productPicked.forEach(product => {
+//         slproductPicked+=product.sl;
+//     });
+//     localStorage.setItem('soluong', JSON.stringify(slproductPicked));
+    
+//     const productsContainer = document.getElementById('containProducts');   
+//     productsContainer.innerHTML = '';
+//     if (productPicked.length > 0) {  
+//         productPicked.forEach(product => {  
+//             const totalPrice = product.price * product.sl;  
+//             const pickedHTML = `  
+//                 <div class="cart-item" data-product-name="${product.name}">   
+//                     <div class="item-left">   
+//                         <input type="checkbox" class="item-checkbox" onchange="updateTotalPrice()" data-price="${product.price}">   
+//                         <img class="product-img" src="${product.img}" alt="${product.name}">   
+//                         <div class="product-details">   
+//                             <span>${product.name}</span>   
+//                         </div>   
+//                     </div>   
+//                     <span class="category" data-product-version="${product.pb}">${product.pb}</span>   
+//                     <span class="price" data-unit-price="${product.price}">${formatPrice(product.price)}</span>   
+//                     <div class="quantity-control">   
+//                         <button class="decrease" onclick="changeQuantity('${product.name}','${product.pb}', -1)">-</button>   
+//                         <input type="text" class="quantity" value="${product.sl}" readonly>   
+//                         <button class="increase" onclick="changeQuantity('${product.name}','${product.pb}', 1)">+</button>   
+//                     </div>   
+//                     <span class="total-price">${formatPrice(totalPrice)}</span>   
+//                     <div class="action">   
+//                         <button class="delete-btn" onclick="deleteProduct('${product.name}','${product.pb}')">Xóa</button>     
+//                     </div>   
+//                 </div>  
+//             `;  
+//             productsContainer.insertAdjacentHTML('beforeend', pickedHTML);  
+//         });   
+//     }  
+// }  
+
+
 // Hàm thay đổi số lượng sản phẩm  
+
 function changeQuantity(productName,productVersion, change) {    
     const productElement = document.querySelector(`.cart-item[data-product-name="${productName}"]`);  
     const numberInput = productElement.querySelector('.quantity');  
@@ -289,3 +334,6 @@ provinceSelect.addEventListener('change', function() {
 
 //-------------------ASSIGN -> WINDOW
 window.loadPage = loadPage;
+window.changeQuantity = changeQuantity;
+window.deleteProduct = deleteProduct;
+window.toggleSelectAll = toggleSelectAll;

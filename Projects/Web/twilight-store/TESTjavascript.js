@@ -106,14 +106,17 @@ rangeInput.forEach(input => {
 
 
 
-//LƯU TÀI KHOẢN
-class User {  
-    constructor(username, password) {  
-        this.usn = username;  
-        this.mk = password;  
-    }  
+/** LƯU TÀI KHOẢN HIỆN TẠI CỦA USER -> CHUYỂN ĐỔI QUA LẠI GIỮA PAGE CART-INDEX
+ * Khi người dùng đăng nhập thành công, 
+ * lưu {username, password} -> localStorage, key: currentUser
+ * 
+ * => Khi người dùng vào Cart, hay go-back về index, tự động đăng nhập cho người dùng hiện tại.
+*/
+let currentUser =  {
+    username: undefined,
+    password: undefined,
 }  
-var accounts = [];
+// var accounts = [];
 var dem = 0;
 //ĐĂNG NHẬP - ĐĂNG KÝ
 const DNDK = document.getElementsByClassName('nav-link');  //Nút đăng nhập - đăng ký
@@ -195,11 +198,8 @@ function TAIKHOAN(username)
 
 //HÀM XỬ LÝ ĐĂNG NHẬP
 /** KIỂM TRA NGƯỜI DÙNG CÓ ĐĂNG NHẬP HAY CHƯA
- * DONE: isSignIn -> true
- * NOT: isSignIn -> false
  */
-
-let isSignIn = false;
+// let isSignIn = false;
 function Dangnhap() 
 {
     const username = document.querySelector('.auto-form__input[type="username"]').value;
@@ -215,11 +215,19 @@ function Dangnhap()
     
     // Change: kiểm tra đăng nhập đúng với customerArray
     if(true == checkValidAccount(username, password)){
-        // Khi đăng nhập thành công, load Cart tưng ứng lên từ localStorage
+        /**  Khi đăng nhập thành công, 
+         * Load Cart,... tưng ứng lên từ localStorage 
+         * Lưu account của user hiện tại vào localStorage
+         */
         cart = new Cart(username);
         updateCartCount();
-        isSignIn = true;        
-        //-----------
+        // Cập nhật currentUser và lưu vào localStorage
+        currentUser.username = username;
+        currentUser.password = password;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        console.log(currentUser);
+        console.log('Saved currentUser to localStorage');
+
         alert("Đã đăng nhập thành công với tài khoản: " + username);  
         flag = true;  
         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
@@ -293,15 +301,8 @@ function Dangky()
         console.log('Create Cart with username: ' + username);
         //-----------------
     }
-    // for (let account of accounts) 
-    //     {  
-    //         if (username === account.usn) 
-    //             {  
-    //                 alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
-    //                 return;
-    //             }
-    //     }  
 
+    // ###
     // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
     // function containsUppercaseOrSpecialChar(str) 
     // {  
@@ -320,23 +321,11 @@ function Dangky()
     //         alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
     //         return;
     //     }
-    
-    // alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
-    // b.style.display = "block"; // Hiển thị phần thông tin  
-    // a.style.display = "none";  // Ẩn phần đăng ký  
-
-    // // Change: thêm new customer vào customerArray khi đăng kí thành công
-    // addCustomerToArray(username, password);
-    // console.log('add');
-    // // var n = new User(username,password);
-    // // accounts.push(n);
-    // dem++; 
 }
 // HÀM ĐĂNG XUẤT
-function Dangxuat()
-{
+function Dangxuat(){
     //-------
-    isSignIn = false;
+    // isSignIn = false;
     //-------
     document.getElementById('log-out').addEventListener('click', function(event) 
     {  
@@ -878,6 +867,7 @@ function giohang(product){
         isPicked: false,
         brandId: product.brandId,
         img: product.img,
+        name: product.name,
         pb: vs,
         price: gia,
         // pb: product.pb,
