@@ -11,7 +11,6 @@ export class Cart {
     constructor(localStorageKey){
         this.localStorageKey = localStorageKey;
         this.loadCartFromStorage();
-
     }
 
     // Private method
@@ -120,19 +119,18 @@ export class Cart {
     //     saveCartToStorage();
     // }
     // Xóa product trong cart
-    removeFromCart(productId){
+    removeFromCart(productName, productVersion){
         const newCartItem = [];
         this.counterProducts = 0;
         this.cartItem.forEach((item) => {
             // Không phải product cần xóa thì thêm vào newCartItem
-            if(productId !== item.productId){
+            if(!(item.name === productName && item.pb === productVersion)){
                 newCartItem.push(item);
                 this.counterProducts += item.quantity;
             }
         });
         this.cartItem = newCartItem;
 
-        console.log('Removed product with ID: ' + productId);
         this.saveCartToStorage();
     }
 

@@ -112,10 +112,25 @@ rangeInput.forEach(input => {
  * 
  * => Khi người dùng vào Cart, hay go-back về index, tự động đăng nhập cho người dùng hiện tại.
 */
-let currentUser =  {
-    username: undefined,
-    password: undefined,
-}  
+let currentUser;
+function createCurrentUser (){
+    const localCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(localCurrentUser){
+        currentUser = localCurrentUser;
+        console.log('Current user from local: ' + currentUser.username + ' ' + currentUser.status);
+    } else {
+        currentUser = {
+            username: '',
+            password: '',
+            /** 1: chưa đăng xuất -> auto đăng nhập
+             *  0: đã đăng | chưa tồn tại -> không auto đăng nhập     */
+            status: 0,      
+        } 
+        console.log('Not exist current user from local.');
+    }
+}
+createCurrentUser();
+
 // var accounts = [];
 var dem = 0;
 //ĐĂNG NHẬP - ĐĂNG KÝ
@@ -196,7 +211,34 @@ function TAIKHOAN(username)
         }
 }
 
-//HÀM XỬ LÝ ĐĂNG NHẬP
+/** HÀM XỬ LÝ ĐĂNG NHẬP */
+/** Hàm tự động đăng nhập khi người dùng đã đăng nhập trước đó
+ * hay khi người dùng từ checkoutCart page trở về lại index
+ * !!! Chỉ KHÔNG tự động đăng nhập khi người dùng đã Đăng xuất.  */ 
+function autoDangnhap(){
+    // const currentUserLoggedIn = JSON.parse(localStorage.getItem('currentUser')); 
+    if(currentUser){
+        // User đã đăng nhập và chưa đăng xuất.
+        if(currentUser.status === 1){
+            /**  Khi đăng nhập thành công, 
+             * Load Cart,... tưng ứng lên từ localStorage 
+             */
+            cart = new Cart(currentUser.username);
+            updateCartCount();
+    
+            TAIKHOAN(currentUser.username);
+            console.log('Account: ' + currentUser.username + ' auto login');
+        } else {
+            console.log("Can't auto login");
+        }
+    } else {
+        console.log("Not exist current user. Can't auto login");
+    }
+}
+autoDangnhap();
+
+
+
 /** KIỂM TRA NGƯỜI DÙNG CÓ ĐĂNG NHẬP HAY CHƯA
  */
 // let isSignIn = false;
@@ -216,17 +258,19 @@ function Dangnhap()
     // Change: kiểm tra đăng nhập đúng với customerArray
     if(true == checkValidAccount(username, password)){
         /**  Khi đăng nhập thành công, 
-         * Load Cart,... tưng ứng lên từ localStorage 
-         * Lưu account của user hiện tại vào localStorage
-         */
+         * 1.Load Cart,... tưng ứng lên từ localStorage 
+         * 2.Lưu account của user hiện tại vào localStorage         
+         * 3.updateCartCount();
+         * */
         cart = new Cart(username);
-        updateCartCount();
         // Cập nhật currentUser và lưu vào localStorage
         currentUser.username = username;
         currentUser.password = password;
+        currentUser.status = 1;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        console.log(currentUser);
-        console.log('Saved currentUser to localStorage');
+        console.log('Saved currentUser' + currentUser.username + ' ' + currentUser.status + ' to localStorage');
+        // Cập nhật số lượng products trong Cart
+        updateCartCount();
 
         alert("Đã đăng nhập thành công với tài khoản: " + username);  
         flag = true;  
@@ -324,13 +368,16 @@ function Dangky()
 }
 // HÀM ĐĂNG XUẤT
 function Dangxuat(){
-    //-------
-    // isSignIn = false;
-    //-------
     document.getElementById('log-out').addEventListener('click', function(event) 
     {  
+        console.log('User had clicked Dangxuat button');
+        //-------For current user ----
+        currentUser.status = 0;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        //----------------
+        updateCartCount();
+
         event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết  
-    
         u1.style.display = "none";
         u2.style.display = "none";
         for (let i = 0; i < DNDK.length; i++) 
@@ -835,14 +882,15 @@ function reloadPage(){
         allProducts = currentProducts;
         renderProducts(currentProducts, currentPage);
         TRANGCHU();
-        Dangxuat();
+        Dangxuat();      // Chỉ đăng xuất khi người dùng ấn đăng xuất.
+        updateCartCount();
+
         //----------BỎ: VÌ CART ĐƯỢC LOAD TƯƠNG ỨNG KHI CUSTOMER ĐĂNG NHẬP----------
         // const picked = localStorage.getItem('productPicked');  
         // if (picked) productPicked = JSON.parse(picked);
         
         // const sl = localStorage.getItem('soluong');  
         // if (sl) slproductPicked = JSON.parse(sl); 
-        // updateCartCount();
         //--------------------
     });
 }
@@ -911,8 +959,12 @@ function giohang(product){
 function updateCartCount() 
 {   
     const cartBadge = document.querySelector('.cart-badge');  
-    cartBadge.textContent = cart.counterProducts; // Cập nhật số lượng sản phẩm  
-    console.log(cart.counterProducts);
+    if(currentUser.status == 0){
+        // Khi người dùng đã đăng xuất
+        cartBadge.textContent = 0;   
+    } else {
+        cartBadge.textContent = cart.counterProducts; // Cập nhật số lượng sản phẩm  
+    }
 }
 
 
@@ -933,6 +985,8 @@ window.renderProducts = renderProducts;
 window.renderPagination = renderPagination;
 window.changePage = changePage;
 window.updateCartCount = updateCartCount;
+window.autoDangnhap = autoDangnhap;
+window.createCurrentUser = createCurrentUser;
 //-------------------------------------------
 
 
