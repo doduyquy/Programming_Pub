@@ -337,6 +337,7 @@ body {
     min-height: calc(100vh - 56px);
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     background-color: var(--grey);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -444,10 +445,9 @@ body {
 
 #container #rightsection {
     width: 30%;
-    padding: 20px;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    padding: 20px 20px 0;
 }
 
 #container #rightsection .subsection {
@@ -470,6 +470,7 @@ body {
 #container #rightsection .subsection form {
     width: calc(100% - 50px);
     margin: 0 auto;
+    display: block;
 }
 
 #container #rightsection .subsection label {
@@ -480,7 +481,7 @@ body {
 
 #container #rightsection .subsection select {
     height: 35px;
-    width: 173px;
+    width: calc(100% - 102px);
     padding: 8px;
     margin: 10px 0;
     border: 1px solid var(--grey);
@@ -497,7 +498,23 @@ body {
     border: 1px solid var(--grey);
     border-radius: 5px;
 }
-
+#container #rightsection .subsection .short_info {
+    display: flex;
+    align-items: center;
+}
+#container #rightsection .subsection .short_info .short-label {
+    flex-shrink: 0; /* Giữ nguyên kích thước của label */
+    margin-right: 10px; /* Khoảng cách giữa label và input */
+    white-space: nowrap; /* Tránh xuống dòng cho label */
+}
+#container #rightsection .subsection .short-input {
+    flex: 1;
+    height: 35px;
+    padding: 8px;
+    border: 1px solid var(--grey);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
 #content #rightsection .subsection input:focus {
     outline: none;
     border: 2px solid var(--blue);

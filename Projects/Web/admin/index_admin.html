@@ -57,16 +57,6 @@
             </ul>
         </section>
         <section id="content">
-            <!-- NAVBAR   -->
-            <!-- <nav>
-                <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
-                <div id="site-name">Admin Dashboard</div>
-                <div id="logout">
-                    <img src="./img/log-out-color-24.png" alt="Logout">
-                    <div id="user-mode">User</div>
-                </div>
-            </nav> -->
-
             <!-- MAIN -->
             <main>
                 
@@ -213,15 +203,7 @@
                             <div id="table_list">
                                 <table class="table-content">
                                     <thead class="table-content__header">
-                                        <tr>
-                                            <th>#ID</th>
-                                            <th>Ảnh</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Thương hiệu</th>
-                                            <th>Giá</th>
-                                            <th>Thông tin</th>
-                                            <th>Hành động</th>
-                                        </tr>
+                                        
                                     </thead>
                                     <tbody id="product-table-content__body">
                                         <!-- Sản Phẩm ở đây -->
@@ -231,6 +213,69 @@
                             </div>
                         </div>
                         <div id="rightsection">
+                            
+                            <div class="subsection">
+                                <h2>THÊM SẢN PHẨM</h2>
+                                <form id="add-product-form">
+                                    <br>
+                                    <label for="new-product-name">Tên sản phẩm</label>
+                                    <input type="text" id="new-product-name" placeholder="Nhập tên sản phẩm...">
+                                    <label for="new-brand">Thương hiệu</label>
+                                    <select id="new-brand">
+                                        <option value="APPLE">APPLE</option>
+                                        <option value="SAMSUNG">SAMSUNG</option>
+                                        <option value="XIAOMI">XIAOMI</option>
+                                        <option value="Bphone">BPHONE</option>
+                                        <option value="VIVO">VIVO</option>
+                                    </select>
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-price">Giá</label>
+                                        <input type="text" id="new-price" class="short-input" placeholder="Nhập giá sản phẩm...">
+                                    </div>
+                                    
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-pb1">Phiên bản 1</label>
+                                        <input type="text" id="new-pb1" class="short-input" placeholder="Nhập phiên bản 1...">
+                                    </div>
+                                    
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-pb2">Phiên bản 2</label>
+                                        <input type="text" id="new-pb2" class="short-input" placeholder="Nhập phiên bản 2...">
+                                    </div>
+                                    
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-chip">Vi xử lý</label>
+                                        <input type="text" id="new-chip" class="short-input" placeholder="Nhập vi xử lý...">
+                                    </div>
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-pin">Dung lượng pin</label>
+                                        <input type="text" id="new-pin" class="short-input" placeholder="Nhập dung lương pin...">
+                                    </div>
+                                    
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-size">Kích thước màn hình</label>
+                                        <input type="text" id="new-size" class="short-input" placeholder="Nhập kích thước màn hình...">
+                                    </div>
+                                    
+                                    <div class="short_info">
+                                        <label class="short-label" for="new-f">Tần số quét</label>
+                                        <input type="text" id="new-f" class="short-input" placeholder="Nhập tần số quét...">
+                                    </div>
+                                    <div class="image-upload-container">
+                                        <div class="image-upload-container__info">
+                                            <label for="new-image-upload">Ảnh</label>
+                                            <input type="file" id="new-image-upload" accept="image/*" onchange="previewImage(event)">
+                                        </div>
+                                        <div class="product-image-container">
+                                            <img id="img-preview" src="./img-prd/img-add2.png" alt="Product Image">
+                                        </div>
+                                    </div>
+                                    <div class="buttons">
+                                        <button type="reset" class="delete-btn">Xóa</button>
+                                        <button type="submit" class="add-btn">Thêm</button>
+                                    </div>
+                                </form>
+                            </div>
                             <div class="subsection">
                                 <h2>TÌM KIẾM SẢN PHẨM</h2>
                                 <form>
@@ -246,37 +291,6 @@
                                         <option value="BPHONE">BPHONE</option>
                                         <option value="VIVO">VIVO</option>
                                     </select>
-                                </form>
-                            </div>
-                            <div class="subsection">
-                                <h2>THÊM SẢN PHẨM</h2>
-                                <form>
-                                    <br>
-                                    <label for="new-product-name">Tên sản phẩm</label>
-                                    <input type="text" id="new-product-name" placeholder="Nhập tên sản phẩm...">
-                                    <label for="new-brand">Thương hiệu</label>
-                                    <select id="new-brand">
-                                        <option value="APPLE">APPLE</option>
-                                        <option value="SAMSUNG">SAMSUNG</option>
-                                        <option value="XIAOMI">XIAOMI</option>
-                                        <option value="Bphone">BPHONE</option>
-                                        <option value="VIVO">VIVO</option>
-                                    </select>
-                                    <label for="price">Giá</label>
-                                    <input type="text" id="price" placeholder="Nhập giá sản phẩm...">
-                                    <div class="image-upload-container">
-                                        <div class="image-upload-container__info">
-                                            <label for="image-upload">Ảnh</label>
-                                            <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)">
-                                        </div>
-                                        <div class="product-image-container">
-                                            <img id="img-preview" src="./img-prd/img-add2.png" alt="Product Image">
-                                        </div>
-                                    </div>
-                                    <div class="buttons">
-                                        <button type="reset" class="delete-btn">Xóa</button>
-                                        <button type="submit" class="add-btn">Thêm</button>
-                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -339,15 +353,7 @@
                             <div id="table_list">
                                 <table class="table-content">
                                     <thead class="table-content__header">
-                                        <tr>
-                                            <th>NO.</th>
-                                            <th>Tên đăng nhập</th>
-                                            <th>Mật khẩu</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Email</th>
-                                            <th>Địa chỉ</th>
-                                            <th>Hành động</th>
-                                        </tr>
+                                    
                                     </thead>
                                     <tbody id="customer-table-content__body">
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
