@@ -138,12 +138,13 @@ export class Cart {
      * Arg: productId
      * Thay đổi trạng thái của isPicked -> true (được chọn)
      */
-    markProductToPay(productId){
+    markProductToPay(productName, productVersion){
         this.cartItem.forEach((item) => {
-            if(productId === item.productId){
+            if(!(item.name === productName && item.pb === productVersion)){
                 item.isPicked = true;
             }
         });
+        console.log('Marked ' + productName);
         // Lưu vào localStorage sau khi thay đổi:
         this.saveCartToStorage();
     }

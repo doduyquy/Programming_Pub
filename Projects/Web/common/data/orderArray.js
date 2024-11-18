@@ -59,16 +59,22 @@ class Order {
 
 
 /** MẢNG ĐƠN HÀNG */
-// Load mảng lên từ localStorage
+// Load mảng lên từ localStorage, nếu chưa được tạo thì gán rỗng:
 export let orderArray = JSON.parse(localStorage.getItem('orderArray'));
-// Nếu orderArray chưa được tạo:
 if(!orderArray){
     orderArray = [];
-}
+    console.log(orderArray + ' null');
+} 
+
 // Lưu orderArray vào localStorage với key: orderArray
-function saveOrderArrayToStorage(){
+export function saveOrderArrayToStorage(){
     localStorage.setItem('orderArray', JSON.stringify(orderArray));
 
+}
+export function addOrderToArray(customerId, checkoutCart, date, status = 'UNPROCESSED'){
+    const newOrder = new Order(customerId, checkoutCart, date, status);
+    orderArray.push(newOrder);
+    saveOrderArrayToStorage();
 }
 
 /** CÁC TÍNH NĂNG BÊN PHÍA ADMIN: 

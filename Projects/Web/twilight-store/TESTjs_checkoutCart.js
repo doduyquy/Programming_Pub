@@ -1,5 +1,7 @@
 // LOAD CART TƯƠNG ỨNG VỚI USERNAME TỪ localStorage
 import {Cart} from '../common/data/cart.js'
+import {orderArray, saveOrderArrayToStorage, addOrderToArray} from '../common/data/orderArray.js'
+
 
 function loadPage(){
 document.addEventListener('DOMContentLoaded', () => 
@@ -94,8 +96,12 @@ function formatPrice(price) {
     }).format(price);
 }
 
+// Mảng lưu các products đã được check(item-checkbox) trong Cart
+let checkedProductArray = [];
+//---------------------------
+
+// Func: hiển thị toàn bộ products trong Cart
 function displayProducts() {  
-    
     const productsContainer = document.getElementById('containProducts');   
     productsContainer.innerHTML = '';
     if (currentCart.cartItem.length > 0) {  
@@ -105,7 +111,7 @@ function displayProducts() {
             const pickedHTML = `  
                 <div class="cart-item" data-product-name="${product.name}">   
                     <div class="item-left">   
-                        <input type="checkbox" class="item-checkbox" onchange="updateTotalPrice()" data-price="${product.price}">   
+                        <input type="checkbox" class="item-checkbox" onchange="updateTotalPrice(); updateCheckedProducts(this, '${product.name}', '${product.pb}')" data-price="${product.price}">   
                         <img class="product-img" src="${product.img}" alt="${product.name}">   
                         <div class="product-details">   
                             <span>${product.name}</span>   
@@ -128,48 +134,26 @@ function displayProducts() {
         });   
     }  
 }  
-
-// function displayProducts() {  
-//     const picked = localStorage.getItem('productPicked');  
-//     if (picked) productPicked = JSON.parse(picked);
-//     slproductPicked = 0;
-//     productPicked.forEach(product => {
-//         slproductPicked+=product.sl;
-//     });
-//     localStorage.setItem('soluong', JSON.stringify(slproductPicked));
-    
-//     const productsContainer = document.getElementById('containProducts');   
-//     productsContainer.innerHTML = '';
-//     if (productPicked.length > 0) {  
-//         productPicked.forEach(product => {  
-//             const totalPrice = product.price * product.sl;  
-//             const pickedHTML = `  
-//                 <div class="cart-item" data-product-name="${product.name}">   
-//                     <div class="item-left">   
-//                         <input type="checkbox" class="item-checkbox" onchange="updateTotalPrice()" data-price="${product.price}">   
-//                         <img class="product-img" src="${product.img}" alt="${product.name}">   
-//                         <div class="product-details">   
-//                             <span>${product.name}</span>   
-//                         </div>   
-//                     </div>   
-//                     <span class="category" data-product-version="${product.pb}">${product.pb}</span>   
-//                     <span class="price" data-unit-price="${product.price}">${formatPrice(product.price)}</span>   
-//                     <div class="quantity-control">   
-//                         <button class="decrease" onclick="changeQuantity('${product.name}','${product.pb}', -1)">-</button>   
-//                         <input type="text" class="quantity" value="${product.sl}" readonly>   
-//                         <button class="increase" onclick="changeQuantity('${product.name}','${product.pb}', 1)">+</button>   
-//                     </div>   
-//                     <span class="total-price">${formatPrice(totalPrice)}</span>   
-//                     <div class="action">   
-//                         <button class="delete-btn" onclick="deleteProduct('${product.name}','${product.pb}')">Xóa</button>     
-//                     </div>   
-//                 </div>  
-//             `;  
-//             productsContainer.insertAdjacentHTML('beforeend', pickedHTML);  
-//         });   
-//     }  
-// }  
-
+// Cập nhật mảng checkedProductsArray khi user check|uncheck
+function updateCheckedProducts(checkbox, productName, productVersion){
+    if(checkbox.checked){
+        // Thêm vào mảng nếu product được checked
+        checkedProductArray.push({productName, productVersion});
+        console.log('Check product: ' + productName);
+    } else {
+        // Xóa khỏi mảng nếu product bị bỏ checked
+        // Hoặc có thể dùng filter()
+        const tmpArray = [];
+        checkedProductArray.forEach((product) => {
+            if(!(product.productName === productName && product.productVersion === productVersion)){
+                tmpArray.push(product);
+            }
+        });
+        checkedProductArray = tmpArray;
+        console.log('Uncheck product: ' + productName);
+    }
+    // console.log(checkedProductArray);
+}
 
 // Hàm thay đổi số lượng sản phẩm   - DONE 
 function changeQuantity(productName,productVersion, change) {    
@@ -244,26 +228,69 @@ function toggleSelectAll() {
     updateTotalPrice();  
 }  
 
-// Nút xóa sản phẩm được chọn
-document.getElementById('delete-button').addEventListener('click', function() 
-{  
-    const productCheckboxes = document.querySelectorAll('.item-checkbox:checked');  
-    
-    // Tạo một mảng lưu trữ tên và phiên bản sản phẩm cần xóa  
-    const productsToDelete = [];  
-    
-    productCheckboxes.forEach(checkbox => {  
-        const productElement = checkbox.closest('.cart-item');  
-        const productName = productElement.dataset.productName;  
-        const productVersion = productElement.querySelector('.category').dataset.productVersion;  
-        productsToDelete.push({ name: productName, version: productVersion });  
-    });  
+//!!! BỎ !!! Nút xóa sản phẩm được chọn (isPicked == true)
+// function markProductCheckedButton(){
+//     const productCheckboxes = document.querySelectorAll('.item-checkbox:checked');  
+//     productCheckboxes.forEach((item) => {
+//         const productElement = item.closest('.cart-item');  
+//         const productName = productElement.dataset.productName;  
+//         const productVersion = productElement.querySelector('.category').dataset.productVersion;
+//         currentCart.markProductToPay(productName, productVersion);
+//     });
+// }
+// markProductCheckedButton();
+
+// Xóa tất cả các sản phẩm đã checked trong Cart = nút deleteAllProductIsPicked-button
+function deleteAllProductIsPicked(){
+    // const productCheckboxes = document.querySelectorAll('.item-checkbox:checked');  
+        
     document.getElementById('select-all-footer').checked = false;
     // Xóa từng sản phẩm trong danh sách đã chọn  
-    productsToDelete.forEach(product => {  
-        deleteProduct(product.name, product.version); // Gọi hàm để xóa sản phẩm  
+    checkedProductArray.forEach(product => {  
+        deleteProduct(product.productName, product.productVersion); // Gọi hàm để xóa sản phẩm  
+    }); 
+    checkedProductArray = [];
+    console.log(checkedProductArray);
+}
+function deleteAllWhenClickBtn(){
+    document.getElementById('deleteAllProductIsPicked-button').addEventListener('click', function() {  
+        deleteAllProductIsPicked();
     });  
-});  
+}
+deleteAllWhenClickBtn();
+
+// Tạo Order và push vào orderArray khi người dùng hoàn tất việc mua hàng.
+function createOrder(){
+    const customerId = currentCart.localStorageKey;
+    const cartItemChecked = [];
+    // Kiểm tra trong mảng cartItem những sản phẩm nào có trong checkedProductArray thì thêm vào.
+    checkedProductArray.forEach((checkedProduct) => {
+        currentCart.cartItem.forEach((item) => {
+            if(checkedProduct.productName === item.name && checkedProduct.productVersion === item.pb){
+                cartItemChecked.push(item);
+            }
+        });
+    });
+    // Date gồm: ngày tháng năm
+    const now = new Date();
+    const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    addOrderToArray(customerId, cartItemChecked, orderDate);
+    console.log(orderArray);
+}
+/** Sau khi User nhấn hoàn tất thanh toán(hiện tại: ấn nút thanh toán)
+ * 1. Tạo Order với các products trong Cart mà user đã chọn
+ * 2. Xóa các products đó trong Cart
+ */
+function completeUserPurchase(){
+    document.getElementById('buy-button').addEventListener('click', function(){
+        createOrder();
+        deleteAllProductIsPicked();
+    });
+}
+completeUserPurchase();
+
+
 
 // Show/hide new address form based on user selection
 document.getElementById("new-address-option").addEventListener("change", function() {
@@ -274,16 +301,9 @@ document.getElementById("default-address").addEventListener("change", function()
     document.getElementById("new-address-form").style.display = "none";
 });
 
-
-
 // Get the province and district select elements
 const provinceSelect2 = document.getElementById('province2');
 const districtSelect2 = document.getElementById('district2');
-
-
-
-
-
 
 // Define the province-district mapping
 const provinceDistrictMap = {
@@ -291,8 +311,6 @@ const provinceDistrictMap = {
     'long-an': ['Thành phố Tân An', 'Huyện Đức Hòa', 'Huyện Cần Đước'],
     'binh-dinh': ['Thành phố Quy Nhơn', 'Huyện Tây Sơn', 'Huyện Phù Mỹ']
     };
-
-
 
 // Add event listener to the province select
 provinceSelect2.addEventListener('change', function() {
@@ -312,9 +330,6 @@ provinceSelect2.addEventListener('change', function() {
     });
     }
 });
-
-
-
 
 // Get the province and district select elements
 const provinceSelect = document.getElementById('province');
@@ -349,3 +364,4 @@ window.changeQuantity = changeQuantity;
 window.deleteProduct = deleteProduct;
 window.toggleSelectAll = toggleSelectAll;
 window.updateTotalPrice = updateTotalPrice;
+window.updateCheckedProducts = updateCheckedProducts;
