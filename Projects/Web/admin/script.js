@@ -108,6 +108,22 @@ showCorrespondingMain();
 // Hiển thị main__dashboard mặc định khi tải trang
 showMainItem('main__dashboard');
 
+// Hàm thông báo tự thiết kế
+function customAlert(message, type) {
+    // Tạo phần tử div cho thông báo
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert custom-alert-${type}`;
+    alertDiv.innerText = message;
+
+    // Thêm thông báo vào body
+    document.body.appendChild(alertDiv);
+
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
 /* MAIN__PRODUCTS */
 // Lấy productArray từ localStorage đã được import từ productArray.js
 let filteredProducts = [];
@@ -160,21 +176,20 @@ function displayProductPage(page) {
     var start = (page - 1) * itemsPerPageProduct;
     var end = start + itemsPerPageProduct;
     for (var i = start; i < filteredProducts.length && i < end; i++) {
-        var product = filteredProducts[i];
         s += '<tr>' +
-            '<td>' + product.productId + '</td>' +
+            '<td>' + filteredProducts[i].productId + '</td>' +
             '<td>' +
                 '<div class="product-image-container">' +
-                '<img src="' + product.img + '" alt="Sản phẩm"></div></td>' +
-            '<td>' + product.name + '</td>' +
-            '<td>' + product.brandId.toUpperCase() + '</td>' +
-            '<td>' + product.oldPrice + '</td>' +
+                '<img src="' + filteredProducts[i].img + '" alt="Sản phẩm"></div></td>' +
+            '<td>' + filteredProducts[i].name + '</td>' +
+            '<td>' + filteredProducts[i].brandId.toUpperCase() + '</td>' +
+            '<td>' + filteredProducts[i].oldPrice + '</td>' +
             '<td>' +
-                '<button class="detail-btn" data-index="' + product.productId + '">Chi tiết</button>' +
+                '<button class="detail-btn" data-index="' + i + '">Chi tiết</button>' +
             '</td>' +
             '<td>' +
-                '<button class="delete-btn" data-index="' + product.productId + '">Xóa</button>' +
-                '<button class="edit-btn" data-index="' + product.productId + '">Sửa</button>' +
+                '<button class="delete-btn" data-index="' + i + '">Xóa</button>' +
+                '<button class="edit-btn" data-index="' + i + '">Sửa</button>' +
             '</td>' +
         '</tr>';
         dem++;
@@ -390,7 +405,7 @@ function addProduct(event) {
     };
 
     // Thêm sản phẩm vào mảng và lưu vào localStorage
-    allProducts.unshift(newProduct);
+    allProducts.push(newProduct);
     localStorage.setItem('allProducts', JSON.stringify(allProducts));
     console.log('Mảng sản phẩm sau khi thêm:', allProducts);
 
@@ -403,8 +418,7 @@ function addProduct(event) {
     document.getElementById('img-preview').src = './img-prd/img-add2.png';
 }
 // Xóa sản phẩm
-function deleteProduct(productId) {
-    const productIndex = allProducts.findIndex(product => product.productId === productId);
+function deleteProduct(productIndex) {
     if (productIndex !== -1) {
         if (confirm('Bạn có muốn xóa sản phẩm này không?')) {
             // Xóa sản phẩm khỏi dữ liệu
@@ -438,17 +452,17 @@ function showChangeProductBox(productIndex) {
     document.getElementById('imgbefore').src = product.img;
     document.getElementById('imgafter').src = 'img-prd/add-img-phone.webp';
 
-    // Điền các thông tin khác
-    document.getElementById('edit-pb1').value = product.pb1;
-    document.getElementById('edit-pb2').value = product.pb2;
-    document.getElementById('edit-chip').value = product.chip;
-    document.getElementById('edit-pin').value = product.pin;
-    document.getElementById('edit-size').value = product.size;
-    document.getElementById('edit-f').value = product.f;
+    // // Điền các thông tin khác
+    // document.getElementById('edit-pb1').value = product.pb1;
+    // document.getElementById('edit-pb2').value = product.pb2;
+    // document.getElementById('edit-chip').value = product.chip;
+    // document.getElementById('edit-pin').value = product.pin;
+    // document.getElementById('edit-size').value = product.size;
+    // document.getElementById('edit-f').value = product.f;
 
     // Cập nhật sự kiện lưu
-    const saveButton = document.getElementById('save');
-    saveButton.onclick = () => saveProductChanges(productIndex);
+    const saveProductButton = document.getElementById('save-product');
+    saveProductButton.onclick = () => saveProductChanges(productIndex);
 }
 
 // Lưu thay đổi sản phẩm
@@ -468,32 +482,32 @@ function saveProductChanges(productIndex) {
     if (updatedImageInput.files && updatedImageInput.files[0]) {
         allProducts[productIndex].img = updatedImage;
     }
-    // Cập nhật các thuộc tính khác
-    const updatedPb1 = document.getElementById('edit-pb1').value.trim();
-    const updatedPb2 = document.getElementById('edit-pb2').value.trim();
-    const updatedChip = document.getElementById('edit-chip').value.trim();
-    const updatedPin = document.getElementById('edit-pin').value.trim();
-    const updatedSize = document.getElementById('edit-size').value.trim();
-    const updatedF = document.getElementById('edit-f').value.trim();
+    // // Cập nhật các thuộc tính khác
+    // const updatedPb1 = document.getElementById('edit-pb1').value.trim();
+    // const updatedPb2 = document.getElementById('edit-pb2').value.trim();
+    // const updatedChip = document.getElementById('edit-chip').value.trim();
+    // const updatedPin = document.getElementById('edit-pin').value.trim();
+    // const updatedSize = document.getElementById('edit-size').value.trim();
+    // const updatedF = document.getElementById('edit-f').value.trim();
 
-    allProducts[productIndex].pb1 = updatedPb1;
-    allProducts[productIndex].pb2 = updatedPb2;
-    allProducts[productIndex].chip = updatedChip;
-    allProducts[productIndex].pin = updatedPin;
-    allProducts[productIndex].size = updatedSize;
-    allProducts[productIndex].f = updatedF;
+    // allProducts[productIndex].pb1 = updatedPb1;
+    // allProducts[productIndex].pb2 = updatedPb2;
+    // allProducts[productIndex].chip = updatedChip;
+    // allProducts[productIndex].pin = updatedPin;
+    // allProducts[productIndex].size = updatedSize;
+    // allProducts[productIndex].f = updatedF;
 
     // Kiểm tra thông tin cập nhật
     if (
         !allProducts[productIndex].brandId ||
         !allProducts[productIndex].name ||
-        !allProducts[productIndex].oldPrice ||
-        !allProducts[productIndex].pb1 ||
-        !allProducts[productIndex].pb2 ||
-        !allProducts[productIndex].chip ||
-        !allProducts[productIndex].pin ||
-        !allProducts[productIndex].size ||
-        !allProducts[productIndex].f
+        !allProducts[productIndex].oldPrice //||
+        // !allProducts[productIndex].pb1 ||
+        // !allProducts[productIndex].pb2 ||
+        // !allProducts[productIndex].chip ||
+        // !allProducts[productIndex].pin ||
+        // !allProducts[productIndex].size ||
+        // !allProducts[productIndex].f
     ) {
         customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
         return false;
@@ -594,7 +608,7 @@ function addPasswordToggleListeners() {
 }
 
 function displayCustomerPage(page) {
-    var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Email</th><th>Địa chỉ</th><th>Hành động</th></tr>';
+    var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
     var dem = 0;
     var start = (page - 1) * itemsPerPageCustomer;
     var end = start + itemsPerPageCustomer;
@@ -605,15 +619,9 @@ function displayCustomerPage(page) {
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
-            '<td>' + customer.email + '</td>' +
             '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
-            '<td class="action-customer">' +
-                '<div class="action-customer__left">' +
-                    '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' +
-                    '<button class="add-customer-btn"' + (customer.locked ? ' disabled' : '') + '>Thêm</button>' +
-                '</div>' +
-                '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +
-            '</td>' +
+            '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
+            '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
         '</tr>';
         dem++;
         if (dem == itemsPerPageCustomer) {

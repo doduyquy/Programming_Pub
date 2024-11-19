@@ -330,6 +330,29 @@ body {
 /* END CUSTOMER */
 /* END MAIN__DASHBOARD */
 
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1000;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.custom-alert-success {
+    background-color: #4caf50; /* Màu xanh lá cây cho thông báo thành công */
+}
+
+.custom-alert-warning {
+    background-color: #ff9800; /* Màu cam cho thông báo cảnh báo */
+}
+
+.custom-alert-error {
+    background-color: #f44336; /* Màu đỏ cho thông báo lỗi */
+}
 
 /* MAIN__PRODUCTS*/
 #container {
@@ -393,7 +416,7 @@ body {
 }
 
 /*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
-#container #leftsection #table_list .table-content .edit-btn, .detail-btn, .add-customer-btn{
+#container #leftsection #table_list .table-content .edit-btn, .detail-btn{
     background-color: var(--blue);
     color: #fff;
     border: none;
@@ -434,7 +457,7 @@ body {
     border: 1px solid var(--blue);
 }
 /*css cho nút XÓA sản phẩm ở DS SẢN PHẨM và XÓA-clear toàn bộ thông tin nhập ở THÊM SẢN PHẨM*/
-#main__products #container .delete-btn {
+#container .delete-btn {
     background-color: #d9534f;
     color: #fff;
     padding: 5px 10px;
@@ -645,7 +668,7 @@ body {
     width: 100%;
 }
 
-#modal-changeproduct #changeproduct #save {
+.modal .save {
     margin-top: 20px;
     padding: 10px;
     background-color: #ff7f50;
@@ -666,7 +689,7 @@ body {
     
     display: flex;
     flex-direction: row; /* Đặt các phần tử con theo chiều ngang */
-    gap: 20px; /* Khoảng cách giữa hình ảnh và thông tin */
+    gap: 20px;
     background-color: #fff;
     animation: topdown 0.5s;
 }
@@ -714,24 +737,6 @@ body {
 
 /* MAIN__CUSTOMERS*/
 
-
-#main__customers #container #leftsection {
-    width: 100%;
-    padding: 20px 20px 10px 20px;
-}
-
-.action-customer{
-    display: flex;
-    align-items: center;
-    width: auto;
-    gap: 5px;
-    
-}
-.action-customer__left{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
 .key-customer-btn {
     width: 100px;
     height: 60px;
@@ -770,8 +775,7 @@ body {
 .locked {
     pointer-events: none; /* Ngăn không cho các nút khác được nhấn */
 }
-.locked .edit-btn,
-.locked .add-customer-btn {
+.locked .edit-btn{
     opacity: 0.5;
 }
 
@@ -794,46 +798,25 @@ body {
     animation: topdown 0.5s;
 }
 
-#modal1 #changeproduct .image img {
-    height: 200px;
-    width: 200px;
-    border-radius: 10px;
-    border:  1px solid #000;
-    padding: 20px;
-    margin: 0px 20px;
-}
-
-#modal1 #changeproduct .info {
+#modal-changecustomer #changecustomer .info-customer {
     width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
 }
 
-#modal1 #changeproduct .info label {
+#modal-changecustomer #changecustomer .info-customer label {
     font-weight: bold;
     margin-top: 10px;
 }
 
-#modal1 #changeproduct .info input[type="text"],
-#modal1 #changeproduct .info input[type="file"] {
+#modal-changecustomer #changecustomer .info-customer input[type="text"],
+#modal-changecustomer #changecustomer .info-customer input[type="file"] {
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
     width: 100%;
-}
-
-#modal1 #changeproduct #save {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #ff7f50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
 }
 
 /* END POP-UP SỬA SẢN PHẨM */
