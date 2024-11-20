@@ -7,8 +7,8 @@
  *  -
  */
 class Address {
-    city = '';           // Thành phố
-    district = '';       // Quận *
+    city = '';           // String: Thành phố
+    district = '';       // Number: Quận *
     ward = '';           // Phường
     numberAndRoad = '';  // Số nhà và tên đường
 
@@ -83,11 +83,11 @@ class Customer {
 
 /* MẢNG KHÁCH HÀNG */
 const AllCustomerArray = [
-    new Customer("user1", "pass1111111111", "1000000001", "user1@example.com", new Address("City1", "District1", "Ward1", "1 Road A"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
-    new Customer("user2", "pass2", "1000000002", "user2@example.com", new Address("City2", "District2", "Ward2", "2 Road B"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
-    new Customer("user3", "pass3", "1000000003", "user3@example.com", new Address("City3", "District3", "Ward3", "3 Road C"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
-    // new Customer("user4", "pass4", "1000000004", "user4@example.com", new Address("City4", "District4", "Ward4", "4 Road D"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
-    // new Customer("user5", "pass5", "1000000005", "user5@example.com", new Address("City5", "District5", "Ward5", "5 Road E"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user1", "pass1111", "1000000001", "user1@example.com", new Address("City1", "8", "Ward1", "1 Road A"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user2", "pass2", "1000000002", "user2@example.com", new Address("City2", "5", "Ward2", "2 Road B"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user3", "pass3", "1000000003", "user3@example.com", new Address("City3", "Bình Thạnh", "Ward3", "3 Road C"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user4", "pass4", "1000000004", "user4@example.com", new Address("City4", "Tân Phú", "Ward4", "4 Road D"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user5", "pass5", "1000000005", "user5@example.com", new Address("City5", "Tân Bình", "Ward5", "5 Road E"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user6", "pass6", "1000000006", "user6@example.com", new Address("City6", "District6", "Ward6", "6 Road F"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user7", "pass7", "1000000007", "user7@example.com", new Address("City7", "District7", "Ward7", "7 Road G"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user8", "pass8", "1000000008", "user8@example.com", new Address("City8", "District8", "Ward8", "8 Road H"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
@@ -126,6 +126,7 @@ const AllCustomerArray = [
 ];
 // Load mảng lên từ localStorage hoặc sử dụng AllCustomerArray
 export let customerArray = JSON.parse(localStorage.getItem('customerArray')) || AllCustomerArray;
+console.log(customerArray);
 // console.log(customerArray);
 // Nếu customerArray chưa được tạo:
 // if(!customerArray){

@@ -1,6 +1,6 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
-import {orderArray, filterOrdersBetweenTwoDate, filterOrderByStatus, addOrderToArray, saveOrderArrayToStorage, addTestOrderToArray} from '../common/data/orderArray.js';
+import {orderArray, filterOrdersBetweenTwoDate, filterOrderByStatus, addOrderToArray, saveOrderArrayToStorage, addTestOrderToArray, sortOrderByDistrict} from '../common/data/orderArray.js';
 
 
 localStorage.removeItem('productArray');
@@ -777,14 +777,13 @@ function displayOrdersTable(orderArray){
 
         const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
-        // const formattedAddress = `${address.numberAndRoad}, ${address.ward}, ${address.district}, ${address.city}`;
-        console.log(order.customerId);
+        const formattedAddress = `${matchingCustomer.address.numberAndRoad}, Phường ${matchingCustomer.address.ward}, Quận ${matchingCustomer.address.district}, TP ${matchingCustomer.address.city}`;
         tableHTML += `
                     <tr>
                         <td>${matchingCustomer.username}</td>
                         <td>${matchingCustomer.phone}</td>
                         <td>${formattedDate}</td>
-                        <td>Address</td>    
+                        <td>${formattedAddress}</td>    
                         <td>
                             <button class="detail-btn" onclick="">Chi tiết</button>
                         </td>
@@ -869,11 +868,17 @@ function displayOrderByStatus(){
 }
 displayOrderByStatus();
 
-
-
-
-
-
+/** FUNC: sort order array theo quận (tạo ra một orderArray mới):
+ * 1. Số nhỏ -> số lớn
+ * 2. Alphabet
+ */
+function displaySortOrderArrayByDistrict(){
+    // console.log(sortOrderByDistrict());
+    document.getElementById('order_sort-by-district').addEventListener('click',(event) => {
+        displayOrdersTable(sortOrderByDistrict());
+    });
+}
+displaySortOrderArrayByDistrict();
 
 
 

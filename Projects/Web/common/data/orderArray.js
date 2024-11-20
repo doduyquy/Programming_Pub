@@ -1,3 +1,6 @@
+import {customerArray} from './customerArray.js';
+
+
 /** ORDER CLASS: đối tượng hóa đơn, sau khi user chọn product trong cart và thanh toán. */
 class Order {
     customerId = undefined;
@@ -133,14 +136,49 @@ export function filterOrderByStatus(status){
     return filterStatusArray;
 }
 
+/** FUNC: trả về một order array mới với các quận được sắp xếp:
+ * 1. Số nhỏ -> số lớn
+ * 2. Alphabet
+ */
+export function sortOrderByDistrict(){
+    return orderArray.slice().sort((orderA, orderB) => {
+        const districtA = getDistrictByCustomerId(orderA.customerId);
+        const districtB = getDistrictByCustomerId(orderB.customerId);
+        return compareDistrict(districtA, districtB);
+    });
+}
 
-
+function compareDistrict(districtA, districtB){
+    // Kiểm tra xem 2 district có phải là số ?
+    // "8" -> 8 (Number) -> isNaN: false -> !isNaN: true
+    // "Binh Thanh" -> (string) -> isNaN: true -> !isNaN: false
+    const isNumberA = !isNaN(districtA);
+    const isNumberB =  !isNaN(districtB);
+    
+    // Nếu cả 2 đều là số:
+    if(isNumberA && isNumberB){
+        return Number(districtA) - Number(districtB); 
+    } else if(isNumberA){   // districtA là số: A trước
+        return -1;
+    } else if (isNumberB){  // districtB là số: B trước
+        return 1;
+    } else {                // Cả 2 đều là chữ:
+        // localeCompare: so sánh chuỗi theo alphabet
+        return districtA.localeCompare(districtB);
+    }
+}
+function getDistrictByCustomerId(customerId){
+    const matchingCustomer = customerArray.find(customer => customerId === customer.username);
+    return matchingCustomer.address.getDistrict();
+}
 
 
 export function addTestOrderToArray(){
     addOrderToArray('user1', [], new Date('2024-02-10'));
-    // addOrderToArray('user1', [], new Date('2024-05-10'));
-    addOrderToArray('user2', [], new Date('2024-07-20'));
+    addOrderToArray('user2', [], new Date('2024-05-10'));
+    addOrderToArray('user3', [], new Date('2024-07-20'));
+    addOrderToArray('user4', [], new Date('2024-07-25'));
+    addOrderToArray('user5', [], new Date('2024-10-01'));
 }
 
 /** CÁC TÍNH NĂNG BÊN PHÍA ADMIN: 
