@@ -217,7 +217,7 @@ function displayProductPage(page) {
     });
 
     // Thêm event listeners cho các nút xóa
-    document.querySelectorAll('.delete-btn').forEach(button => {
+    document.querySelectorAll('#table_list .delete-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productIndex = parseInt(this.getAttribute('data-index'));
             deleteProduct(productIndex);
@@ -416,6 +416,11 @@ function addProduct(event) {
     // Reset form và ảnh xem trước
     document.querySelector('.subsection form').reset();
     document.getElementById('img-preview').src = './img-prd/img-add2.png';
+
+    // Add event listener to reset button in the form
+    document.getElementById('add-product-form').addEventListener('reset', function() {
+    document.getElementById('img-preview').src = './img-prd/img-add2.png';
+});
 }
 // Xóa sản phẩm
 function deleteProduct(productIndex) {
@@ -684,7 +689,6 @@ function showChangeCustomerBox(customerIndex) {
     document.getElementById('edit-username').value = customer.username;
     document.getElementById('edit-password').value = customer.password;
     document.getElementById('edit-phone').value = customer.phone;
-    document.getElementById('edit-email').value = customer.email;
     document.getElementById('edit-address').value = `${customer.address.numberAndRoad}, ${customer.address.ward}, ${customer.address.district}, ${customer.address.city}`;
 
     // Cập nhật sự kiện lưu
@@ -696,7 +700,6 @@ function saveCustomerChanges(customerIndex) {
     const updatedUsername = document.getElementById('edit-username').value.trim();
     const updatedPassword = document.getElementById('edit-password').value.trim();
     const updatedPhone = document.getElementById('edit-phone').value.trim();
-    const updatedEmail = document.getElementById('edit-email').value.trim();
     const updatedAddress = document.getElementById('edit-address').value.trim();
 
     // Cập nhật thông tin khách hàng trong mảng
