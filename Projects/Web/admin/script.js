@@ -1,9 +1,9 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
-import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray } from '../common/data/orderArray.js'; 
+import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray } from '../common/data/orderArray.js'; 
 
 localStorage.removeItem('productArray');
-localStorage.removeItem('customerArray')
+// localStorage.removeItem('customerArray')
 
 
 // SIDEBAR 
@@ -916,7 +916,7 @@ function displayStatisticsPage(page) {
 /* MAIN_ORDERS */
 
 // Add test order to order array:
-addTestOrderToArray();
+// addTestOrderToArray();
 
 /** Tìm khách hàng theo username */
 function findCustomerByUsername(username) {
@@ -937,13 +937,13 @@ function displayOrdersTable(orderArray){
 
         const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
-        const formattedAddress = `${matchingCustomer.address.numberAndRoad}, Phường ${matchingCustomer.address.ward}, Quận ${matchingCustomer.address.district}, TP ${matchingCustomer.address.city}`;
+        // const formattedAddress = `${matchingCustomer.address.numberAndRoad}, Phường ${matchingCustomer.address.ward}, Quận ${matchingCustomer.address.district}, TP ${matchingCustomer.address.city}`;
         tableHTML += `
                     <tr>
                         <td>${matchingCustomer.username}</td>
                         <td>${matchingCustomer.phone}</td>
                         <td>${formattedDate}</td>
-                        <td>${formattedAddress}</td>    
+                        <td>Address</td>    
                         <td>
                             <button class="detail-btn" onclick="">Chi tiết</button>
                         </td>
@@ -1059,8 +1059,17 @@ resetOrderFilter();
 
 
 
-
-
+/** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
+ * 1. Tên sản phẩm
+ * 2. Số lượng đã bán 
+ * 3. Tổng doanh thu
+ */
+function displayStatisticsProduct(){
+    const statisticsProductArray = createStatisticsProductArray();
+    console.log('Thống kê sản phẩm: ');
+    console.log(statisticsProductArray);
+}
+displayStatisticsProduct();
 
 
 

@@ -173,6 +173,46 @@ function getDistrictByCustomerId(customerId){
 }
 
 
+/** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
+ * 1. Tên sản phẩm
+ * 2. Số lượng đã bán 
+ * 3. Tổng doanh thu
+ */
+export function createStatisticsProductArray(){
+    const statisticsProductArray = [
+        {
+            name: undefined,
+            quantity: undefined,
+            price: undefined,
+        }
+    ];
+    // Duyệt qua từng order trong orderArray
+    orderArray.forEach((order) => {
+        //  Trong mỗi order, duyệt từng item trong checkoutCart
+        order.checkoutCart.forEach((item) => {
+            // Tìm trong staArray đã có item.name chưa?
+            const matchingProduct = statisticsProductArray.find((product) => product.name === item.name);
+            // Nếu sản phẩm đã có trong staArray thì tăng quantity và totalRevenue
+            if(matchingProduct){   
+                matchingProduct.quantity += item.quantity;
+            } else {    // Nếu chưa có thì thêm vào.
+                statisticsProductArray.push(
+                    {
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                    }
+                );
+            }
+        });
+    });
+    return statisticsProductArray;
+}
+
+
+
+
+
 export function addTestOrderToArray(){
     addOrderToArray('user1', [], new Date('2024-02-10'));
     addOrderToArray('user2', [], new Date('2024-05-10'));
