@@ -1,6 +1,10 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
+import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray } from '../common/data/orderArray.js'; 
+
 localStorage.removeItem('productArray');
+
+
 // SIDEBAR 
 function updateContentWidth() {
     const sidebar = document.getElementById('sidebar');
@@ -1072,6 +1076,9 @@ window.showChangeCustomerBox = showChangeCustomerBox;
 window.closeChangeCustomerBox = closeChangeCustomerBox;
 window.saveProductChanges = saveProductChanges;
 
+window.displayOrdersTable = displayOrdersTable;
+window.handleStatusChange = handleStatusChange;
+window.displayOrderByStatus = displayOrderByStatus;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;
