@@ -404,8 +404,17 @@ document.addEventListener('DOMContentLoaded', () => {
         addProductForm.addEventListener('submit', addProduct); 
     }
 
-    // Hiển thị trang khách hàng
-    displayCustomerPage(currentCustomerPage);
+    // Kiểm tra nếu customerArray rỗng thì tải từ localStorage
+    if (customerArray.length === 0) {
+        alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
+    } else {
+        displayCustomerPage(currentCustomerPage);
+    }
+    // Thêm sự kiện submit cho form thêm khách hàng
+    const addCustomerForm = document.getElementById('add-customer-form'); 
+    if (addCustomerForm) { 
+        addCustomerForm.addEventListener('submit', addCustomer); 
+    }
 });
 
 function addProduct(event) {
@@ -679,7 +688,7 @@ function displayCustomerPage(page) {
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
-            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
+            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', Quận ' + customer.address.district + ', ' + customer.address.city + '</td>' +
             '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
             '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
         '</tr>';
@@ -733,14 +742,97 @@ function toggleCustomerLock(customerIndex) {
     // Cập nhật lại bảng khách hàng
     displayCustomerPage(currentCustomerPage);
 }
+// Hàm kiểm tra username đã tồn tại chưa
+function checkExistedUsername(username) {
+    for (let customer of customerArray) {
+        if (customer.username === username) {
+            return true; // Username đã tồn tại
+        }
+    }
+    return false; // Username chưa tồn tại
+}
 
+function addCustomer(event) {
+    event.preventDefault(); // Ngăn form tự submit
+
+    // Lấy mảng khách hàng từ localStorage
+    console.log('Mảng khách hàng trước khi thêm:', customerArray);
+
+    // Lấy giá trị từ các trường nhập liệu
+    const username = document.getElementById('new-customer-name').value.trim();
+    const password = document.getElementById('new-customer-password').value.trim();
+    const phone = document.getElementById('new-customer-phone').value.trim();
+    const addressInput = document.getElementById('new-customer-address').value.trim();
+
+    // Kiểm tra thông tin nhập vào
+    if (!username || !password || !phone || !addressInput) {
+        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        return false;
+    }
+
+    // Kiểm tra xem username đã tồn tại chưa
+    if (checkExistedUsername(username)) {
+        customAlert('Tên tài khoản đã tồn tại', 'warning');
+        return false;
+    }
+
+    
+    // Tách địa chỉ thành các phần
+    const addressParts = addressInput.split(',').map(part => part.trim());
+    
+    // Kiểm tra xem địa chỉ có đủ 4 phần không
+    if (addressParts.length < 4) {
+        customAlert('Địa chỉ không đầy đủ. Vui lòng nhập theo định dạng: "Số nhà và đường, Phường, Quận, Thành phố"', 'warning');
+        return false;
+    }
+
+    const numberAndRoad = addressParts[0] || '';
+    const ward = addressParts[1] || '';
+    let district = addressParts[2] || '';
+    district = district.replace(/quận\s*/i, '');
+    const city = addressParts[3] || '';
+
+    if (!numberAndRoad || !ward || !district || !city) {
+        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường, Phường, Quận, Thành phố', 'warning');
+        return false;
+    }
+    // Tạo đối tượng khách hàng mới
+    const newCustomer = {
+        username: username,
+        password: password,
+        phone: phone,
+        address: {
+            city: city,
+            district: district,
+            ward: ward,
+            numberAndRoad: numberAndRoad
+        },
+        locked: false // Trạng thái hoạt động
+    };
+
+    // Thêm khách hàng vào mảng và lưu vào localStorage
+    customerArray.push(newCustomer);
+    localStorage.setItem('customerArray', JSON.stringify(customerArray));
+    console.log('Mảng khách hàng sau khi thêm:', customerArray);
+
+    // Cập nhật danh sách khách hàng và thông báo thành công
+    displayCustomerPage(currentCustomerPage);
+    customAlert('Thêm khách hàng thành công', 'success');
+
+    // Reset form
+    document.querySelector('#add-customer-form').reset();
+}
 function showChangeCustomerBox(customerIndex) {
+    // Hiển thị modal
     const modal = document.getElementById('modal-changecustomer');
     if (modal) {
         modal.style.display = 'flex';
     }
 
+    // Lấy thông tin sản phẩm
     const customer = customerArray[customerIndex];
+
+    // Điền thông tin vào modal
     document.getElementById('edit-username').value = customer.username;
     document.getElementById('edit-password').value = customer.password;
     document.getElementById('edit-phone').value = customer.phone;
@@ -751,6 +843,7 @@ function showChangeCustomerBox(customerIndex) {
     saveCustomerButton.onclick = () => saveCustomerChanges(customerIndex);
 }
 
+// Lưu thay đổi sản phẩm
 function saveCustomerChanges(customerIndex) {
     const updatedUsername = document.getElementById('edit-username').value.trim();
     const updatedPassword = document.getElementById('edit-password').value.trim();
@@ -761,7 +854,7 @@ function saveCustomerChanges(customerIndex) {
     customerArray[customerIndex].username = updatedUsername;
     customerArray[customerIndex].password = updatedPassword;
     customerArray[customerIndex].phone = updatedPhone;
-    customerArray[customerIndex].email = updatedEmail;
+
     const addressParts = updatedAddress.split(',').map(part => part.trim());
     customerArray[customerIndex].address = {
         numberAndRoad: addressParts[0] || '',
@@ -775,7 +868,6 @@ function saveCustomerChanges(customerIndex) {
         !customerArray[customerIndex].username ||
         !customerArray[customerIndex].password ||
         !customerArray[customerIndex].phone ||
-        !customerArray[customerIndex].email ||
         !customerArray[customerIndex].address.numberAndRoad ||
         !customerArray[customerIndex].address.ward ||
         !customerArray[customerIndex].address.district ||
@@ -823,9 +915,8 @@ window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;
 window.previewImage = previewImage;
-
+window.showChangeCustomerBox = showChangeCustomerBox;
 window.closeChangeCustomerBox = closeChangeCustomerBox;
-
 window.saveProductChanges = saveProductChanges;
 
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
