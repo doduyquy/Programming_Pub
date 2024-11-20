@@ -762,7 +762,7 @@ addTestOrderToArray();
 function findCustomerByUsername(username) {
     return customerArray.find((customer) => customer.username === username);
 }
-function displayOrdersTable(){
+function displayOrdersTable(orderArray){
     let tableHTML = `
                         <tr>
                             <th>Khách hàng</th>
@@ -802,11 +802,16 @@ function displayOrdersTable(){
     // console.log(tableHTML);
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
 }
-displayOrdersTable();
+displayOrdersTable(orderArray);
 
 
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */
 // Lọc sản phẩm theo Date
+// Kiểm tra 2 input Date hợp lệ: ngày dateStart phải trước dateEnd
+//...
+//------------------------
+
+// Hiển thị bảng order table với các đơn hàng ở giữa 2 ngày được nhập
 function displayOrdersByDate() {
     const dateStartElem = document.getElementById('order__date-start');
     const dateEndElem = document.getElementById('order__date-end');
@@ -818,11 +823,13 @@ function displayOrdersByDate() {
         dateStart = new Date(dateStartElem.value);
         dateEnd = new Date(dateEndElem.value);
         
-        console.log(dateStart);
-        console.log(dateEnd);
-        const filterArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+        // Mảng các order trong 2 date đã chọn
+        const filterOrderArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+        // Hiển thị bảng:
+        displayOrdersTable(filterOrderArray);
 
-        console.log(filterArray);
+        console.log("Filter table: ");
+        console.log(filterOrderArray);
     });
 }
 
