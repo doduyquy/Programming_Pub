@@ -1,5 +1,8 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
+import {orderArray, filterOrdersBetweenTwoDate, filterOrderByStatus, addOrderToArray, saveOrderArrayToStorage, addTestOrderToArray, sortOrderByDistrict} from '../common/data/orderArray.js';
+
+
 localStorage.removeItem('productArray');
 // SIDEBAR 
 function updateContentWidth() {
@@ -750,6 +753,138 @@ function closeChangeCustomerBox() {
         modal.style.display = 'none';
     }
 }
+/* MAIN_CUSTOMERS */
+
+
+/* MAIN_ORDERS */
+
+// Add test order to order array:
+addTestOrderToArray();
+
+/** Tìm khách hàng theo username */
+function findCustomerByUsername(username) {
+    return customerArray.find((customer) => customer.username === username);
+}
+function displayOrdersTable(orderArray){
+    let tableHTML = `
+                        <tr>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời điểm đặt hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Chi tiết</th>
+                            <th>Tình trạng</th>
+                        </tr>
+                    `;
+    orderArray.forEach((order, index) => {
+
+        const matchingCustomer = findCustomerByUsername(order.customerId);
+        const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+        const formattedAddress = `${matchingCustomer.address.numberAndRoad}, Phường ${matchingCustomer.address.ward}, Quận ${matchingCustomer.address.district}, TP ${matchingCustomer.address.city}`;
+        tableHTML += `
+                    <tr>
+                        <td>${matchingCustomer.username}</td>
+                        <td>${matchingCustomer.phone}</td>
+                        <td>${formattedDate}</td>
+                        <td>${formattedAddress}</td>    
+                        <td>
+                            <button class="detail-btn" onclick="">Chi tiết</button>
+                        </td>
+                        <td>
+                            <!-- index tại từng order để lấy ra từng order tương ứng khi onchange -->
+                            <select id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
+                                <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
+                                <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
+                                <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
+                                <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
+                            </select>
+                        </td>
+                    </tr> 
+        `;
+    });
+    // console.log(tableHTML);
+    document.getElementById('orders-table-content__body').innerHTML = tableHTML;
+}
+displayOrdersTable(orderArray);
+
+
+/* CÁC TÍNH NĂNG Ở BỘ LỌC */
+// Lọc sản phẩm theo Date
+// Kiểm tra 2 input Date hợp lệ: ngày dateStart phải trước dateEnd
+//...
+//------------------------
+
+/** FUNC: Hiển thị bảng order table với các đơn hàng ở giữa 2 ngày được nhập */
+function displayOrdersByDate() {
+    const dateStartElem = document.getElementById('order__date-start');
+    const dateEndElem = document.getElementById('order__date-end');
+    const dateForm = document.getElementById('filter-date-form')
+    let dateStart;
+    let dateEnd;
+    dateForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Ngăn hành động default: reload page
+        dateStart = new Date(dateStartElem.value);
+        dateEnd = new Date(dateEndElem.value);
+        
+        // Mảng các order trong 2 date đã chọn
+        const filterOrderArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+        // Hiển thị bảng:
+        displayOrdersTable(filterOrderArray);
+
+        console.log("Filter table: ");
+        console.log(filterOrderArray);
+    });
+}
+
+// Gọi hàm để khởi tạo sự kiện
+displayOrdersByDate();
+
+/** FUNC: thay đổi status của từng order */
+function handleStatusChange(orderIndex, newStatus){
+    console.log("New status: " + newStatus);
+    // Lấy ra order tương ứng cần thay đổi status
+    const order = orderArray[orderIndex];
+    if(order){
+        // Lưu trạng thái ban đầu của dropdown (select)
+        const previousStatus = order.status;
+        // Kiểm tra thay đổi có thành công?
+        const isChange = order.changeOrderStatus(newStatus);
+        if(false === isChange){      // Thay đổi status failed 
+            // Giữ nguyên status chũ cho dropdown (select)
+            document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
+        }
+    } else {    // Không tồn tại order tương ứng
+        console.log("Error: không tìm thấy order(index) để thay đổi status");
+    }
+}
+
+/** FUNC: hiển thị order table với status tương ứng.  */
+function displayOrderByStatus(){
+    const status = document.getElementById('filter__status-selection').value;
+    if('ALL' === status){
+        // Hiển thị lại toàn bộ orderArray:
+        displayOrdersTable(orderArray);
+    } else {    
+        // Hiển thị orderArray với status tương ứng:
+        displayOrdersTable(filterOrderByStatus(status));
+    }
+}
+displayOrderByStatus();
+
+/** FUNC: sort order array theo quận (tạo ra một orderArray mới):
+ * 1. Số nhỏ -> số lớn
+ * 2. Alphabet
+ */
+function displaySortOrderArrayByDistrict(){
+    // console.log(sortOrderByDistrict());
+    document.getElementById('order_sort-by-district').addEventListener('click',(event) => {
+        displayOrdersTable(sortOrderByDistrict());
+    });
+}
+displaySortOrderArrayByDistrict();
+
+
+
 
 window.showDetailProductBox = showProductDetails;
 window.closeDetailProductBox = closeDetailProductBox;
@@ -757,11 +892,10 @@ window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;
 window.previewImage = previewImage;
-
 window.closeChangeCustomerBox = closeChangeCustomerBox;
-
 window.saveProductChanges = saveProductChanges;
-
+window.handleStatusChange = handleStatusChange;
+window.displayOrderByStatus = displayOrderByStatus;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;

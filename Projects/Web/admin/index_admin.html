@@ -426,69 +426,54 @@
                         <div id="leftsection">
                             <div id="table_list">
                                 <table class="table-content">
-                                    <thead class="product-header">
-                                        <tr>
-                                            <!-- <th>#ID</th> -->
+                                    <thead class="table-content__header">
+                                        <!-- <tr>
                                             <th>Khách hàng</th>
+                                            <th>Số điện thoại</th>
                                             <th>Thời điểm đặt hàng</th>
                                             <th>Địa chỉ</th>
                                             <th>Chi tiết</th>
                                             <th>Tình trạng</th>
-                                        </tr>
+                                        </tr> -->
                                     </thead>
-                                    <tbody>
+                                    <tbody id="orders-table-content__body">
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        <tr data-id="10042">
-                                            <td>Tên khách hàng</td>
-                                            <td>11/11/2024</td>
-                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
-                                            <td>
-                                                <button class="detail-btn" onclick="">Chi tiết</button>
-                                            </td>
-                                            <td>
-                                                <select name="order__status" id="order__status">
-                                                    <option value="unprocessed">Chưa xử lý</option>
-                                                    <option value="confirmed">Đã xác nhận</option>
-                                                    <option value="succeeded">Thành công</option>
-                                                    <option value="failed">Thất bại</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                         <div id="rightsection">
                             <div class="filter-section">
-                                <h2 class="main-title">Bộ lọc</h2>
-                                
-                                <div class="filter-group">
-                                    <h3 class="filter-title">Thời gian</h3>
-                                    <div class="date-group">
-                                        <label class="date-label" for="time-start">Từ ngày</label>
-                                        <input type="date" id="time-start" class="date-input">
+                                <h2 class="main-title">LỌC ĐƠN HÀNG</h2>
+                                <form id="filter-date-form">
+                                    <div class="filter-group">
+                                        <h3 class="filter-title">Thời gian</h3>
+                                        <div class="date-group">
+                                            <label class="date-label" for="date-start">Từ ngày</label>
+                                            <input type="date" id="order__date-start" class="date-input" required>
+                                        </div>
+                                        <div class="date-group">
+                                            <label class="date-label" for="date-end">Đến ngày</label>
+                                            <input type="date" id="order__date-end" class="date-input" required>
+                                        </div>
+                                        <button type="submit" id="filter__date-btn">Lọc</button>
                                     </div>
-                                    <div class="date-group">
-                                        <label class="date-label" for="time-end">Đến ngày</label>
-                                        <input type="date" id="time-end" class="date-input">
-                                    </div>
-                                </div>
+                                </form>
                                 
                                 <div class="filter-group">
                                     <h3 class="filter-title">Tình trạng</h3>
-                                    <select class="status-select">
-                                        <option value="all">All</option>
-                                        <option value="unprocessed">Chưa xử lý</option>
-                                        <option value="confirmed">Đã xác nhận</option>
-                                        <option value="succeeded">Thành công</option>
-                                        <option value="failed">Thất bại</option>
+                                    <select id="filter__status-selection" onchange="displayOrderByStatus()">
+                                        <option value="ALL">All</option>
+                                        <option value="UNPROCESSED">Chưa xử lý</option>
+                                        <option value="CONFIRMED">Đã xác nhận</option>
+                                        <option value="SUCCEEDED">Thành công</option>
+                                        <option value="FAILED">Thất bại</option>
                                     </select>
                                 </div>
                                 
                                 <div class="filter-group">
-                                    <button type="button" class="btn">Sắp xếp theo quận</button>
-                                    <button type="button" class="btn reset-btn">Reset</button>
+                                    <button type="button" class="btn" id="order_sort-by-district">Sắp xếp theo quận</button>
+                                    <button type="button" class="btn reset-btn">Reset bộ lọc</button>
                                 </div>
                             </div>
                         </div>
