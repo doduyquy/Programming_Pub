@@ -131,22 +131,22 @@ let filteredProducts = [];
 // *** Bắt đầu thêm các biến phân trang cho Products và Customers ***
 // Phân trang cho Products với 8 sản phẩm mỗi trang
 let currentProductPage = 1;
-let totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct)
+let totalProductPages = 1;
 const itemsPerPageProduct = 8;
 
 // Phân trang cho Customers với 10 khách hàng mỗi trang
 let currentCustomerPage = 1;
-let totalCustomerPages = Math.ceil(customerArray.length / itemsPerPageCustomer);
+let totalCustomerPages = 1;
 const itemsPerPageCustomer = 10;
 
 // Phân trang cho Orders với 5 đơn hàng mỗi trang
 let currentOrderPage = 1;
-let totalOrderPages = Math.ceil(orderArray.length / itemsPerPageOrder);
+let totalOrderPages = 1;
 const itemsPerPageOrder = 5;
 
 // Phân trang cho Statistics với 10 thống kê mỗi trang
 let currentStatisticsPage = 1;
-let totalStatisticsPages = Math.ceil(statisticsArray.length / itemsPerPageStatistics);
+let totalStatisticsPages = 1;
 const itemsPerPageStatistics = 10;
 // *** Kết thúc thêm các biến phân trang ***
 
@@ -169,6 +169,9 @@ function filterProducts() {
 
         return nameMatches && brandMatches;
     });
+
+    // Tạo phân trang cho sản phẩm đã lọc
+    totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
 
     // Hiển thị trang đầu tiên của sản phẩm đã lọc
     currentProductPage = 1;
@@ -361,14 +364,22 @@ function updatePagination(type) { // Thêm tham số 'type'
     const paginationLinks = document.querySelectorAll(`#${paginationId} a`);
     paginationLinks.forEach(link => {
         link.classList.remove('active');
-        if (type === 'product' && pageNumber === currentProductPage) {
-            link.classList.add('active');
-        } else if (type === 'customer' && pageNumber === currentCustomerPage) {
-            link.classList.add('active');
-        } else if (type === 'order' && pageNumber === currentOrderPage) {
-            link.classList.add('active');
-        } else if (type === 'statistics' && pageNumber === currentStatisticsPage) {
-            link.classList.add('active');
+        if (type === 'product') {
+            if (parseInt(link.textContent) === currentProductPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'customer') {
+            if (parseInt(link.textContent) === currentCustomerPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'order') {
+            if (parseInt(link.textContent) === currentOrderPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'customer') {
+            if (parseInt(link.textContent) === currentCustomerPage) {
+                link.classList.add('active');
+            }
         }
     });
 }
@@ -382,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
     } else {
         filteredProducts = allProducts.slice();
+        totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
         createPagination(totalProductPages, 'product');
         displayProductPage(currentProductPage);
     }
@@ -678,6 +690,9 @@ function displayCustomerPage(page) {
     }
     document.getElementById('customer-table-content__body').innerHTML = s;
     updatePagination('customer');
+
+    // Tính toán tổng số trang cho Customers
+    totalCustomerPages = Math.ceil(customerArray.length / itemsPerPageCustomer);
     
     // Tạo phân trang cho khách hàng
     createPagination(totalCustomerPages, 'customer');
