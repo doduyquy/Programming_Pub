@@ -24,6 +24,7 @@ class Order {
     }
     // Admin thay đổi status của order: UNPROCESSED -> CONFIRMED | SUCCEEDED | FAILED
     changeOrderStatus(newStatus){
+        let isChange = false;
         switch (this.status) {
             case 'UNPROCESSED':
                 // Nếu chưa xử lí -> CONFIRMED | FAILED
@@ -33,6 +34,7 @@ class Order {
                     console.log('Failed: Đơn hàng chưa được xác nhận');
                 } else {
                     this.status = newStatus;
+                    isChange = true;
                 }
                 break;
             case 'CONFIRMED':
@@ -42,18 +44,28 @@ class Order {
                     console.log('Failed: Trạng thái không hợp lệ (Đơn hàng đã được xác nhận)');
                 } else {
                     this.status = newStatus;
+                    isChange = true;
                 }
                 break;
             /** Khi đã ở trạng thái SUCCEEDED | FAILED: trạng thái bị vô hiệu hóa. */
             case 'SUCCEEDED':
-                console.log('Failed: đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                alert('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             case 'FAILED':
-                console.log('Failed: :đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                alert('Failed: Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa');
+                console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             default:
                 break;
         }
+        if(isChange === true){
+            console.log("Success: thay đổi status thành: " + newStatus);
+            saveOrderArrayToStorage();
+        } else {
+            console.log("Failed: thay đổi status thất bại.");
+        }
+        return isChange;
     }
 }
 
@@ -64,14 +76,13 @@ export let orderArray = JSON.parse(localStorage.getItem('orderArray'));
 if (!orderArray) {
     orderArray = [];
 } else {
-    // Khi lưu Date obj vào local, tự chuyển đổi thành string, khi lấy lên và parse, không được chuyển đổi ngược lại Date obj
-    // => Chuyển đổi chuỗi date thành đối tượng Date
-    orderArray = orderArray.map(order => ({
-        // Toàn bộ property đều giữ nguyên
-        ...order,   
-        // Ngoại trừ [date]: thay đổi -> Date obj
-        date: new Date(order.date),
-    }));
+    // Khi lưu Order obj vào local, tự chuyển đổi thành string, khi lấy lên và parse, không được chuyển đổi ngược lại Order obj
+    // => Chuyển đổi string -> Order object
+    // Chuyển đổi từng đối tượng thành instance của Order
+    orderArray = orderArray.map(order => 
+        new Order(order.customerId, order.checkoutCart, new Date(order.date), order.status)
+    );
+
 }
 
 
@@ -100,18 +111,27 @@ function isBetweenTwoDate(checkDate, stDate, ndDate){
     return (firstDate <= currentDate && currentDate <= secondDate);
 }
 
-// Trả vê một order array với date nằm trong khoảng [stDate, ndDate]
+/* FUNC: Trả vê một order array với date nằm trong khoảng [stDate, ndDate] */
 export function filterOrdersBetweenTwoDate(stDate, ndDate){
-    const filterArray = [];
+    const filterDateArray = [];
     orderArray.forEach((order) => {
         if(true === isBetweenTwoDate(order.date, stDate, ndDate)){
-            filterArray.push(order);
+            filterDateArray.push(order);
         }
     });
-    return filterArray;
+    return filterDateArray;
 }
 
-
+/** FUNC: trả về một order array với status tương ứng */
+export function filterOrderByStatus(status){
+    const filterStatusArray = [];
+    orderArray.forEach((order) => {
+        if(status === order.status){
+            filterStatusArray.push(order);
+        }
+    });
+    return filterStatusArray;
+}
 
 
 

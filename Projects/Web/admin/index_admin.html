@@ -497,23 +497,6 @@
                                     </thead>
                                     <tbody id="orders-table-content__body">
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        <!-- <tr>
-                                            <td>Tên khách hàng</td>
-                                            <td>0123456789</td>
-                                            <td>11/11/2024</td>
-                                            <td>273 An Dương Vương, Phường 2, Quận 5</td>
-                                            <td>
-                                                <button class="detail-btn" onclick="">Chi tiết</button>
-                                            </td>
-                                            <td>
-                                                <select name="order__status" id="order__status">
-                                                    <option value="unprocessed">Chưa xử lý</option>
-                                                    <option value="confirmed">Đã xác nhận</option>
-                                                    <option value="succeeded">Thành công</option>
-                                                    <option value="failed">Thất bại</option>
-                                                </select>
-                                            </td>
-                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -532,18 +515,18 @@
                                             <label class="date-label" for="date-end">Đến ngày</label>
                                             <input type="date" id="order__date-end" class="date-input" required>
                                         </div>
-                                        <button type="submit" id="order__date-btn">Lọc</button>
+                                        <button type="submit" id="filter__date-btn">Lọc</button>
                                     </div>
                                 </form>
                                 
                                 <div class="filter-group">
                                     <h3 class="filter-title">Tình trạng</h3>
-                                    <select class="status-select">
-                                        <option value="all">All</option>
-                                        <option value="unprocessed">Chưa xử lý</option>
-                                        <option value="confirmed">Đã xác nhận</option>
-                                        <option value="succeeded">Thành công</option>
-                                        <option value="failed">Thất bại</option>
+                                    <select id="filter__status-selection" onchange="displayOrderByStatus()">
+                                        <option value="ALL">All</option>
+                                        <option value="UNPROCESSED">Chưa xử lý</option>
+                                        <option value="CONFIRMED">Đã xác nhận</option>
+                                        <option value="SUCCEEDED">Thành công</option>
+                                        <option value="FAILED">Thất bại</option>
                                     </select>
                                 </div>
                                 
