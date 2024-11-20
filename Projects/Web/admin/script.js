@@ -1,8 +1,5 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
-import {orderArray, filterOrdersBetweenTwoDate, filterOrderByStatus, addOrderToArray, saveOrderArrayToStorage, addTestOrderToArray, sortOrderByDistrict} from '../common/data/orderArray.js';
-
-
 localStorage.removeItem('productArray');
 // SIDEBAR 
 function updateContentWidth() {
@@ -132,13 +129,25 @@ function customAlert(message, type) {
 let filteredProducts = [];
 
 // *** Bắt đầu thêm các biến phân trang cho Products và Customers ***
+// Phân trang cho Products với 8 sản phẩm mỗi trang
 let currentProductPage = 1;
 let totalProductPages = 1;
 const itemsPerPageProduct = 8;
 
+// Phân trang cho Customers với 10 khách hàng mỗi trang
 let currentCustomerPage = 1;
 let totalCustomerPages = 1;
 const itemsPerPageCustomer = 10;
+
+// Phân trang cho Orders với 5 đơn hàng mỗi trang
+let currentOrderPage = 1;
+let totalOrderPages = 1;
+const itemsPerPageOrder = 5;
+
+// Phân trang cho Statistics với 10 thống kê mỗi trang
+let currentStatisticsPage = 1;
+let totalStatisticsPages = 1;
+const itemsPerPageStatistics = 10;
 // *** Kết thúc thêm các biến phân trang ***
 
 // Chức năng tìm kiếm sản phẩm
@@ -220,7 +229,7 @@ function displayProductPage(page) {
     });
 
     // Thêm event listeners cho các nút xóa
-    document.querySelectorAll('.delete-btn').forEach(button => {
+    document.querySelectorAll('#table_list .delete-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productIndex = parseInt(this.getAttribute('data-index'));
             deleteProduct(productIndex);
@@ -229,12 +238,16 @@ function displayProductPage(page) {
 }
 
 // Tạo nút phân trang
-function createPagination(totalPages, type) { // Thêm tham số 'type'
+function createPagination(totalPages, type) {
     let paginationId = '';
     if (type === 'product') {
         paginationId = 'pagination-products';
     } else if (type === 'customer') {
         paginationId = 'pagination-customers';
+    } else if (type === 'order') {
+        paginationId = 'pagination-orders';
+    } else if (type === 'statistics') {
+        paginationId = 'pagination-statistics';
     } else {
         paginationId = 'pagination';
     }
@@ -259,6 +272,14 @@ function createPagination(totalPages, type) { // Thêm tham số 'type'
             currentCustomerPage--;
             displayCustomerPage(currentCustomerPage);
             updatePagination('customer');
+        } else if (type === 'order' && currentOrderPage > 1) {
+            currentOrderPage--;
+            displayOrderPage(currentOrderPage);
+            updatePagination('order');
+        } else if (type === 'statistics' && currentStatisticsPage > 1) {
+            currentStatisticsPage--;
+            displayStatisticsPage(currentStatisticsPage);
+            updatePagination('statistics');
         }
     });
     pagination.appendChild(prevButton);
@@ -278,9 +299,22 @@ function createPagination(totalPages, type) { // Thêm tham số 'type'
                 currentCustomerPage = i;
                 displayCustomerPage(currentCustomerPage);
                 updatePagination('customer');
+            } else if (type === 'order') {
+                currentOrderPage = i;
+                displayOrderPage(currentOrderPage);
+                updatePagination('order');
+            } else if (type === 'statistics') {
+                currentStatisticsPage = i;
+                displayStatisticsPage(currentStatisticsPage);
+                updatePagination('statistics');
             }
         });
-        if ((type === 'product' && i === currentProductPage) || (type === 'customer' && i === currentCustomerPage)) {
+        if (
+            (type === 'product' && i === currentProductPage) ||
+            (type === 'customer' && i === currentCustomerPage) ||
+            (type === 'order' && i === currentOrderPage) ||
+            (type === 'statistics' && i === currentStatisticsPage)
+        ) {
             button.classList.add('active');
         }
         pagination.appendChild(button);
@@ -300,6 +334,14 @@ function createPagination(totalPages, type) { // Thêm tham số 'type'
             currentCustomerPage++;
             displayCustomerPage(currentCustomerPage);
             updatePagination('customer');
+        } else if (type === 'order' && currentOrderPage < totalOrderPages) {
+            currentOrderPage++;
+            displayOrderPage(currentOrderPage);
+            updatePagination('order');
+        } else if (type === 'statistics' && currentStatisticsPage < totalStatisticsPages) {
+            currentStatisticsPage++;
+            displayStatisticsPage(currentStatisticsPage);
+            updatePagination('statistics');
         }
     });
     pagination.appendChild(nextButton);
@@ -311,6 +353,10 @@ function updatePagination(type) { // Thêm tham số 'type'
         paginationId = 'pagination-products';
     } else if (type === 'customer') {
         paginationId = 'pagination-customers';
+    } else if (type === 'order') {
+        paginationId = 'pagination-orders';
+    } else if (type === 'statistics') {
+        paginationId = 'pagination-statistics';
     } else {
         paginationId = 'pagination';
     }
@@ -320,6 +366,14 @@ function updatePagination(type) { // Thêm tham số 'type'
         link.classList.remove('active');
         if (type === 'product') {
             if (parseInt(link.textContent) === currentProductPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'customer') {
+            if (parseInt(link.textContent) === currentCustomerPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'order') {
+            if (parseInt(link.textContent) === currentOrderPage) {
                 link.classList.add('active');
             }
         } else if (type === 'customer') {
@@ -350,8 +404,17 @@ document.addEventListener('DOMContentLoaded', () => {
         addProductForm.addEventListener('submit', addProduct); 
     }
 
-    // Hiển thị trang khách hàng
-    displayCustomerPage(currentCustomerPage);
+    // Kiểm tra nếu customerArray rỗng thì tải từ localStorage
+    if (customerArray.length === 0) {
+        alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
+    } else {
+        displayCustomerPage(currentCustomerPage);
+    }
+    // Thêm sự kiện submit cho form thêm khách hàng
+    const addCustomerForm = document.getElementById('add-customer-form'); 
+    if (addCustomerForm) { 
+        addCustomerForm.addEventListener('submit', addCustomer); 
+    }
 });
 
 function addProduct(event) {
@@ -376,13 +439,13 @@ function addProduct(event) {
     const size = document.getElementById('new-size').value.trim();
     const f = document.getElementById('new-f').value.trim();
     const imgInput = document.getElementById('new-image-upload');
-    let img = 'img-prd/default.png';
+    let img = 'img-prd/img-add2.png'; // Ảnh mặc định
     if (imgInput.files && imgInput.files[0]) {
-        img = imgInput.files[0].name; // Lưu tên file ảnh đã có sẵn trên máy chủ
+        img = URL.createObjectURL(imgInput.files[0]);
     }
 
     // Kiểm tra thông tin nhập vào
-    if (!brand || !productname || !price || !pb1 || !pb2 || !chip || !pin || !size || !f) {
+    if (!brand || !productname || !price || !pb1 || !chip || !pin || !size || !f) {
         customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
         return false;
     }
@@ -418,7 +481,6 @@ function addProduct(event) {
 
     // Reset form và ảnh xem trước
     document.querySelector('.subsection form').reset();
-    document.getElementById('img-preview').src = './img-prd/img-add2.png';
 }
 // Xóa sản phẩm
 function deleteProduct(productIndex) {
@@ -563,6 +625,10 @@ function previewImage(event) {
         img.style.display = 'block';
     };
     reader.readAsDataURL(input.files[0]);
+    // Thêm reset ảnh khi reset form
+    document.getElementById('add-product-form').addEventListener('reset', function() {
+        document.getElementById('img-preview').src = './img-prd/img-add2.png';
+    });
 }
 // Hàm hiển thị chi tiết sản phẩm
 function showProductDetails(productIndex) {
@@ -622,7 +688,7 @@ function displayCustomerPage(page) {
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
-            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
+            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', Quận ' + customer.address.district + ', ' + customer.address.city + '</td>' +
             '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
             '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
         '</tr>';
@@ -676,18 +742,100 @@ function toggleCustomerLock(customerIndex) {
     // Cập nhật lại bảng khách hàng
     displayCustomerPage(currentCustomerPage);
 }
+// Hàm kiểm tra username đã tồn tại chưa
+function checkExistedUsername(username) {
+    for (let customer of customerArray) {
+        if (customer.username === username) {
+            return true; // Username đã tồn tại
+        }
+    }
+    return false; // Username chưa tồn tại
+}
 
+function addCustomer(event) {
+    event.preventDefault(); // Ngăn form tự submit
+
+    // Lấy mảng khách hàng từ localStorage
+    console.log('Mảng khách hàng trước khi thêm:', customerArray);
+
+    // Lấy giá trị từ các trường nhập liệu
+    const username = document.getElementById('new-customer-name').value.trim();
+    const password = document.getElementById('new-customer-password').value.trim();
+    const phone = document.getElementById('new-customer-phone').value.trim();
+    const addressInput = document.getElementById('new-customer-address').value.trim();
+
+    // Kiểm tra thông tin nhập vào
+    if (!username || !password || !phone || !addressInput) {
+        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        return false;
+    }
+
+    // Kiểm tra xem username đã tồn tại chưa
+    if (checkExistedUsername(username)) {
+        customAlert('Tên tài khoản đã tồn tại', 'warning');
+        return false;
+    }
+
+    
+    // Tách địa chỉ thành các phần
+    const addressParts = addressInput.split(',').map(part => part.trim());
+    
+    // Kiểm tra xem địa chỉ có đủ 4 phần không
+    if (addressParts.length < 4) {
+        customAlert('Địa chỉ không đầy đủ. Vui lòng nhập theo định dạng: "Số nhà và đường, Phường, Quận, Thành phố"', 'warning');
+        return false;
+    }
+
+    const numberAndRoad = addressParts[0] || '';
+    const ward = addressParts[1] || '';
+    let district = addressParts[2] || '';
+    district = district.replace(/quận\s*/i, '');
+    const city = addressParts[3] || '';
+
+    if (!numberAndRoad || !ward || !district || !city) {
+        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường, Phường, Quận, Thành phố', 'warning');
+        return false;
+    }
+    // Tạo đối tượng khách hàng mới
+    const newCustomer = {
+        username: username,
+        password: password,
+        phone: phone,
+        address: {
+            city: city,
+            district: district,
+            ward: ward,
+            numberAndRoad: numberAndRoad
+        },
+        locked: false // Trạng thái hoạt động
+    };
+
+    // Thêm khách hàng vào mảng và lưu vào localStorage
+    customerArray.push(newCustomer);
+    localStorage.setItem('customerArray', JSON.stringify(customerArray));
+    console.log('Mảng khách hàng sau khi thêm:', customerArray);
+
+    // Cập nhật danh sách khách hàng và thông báo thành công
+    displayCustomerPage(currentCustomerPage);
+    customAlert('Thêm khách hàng thành công', 'success');
+
+    // Reset form
+    document.querySelector('#add-customer-form').reset();
+}
 function showChangeCustomerBox(customerIndex) {
+    // Hiển thị modal
     const modal = document.getElementById('modal-changecustomer');
     if (modal) {
         modal.style.display = 'flex';
     }
 
+    // Lấy thông tin sản phẩm
     const customer = customerArray[customerIndex];
+
+    // Điền thông tin vào modal
     document.getElementById('edit-username').value = customer.username;
     document.getElementById('edit-password').value = customer.password;
     document.getElementById('edit-phone').value = customer.phone;
-    document.getElementById('edit-email').value = customer.email;
     document.getElementById('edit-address').value = `${customer.address.numberAndRoad}, ${customer.address.ward}, ${customer.address.district}, ${customer.address.city}`;
 
     // Cập nhật sự kiện lưu
@@ -695,18 +843,18 @@ function showChangeCustomerBox(customerIndex) {
     saveCustomerButton.onclick = () => saveCustomerChanges(customerIndex);
 }
 
+// Lưu thay đổi sản phẩm
 function saveCustomerChanges(customerIndex) {
     const updatedUsername = document.getElementById('edit-username').value.trim();
     const updatedPassword = document.getElementById('edit-password').value.trim();
     const updatedPhone = document.getElementById('edit-phone').value.trim();
-    const updatedEmail = document.getElementById('edit-email').value.trim();
     const updatedAddress = document.getElementById('edit-address').value.trim();
 
     // Cập nhật thông tin khách hàng trong mảng
     customerArray[customerIndex].username = updatedUsername;
     customerArray[customerIndex].password = updatedPassword;
     customerArray[customerIndex].phone = updatedPhone;
-    customerArray[customerIndex].email = updatedEmail;
+
     const addressParts = updatedAddress.split(',').map(part => part.trim());
     customerArray[customerIndex].address = {
         numberAndRoad: addressParts[0] || '',
@@ -720,7 +868,6 @@ function saveCustomerChanges(customerIndex) {
         !customerArray[customerIndex].username ||
         !customerArray[customerIndex].password ||
         !customerArray[customerIndex].phone ||
-        !customerArray[customerIndex].email ||
         !customerArray[customerIndex].address.numberAndRoad ||
         !customerArray[customerIndex].address.ward ||
         !customerArray[customerIndex].address.district ||
@@ -750,7 +897,16 @@ function closeChangeCustomerBox() {
         modal.style.display = 'none';
     }
 }
-/* MAIN_CUSTOMERS */
+
+// ORDER
+function displayOrderPage(page) {
+    // Hiển thị đơn hàng của trang hiện tại
+}
+
+// STATISTICS
+function displayStatisticsPage(page) {
+    // Hiển thị thống kê của trang hiện tại
+}
 
 
 /* MAIN_ORDERS */
@@ -912,10 +1068,10 @@ window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
 window.changeImagePreview = changeImagePreview;
 window.previewImage = previewImage;
+window.showChangeCustomerBox = showChangeCustomerBox;
 window.closeChangeCustomerBox = closeChangeCustomerBox;
 window.saveProductChanges = saveProductChanges;
-window.handleStatusChange = handleStatusChange;
-window.displayOrderByStatus = displayOrderByStatus;
+
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;

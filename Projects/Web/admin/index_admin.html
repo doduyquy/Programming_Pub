@@ -271,7 +271,7 @@
                                         </div>
                                     </div>
                                     <div class="buttons">
-                                        <button type="reset" class="delete-btn">Xóa</button>
+                                        <button type="reset" class="delete-btn" id="reset-button">Xóa</button>
                                         <button type="submit" class="add-btn">Thêm</button>
                                     </div>
                                 </form>
@@ -356,9 +356,7 @@
                                     
                                     </thead>
                                     <tbody id="customer-table-content__body">
-                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        
-                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
+                                        <!-- Khách hàng ở đây -->
                                     </tbody>
                                 </table>
                                 <div id="pagination-customers"></div>
@@ -372,56 +370,12 @@
                                     <br>
                                     <label for="new-customer-name">Tên đăng nhập</label>
                                     <input type="text" id="new-customer-name" placeholder="Nhập tên khách hàng...">
-                                    <label for="new-brand">Thương hiệu</label>
-                                    <select id="new-brand">
-                                        <option value="APPLE">APPLE</option>
-                                        <option value="SAMSUNG">SAMSUNG</option>
-                                        <option value="XIAOMI">XIAOMI</option>
-                                        <option value="Bphone">BPHONE</option>
-                                        <option value="VIVO">VIVO</option>
-                                    </select>
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-price">Giá</label>
-                                        <input type="text" id="new-price" class="short-input" placeholder="Nhập giá sản phẩm...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-pb1">Phiên bản 1</label>
-                                        <input type="text" id="new-pb1" class="short-input" placeholder="Nhập phiên bản 1...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-pb2">Phiên bản 2</label>
-                                        <input type="text" id="new-pb2" class="short-input" placeholder="Nhập phiên bản 2...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-chip">Vi xử lý</label>
-                                        <input type="text" id="new-chip" class="short-input" placeholder="Nhập vi xử lý...">
-                                    </div>
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-pin">Dung lượng pin</label>
-                                        <input type="text" id="new-pin" class="short-input" placeholder="Nhập dung lương pin...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-size">Kích thước màn hình</label>
-                                        <input type="text" id="new-size" class="short-input" placeholder="Nhập kích thước màn hình...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-f">Tần số quét</label>
-                                        <input type="text" id="new-f" class="short-input" placeholder="Nhập tần số quét...">
-                                    </div>
-                                    <div class="image-upload-container">
-                                        <div class="image-upload-container__info">
-                                            <label for="new-image-upload">Ảnh</label>
-                                            <input type="file" id="new-image-upload" accept="image/*" onchange="previewImage(event)">
-                                        </div>
-                                        <div class="product-image-container">
-                                            <img id="img-preview" src="./img-prd/img-add2.png" alt="Product Image">
-                                        </div>
-                                    </div>
+                                    <label for="new-customer-password">Mật khẩu</label>
+                                    <input type="text" id="new-customer-password" placeholder="Nhập mật khẩu...">
+                                    <label for="new-customer-phone">Số điện thoại</label>
+                                    <input type="text" id="new-customer-phone" placeholder="Nhập số điện thoại...">
+                                    <label for="new-customer-address">Địa chỉ</label>
+                                    <input type="text" id="new-customer-address" placeholder="Nhập địa chỉ...">
                                     <div class="buttons">
                                         <button type="reset" class="delete-btn">Xóa</button>
                                         <button type="submit" class="add-btn">Thêm</button>
@@ -440,30 +394,10 @@
                                     <input type="text" id="edit-password"><br>
                                     <label for="edit-phone">Số điện thoại</label>
                                     <input type="text" id="edit-phone"><br>
-                                    <label for="edit-email">Email</label>
-                                    <input type="text" id="edit-email"><br>
                                     <label for="edit-address">Địa chỉ</label>
                                     <input type="text" id="edit-address"><br>
                                 </div>
                                 <button id="save-customer" class="save">Lưu chỉnh sửa</button>
-                            </div>
-                        </div>
-                        <!-- POP-UP THÊM KHÁCH HÀNG -->
-                        <div id="modal-addcustomer" class="modal">
-                            <div id="addcustomer">
-                                <button class="close-pop" onclick="closeChangeCustomerBox()">+</button>
-                                <div class="image">
-                                    <img id="imgbefore" src="" alt="Ảnh trước">
-                                    <img id="imgafter" src="" alt="Ảnh sau">
-                                </div>
-                                <div class="info">
-                                    <label for="edit-name">Tên sản phẩm</label>
-                                    <input type="text" id="edit-name" value=""><br>
-                                    <label for="edit-price">Giá</label>
-                                    <input type="text" id="edit-price" value=""><br>
-                                    <input type="file" id="edit-image-upload" onchange="changeImagePreview(this)">
-                                </div>
-                                <button id="save">Lưu chỉnh sửa</button>
                             </div>
                         </div>
                     </div>
@@ -499,6 +433,7 @@
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
                                     </tbody>
                                 </table>
+                                <div id="pagination-orders"></div>
                             </div>
                         </div>
                         <div id="rightsection">
@@ -593,6 +528,7 @@
                                         <!-- Lặp lại các dòng sản phẩm nếu cần -->
                                     </tbody>
                                 </table>
+                                <div id="pagination-statistics"></div>
                             </div>
                         </div>
                         <div id="rightsection">
@@ -648,6 +584,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div id="pagination-statistics"></div>
                             </div>
                         </div>
                         <div id="rightsection">
