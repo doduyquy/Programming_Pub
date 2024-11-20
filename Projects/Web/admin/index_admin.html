@@ -415,20 +415,21 @@
                         <div id="leftsection">
                             <div id="table_list">
                                 <table class="table-content">
-                                    <thead class="product-header">
-                                        <tr>
-                                            <!-- <th>#ID</th> -->
+                                    <thead class="table-content__header">
+                                        <!-- <tr>
                                             <th>Khách hàng</th>
+                                            <th>Số điện thoại</th>
                                             <th>Thời điểm đặt hàng</th>
                                             <th>Địa chỉ</th>
                                             <th>Chi tiết</th>
                                             <th>Tình trạng</th>
-                                        </tr>
+                                        </tr> -->
                                     </thead>
-                                    <tbody>
+                                    <tbody id="orders-table-content__body">
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        <tr data-id="10042">
+                                        <!-- <tr>
                                             <td>Tên khách hàng</td>
+                                            <td>0123456789</td>
                                             <td>11/11/2024</td>
                                             <td>273 An Dương Vương, Phường 2, Quận 5</td>
                                             <td>
@@ -442,8 +443,7 @@
                                                     <option value="failed">Thất bại</option>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -451,18 +451,20 @@
                         <div id="rightsection">
                             <div class="filter-section">
                                 <h2 class="main-title">Bộ lọc</h2>
-                                
-                                <div class="filter-group">
-                                    <h3 class="filter-title">Thời gian</h3>
-                                    <div class="date-group">
-                                        <label class="date-label" for="time-start">Từ ngày</label>
-                                        <input type="date" id="time-start" class="date-input">
+                                <form id="filter-date-form">
+                                    <div class="filter-group">
+                                        <h3 class="filter-title">Thời gian</h3>
+                                        <div class="date-group">
+                                            <label class="date-label" for="date-start">Từ ngày</label>
+                                            <input type="date" id="order__date-start" class="date-input" required>
+                                        </div>
+                                        <div class="date-group">
+                                            <label class="date-label" for="date-end">Đến ngày</label>
+                                            <input type="date" id="order__date-end" class="date-input" required>
+                                        </div>
+                                        <button type="submit" id="order__date-btn">Lọc</button>
                                     </div>
-                                    <div class="date-group">
-                                        <label class="date-label" for="time-end">Đến ngày</label>
-                                        <input type="date" id="time-end" class="date-input">
-                                    </div>
-                                </div>
+                                </form>
                                 
                                 <div class="filter-group">
                                     <h3 class="filter-title">Tình trạng</h3>

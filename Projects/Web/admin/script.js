@@ -1,5 +1,8 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
+import {orderArray, filterOrdersBetweenTwoDate, addOrderToArray, saveOrderArrayToStorage, addTestOrderToArray} from '../common/data/orderArray.js';
+
+
 localStorage.removeItem('productArray');
 // SIDEBAR 
 function updateContentWidth() {
@@ -739,6 +742,100 @@ function closeChangeCustomerBox() {
         modal.style.display = 'none';
     }
 }
+/* MAIN_CUSTOMERS */
+
+
+/* MAIN_ORDERS */
+
+// Add test order to order array:
+addTestOrderToArray();
+
+/** Tìm khách hàng theo username */
+function findCustomerByUsername(username) {
+    return customerArray.find((customer) => customer.username === username);
+}
+function displayOrdersTable(){
+    let tableHTML = `
+                        <tr>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời điểm đặt hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Chi tiết</th>
+                            <th>Tình trạng</th>
+                        </tr>
+                    `;
+    orderArray.forEach((order) => {
+
+        const matchingCustomer = findCustomerByUsername(order.customerId);
+        const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+        // const formattedAddress = `${address.numberAndRoad}, ${address.ward}, ${address.district}, ${address.city}`;
+        console.log(order.customerId);
+        tableHTML += `
+                    <tr>
+                        <td>${matchingCustomer.username}</td>
+                        <td>${matchingCustomer.phone}</td>
+                        <td>${formattedDate}</td>
+                        <td>Address</td>    
+                        <td>
+                            <button class="detail-btn" onclick="">Chi tiết</button>
+                        </td>
+                        <td>
+                            <select name="order__status" id="order__status" onchange="">
+                                <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
+                                <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
+                                <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
+                                <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
+                            </select>
+                        </td>
+                    </tr> 
+        `;
+    });
+    // console.log(tableHTML);
+    document.getElementById('orders-table-content__body').innerHTML = tableHTML;
+}
+displayOrdersTable();
+
+
+/* CÁC TÍNH NĂNG Ở BỘ LỌC */
+// Lọc sản phẩm theo Date
+function displayOrdersByDate() {
+    const dateStartElem = document.getElementById('order__date-start');
+    const dateEndElem = document.getElementById('order__date-end');
+    const dateForm = document.getElementById('filter-date-form')
+    let dateStart;
+    let dateEnd;
+    dateForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Ngăn hành động default: reload page
+        dateStart = new Date(dateStartElem.value);
+        dateEnd = new Date(dateEndElem.value);
+        
+        console.log(dateStart);
+        console.log(dateEnd);
+        const filterArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+
+        console.log(filterArray);
+    });
+}
+
+// Gọi hàm để khởi tạo sự kiện
+displayOrdersByDate();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 window.showDetailProductBox = showProductDetails;
 window.closeDetailProductBox = closeDetailProductBox;
