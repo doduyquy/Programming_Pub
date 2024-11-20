@@ -45,7 +45,9 @@ body {
 #sidebar.hide {
     width: 70px;
 }
-
+#sidebar.hide .brand img {
+    display: none;
+}
 /* #sidebar .brand {
     font-size: 25px;
     font-weight: 700;
@@ -67,6 +69,10 @@ body {
 #sidebar .side-menu {
     width: 100%;
     margin-top: 48px;
+}
+#sidebar.hide .side-menu {
+    width: 100%;
+    margin-top: 134.81px;
 }
 #sidebar .side-menu li {
     height: 48px;
@@ -339,7 +345,7 @@ body {
     color: white;
     z-index: 1000;
     opacity: 0.9;
-    transition: opacity 0.3s ease;
+    animation: slideInLeft ease 0.3s, fadeOut linear 1s 3s forwards;
 }
 
 .custom-alert-success {
@@ -835,17 +841,24 @@ body {
 /* END MAIN */
 /* END CONTENT */
 
-@keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
-}
-@keyframes fadeout {
-    from {top: 30px; opacity: 1;}
-    to {top: 0; opacity: 0;}
+@keyframes fadeOut {
+    to{
+        opacity: 0;
+    }
 }
 @keyframes topdown{
 	0% {transform: translateY(-800px)}
 	100% {transform: translateY(0)}
+}
+@keyframes slideInLeft{
+    from{
+        opacity: 0;
+        transform: translateX(calc(100% + 32px));
+    }
+    to{
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 /* Thêm transition cho các phần tử cần thay đổi kích thước */
 @media only screen and (min-width: 901px) and (max-width: 1060px) {

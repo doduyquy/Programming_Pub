@@ -1,6 +1,7 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
-localStorage.removeItem('productArray');
+localStorage.removeItem('productArray'); // Xóa localStorage productArray
+localStorage.removeItem('customerArray'); // Xóa localStorage customerArray
 // SIDEBAR 
 function updateContentWidth() {
     const sidebar = document.getElementById('sidebar');
@@ -125,8 +126,7 @@ function customAlert(message, type) {
 }
 
 /* MAIN__PRODUCTS */
-// Lấy productArray từ localStorage đã được import từ productArray.js
-let filteredProducts = [];
+let filteredProducts = []; // Lấy productArray từ localStorage đã được import từ productArray.js
 
 // *** Bắt đầu thêm các biến phân trang cho Products và Customers ***
 // Phân trang cho Products với 8 sản phẩm mỗi trang
@@ -158,6 +158,7 @@ if (searchInput && brandFilter) {
     brandFilter.addEventListener('change', filterProducts);
 }
 
+// Hàm lọc sản phẩm
 function filterProducts() {
     const searchTerm = searchInput.value.toLowerCase().trim();
     const selectedBrand = brandFilter.value.toUpperCase().trim();
@@ -206,11 +207,11 @@ function displayProductPage(page) {
         '</tr>';
         dem++;
         if (dem == itemsPerPageProduct) {
-            break;
+            break; // Nếu đã đủ số sản phẩm trên một trang thì dừng
         }
     }
-    document.getElementById('product-table-content__body').innerHTML = s;
-    updatePagination('product');
+    document.getElementById('product-table-content__body').innerHTML = s; // Hiển th
+    updatePagination('product'); // Cập nhật nút phân trang
 
     // Thêm event listeners cho các nút xem chi tiết
     document.querySelectorAll('.detail-btn').forEach(button => {
@@ -245,7 +246,7 @@ function createPagination(totalPages, type) {
     } else if (type === 'customer') {
         paginationId = 'pagination-customers';
     } else if (type === 'order') {
-        paginationId = 'pagination-orders';
+        paginationId = 'pagination-orders'; 
     } else if (type === 'statistics') {
         paginationId = 'pagination-statistics';
     } else {
@@ -392,10 +393,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (allProducts.length === 0) {
         alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
     } else {
-        filteredProducts = allProducts.slice();
+        filteredProducts = allProducts.slice(); // Sao chép mảng sản phẩm
         totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
-        createPagination(totalProductPages, 'product');
-        displayProductPage(currentProductPage);
+        createPagination(totalProductPages, 'product'); // Tạo nút phân trang cho sản phẩm
+        displayProductPage(currentProductPage); // Hiển thị trang đầu tiên của sản phẩm
     }
 
     // Thêm sự kiện submit cho form thêm sản phẩm 
@@ -420,11 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function addProduct(event) {
     event.preventDefault(); // Ngăn form tự submit
 
-    // Lấy mảng sản phẩm từ localStorage
-    // var productArray = JSON.parse(localStorage.getItem('productArray')) || [];
-    //
-    console.log('Mảng sản phẩm trước khi thêm:', allProducts);
-
     // Tạo productId mới
     const productId = allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1";
 
@@ -441,7 +437,7 @@ function addProduct(event) {
     const imgInput = document.getElementById('new-image-upload');
     let img = 'img-prd/img-add2.png'; // Ảnh mặc định
     if (imgInput.files && imgInput.files[0]) {
-        img = URL.createObjectURL(imgInput.files[0]);
+        img = URL.createObjectURL(imgInput.files[0]); // Lấy đường dẫn ảnh
     }
 
     // Kiểm tra thông tin nhập vào
@@ -450,6 +446,7 @@ function addProduct(event) {
         return false;
     }
 
+    // Kiểm tra giá nhập vào có phải là số không
     if (isNaN(Number(price))) {
         customAlert('Giá không hợp lệ', 'warning');
         return false;
@@ -473,13 +470,12 @@ function addProduct(event) {
     // Thêm sản phẩm vào mảng và lưu vào localStorage
     allProducts.push(newProduct);
     localStorage.setItem('allProducts', JSON.stringify(allProducts));
-    console.log('Mảng sản phẩm sau khi thêm:', allProducts);
 
     // Cập nhật danh sách sản phẩm và thông báo thành công
     filterProducts();
     customAlert('Thêm sản phẩm thành công', 'success');
 
-    // Reset form và ảnh xem trước
+    // Reset form
     document.querySelector('.subsection form').reset();
 }
 // Xóa sản phẩm
@@ -624,7 +620,7 @@ function previewImage(event) {
         img.src = reader.result;
         img.style.display = 'block';
     };
-    reader.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(input.files[0]); // Đọc file ảnh
     // Thêm reset ảnh khi reset form
     document.getElementById('add-product-form').addEventListener('reset', function() {
         document.getElementById('img-preview').src = './img-prd/img-add2.png';
@@ -660,22 +656,27 @@ function closeDetailProductBox() {
 
 
 /* MAIN_CUSTOMERS */
+
+// Hàm Chuyển Pass --> *****
 function addPasswordToggleListeners() {
     const passwordCells = document.querySelectorAll('.table-cell-password');
     passwordCells.forEach(cell => {
         cell.addEventListener('click', function() {
-            const isMasked = cell.textContent.startsWith('*');
+            const isMasked = cell.textContent.startsWith('*'); // khai báo biến kiểm tra mật khẩu đã được mask chưa
             if (isMasked) {
-                cell.textContent = cell.getAttribute('data-password');
-                cell.classList.add('active');
+                cell.textContent = cell.getAttribute('data-password'); 
+                cell.classList.add('active');// hiển thị mật khẩu
             } else {
-                cell.textContent = '*'.repeat(cell.getAttribute('data-password').length);
-                cell.classList.remove('active');
+                cell.textContent = '*'.repeat(cell.getAttribute('data-password').length); // mask mật khẩu * bằng số lượng ký tự
+                cell.classList.remove('active');// ẩn mật khẩu
             }
         });
     });
 }
 
+
+// ---CUSTOMER---
+// Hiển thị trang khách hàng
 function displayCustomerPage(page) {
     var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
     var dem = 0;
@@ -683,7 +684,7 @@ function displayCustomerPage(page) {
     var end = start + itemsPerPageCustomer;
     for (var i = start; i < customerArray.length && i < end; i++) {
         var customer = customerArray[i];
-        s += '<tr data-id="' + i + '"' + (customer.locked ? ' class="locked"' : '') + '>' +
+        s += '<tr data-id="' + i + '"' + (customer.locked ? ' class="locked"' : '') + '>' +  // Thêm class "locked" nếu khách hàng bị khóa
             '<td>' + (i + 1) + '</td>' +
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
@@ -697,6 +698,7 @@ function displayCustomerPage(page) {
             break;
         }
     }
+
     document.getElementById('customer-table-content__body').innerHTML = s;
     updatePagination('customer');
 
@@ -726,6 +728,7 @@ function displayCustomerPage(page) {
     addPasswordToggleListeners();
 }
 
+// Hàm khóa/mở khóa khách hàng
 function toggleCustomerLock(customerIndex) {
     const customer = customerArray[customerIndex];
     customer.locked = !customer.locked; // Toggle trạng thái khóa
@@ -742,6 +745,7 @@ function toggleCustomerLock(customerIndex) {
     // Cập nhật lại bảng khách hàng
     displayCustomerPage(currentCustomerPage);
 }
+
 // Hàm kiểm tra username đã tồn tại chưa
 function checkExistedUsername(username) {
     for (let customer of customerArray) {
@@ -776,26 +780,22 @@ function addCustomer(event) {
         return false;
     }
 
-    
     // Tách địa chỉ thành các phần
     const addressParts = addressInput.split(',').map(part => part.trim());
-    
-    // Kiểm tra xem địa chỉ có đủ 4 phần không
-    if (addressParts.length < 4) {
-        customAlert('Địa chỉ không đầy đủ. Vui lòng nhập theo định dạng: "Số nhà và đường, Phường, Quận, Thành phố"', 'warning');
-        return false;
-    }
 
-    const numberAndRoad = addressParts[0] || '';
+    //Chia thành các phần: Số nhà và đường, Phường, Quận, Thành phố
+    const numberAndRoad = addressParts[0] || ''; 
     const ward = addressParts[1] || '';
     let district = addressParts[2] || '';
-    district = district.replace(/quận\s*/i, '');
+    district = district.replace(/quận\s*/i, ''); // Xóa chữ "Quận" nếu có
     const city = addressParts[3] || '';
 
+    //Kiểm tra địa chỉ có dạng hợp lệ không
     if (!numberAndRoad || !ward || !district || !city) {
         customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường, Phường, Quận, Thành phố', 'warning');
         return false;
     }
+
     // Tạo đối tượng khách hàng mới
     const newCustomer = {
         username: username,
@@ -813,7 +813,6 @@ function addCustomer(event) {
     // Thêm khách hàng vào mảng và lưu vào localStorage
     customerArray.push(newCustomer);
     localStorage.setItem('customerArray', JSON.stringify(customerArray));
-    console.log('Mảng khách hàng sau khi thêm:', customerArray);
 
     // Cập nhật danh sách khách hàng và thông báo thành công
     displayCustomerPage(currentCustomerPage);
@@ -855,6 +854,7 @@ function saveCustomerChanges(customerIndex) {
     customerArray[customerIndex].password = updatedPassword;
     customerArray[customerIndex].phone = updatedPhone;
 
+    // Tách địa chỉ thành các phần 
     const addressParts = updatedAddress.split(',').map(part => part.trim());
     customerArray[customerIndex].address = {
         numberAndRoad: addressParts[0] || '',
