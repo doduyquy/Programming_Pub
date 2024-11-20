@@ -874,11 +874,34 @@ displayOrderByStatus();
  */
 function displaySortOrderArrayByDistrict(){
     // console.log(sortOrderByDistrict());
-    document.getElementById('order_sort-by-district').addEventListener('click',(event) => {
+    document.getElementById('order__sort-by-district').addEventListener('click',(event) => {
         displayOrdersTable(sortOrderByDistrict());
     });
 }
 displaySortOrderArrayByDistrict();
+
+
+
+function resetOrderFilter(){
+    const resetBtn = document.getElementById('order__reset-filter-btn');
+    resetBtn.addEventListener('click', () => {
+        // Reset các trường input type="date"
+        document.getElementById('order__date-start').value = '';
+        document.getElementById('order__date-end').value = '';
+
+        // Reset trường select về giá trị mặc định
+        document.getElementById('filter__status-selection').value = 'ALL';
+
+        displayOrdersTable(orderArray);
+    });
+}
+resetOrderFilter();
+
+
+
+
+
+
 
 
 
