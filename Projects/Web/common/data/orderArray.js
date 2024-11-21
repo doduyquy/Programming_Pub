@@ -21,7 +21,7 @@ class Order {
     calculateTotalPayment(){
         let total = 0;
         this.checkoutCart.forEach((item) => {
-            // total += ...
+            total += item.quantity * item.price;
         });
         return total;
     }
@@ -179,12 +179,12 @@ function getDistrictByCustomerId(customerId){
  * 3. Tổng doanh thu
  */
 export function createStatisticsProductArray(){
-    const statisticsProductArray = [
-        {
-            name: undefined,
-            quantity: undefined,
-            price: undefined,
-        }
+    let statisticsProductArray = [
+        // {
+        //     name: undefined,
+        //     quantity: undefined,
+        //     price: undefined,
+        // }
     ];
     // Duyệt qua từng order trong orderArray
     orderArray.forEach((order) => {
@@ -206,9 +206,53 @@ export function createStatisticsProductArray(){
             }
         });
     });
+    // Sắp xếp giảm dần trước khi trả về:
+    statisticsProductArray = sortStatisticsProductArrayBySales(statisticsProductArray);
     return statisticsProductArray;
 }
+// Sắp xếp mảng thống kê giảm dần theo doanh số của từng sản phẩm
+function sortStatisticsProductArrayBySales(statisticsProductArray){
+    return statisticsProductArray.slice().sort((productA, productB) => {
+        return productB.quantity - productA.quantity;
+    });
+}
 
+export function createStatisticsCustomerArray(){
+    let statisticsCustomerArray = [
+        // {
+        //     customerId: undefined,
+        //     phone: undefined,
+        //     totalRevenue: undefined,
+        // }
+    ];
+    orderArray.forEach((order) => {
+        const matchingCustomer = statisticsCustomerArray.find((customer) => customer.customerId === order.customerId);
+        if(matchingCustomer){
+            // Nếu đã có thì tăng doanh thu
+            matchingCustomer.totalRevenue += order.calculateTotalPayment();
+        } else {
+            // Nếu chưa có thì thêm vào
+            // Tìm thông tin của khách đã đặt đơn:
+            const newCustomer = customerArray.find((customer) => customer.username === order.customerId);
+            statisticsCustomerArray.push(
+                {
+                    customerId: order.customerId,
+                    phone: newCustomer.phone,
+                    totalRevenue: order.calculateTotalPayment(),
+                }
+            );
+        }
+    });
+    // Sắp xếp trước khi trả về
+    statisticsCustomerArray = sortStatisticsCustomerArrayByRevenue(statisticsCustomerArray);
+    return statisticsCustomerArray;
+}
+// Sắp xếp mảng thống kê giảm dần theo doanh thu của từng khách hàng
+function sortStatisticsCustomerArrayByRevenue(statisticsCustomerArray){
+    return statisticsCustomerArray.slice().sort((customerA, customerB) => {
+        return customerB.totalRevenue - customerA.totalRevenue;
+    });
+}
 
 
 

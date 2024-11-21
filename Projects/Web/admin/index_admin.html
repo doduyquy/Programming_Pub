@@ -512,17 +512,8 @@
                                             <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        <tr>
-                                            <td>Samsung Galaxy</td>
-                                            <td>1234</td>
-                                            <td>123.456.789 VND</td>
-                                            <td>
-                                                <button type="button">Hóa đơn</button>
-                                            </td>
-                                        </tr>
-                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
+                                    <tbody id="statistics-product-table__body">
+                                        
                                     </tbody>
                                 </table>
                                 <div id="pagination-statistics"></div>
@@ -533,19 +524,12 @@
                                 <!-- Tổng doanh thu của các sản phẩm -->
                                 <div class="total-revenue">
                                     <h2>Tổng doanh thu</h2>
-                                    <div>123.456.789.000 VND</div>
+                                    <div id="statistics-product__total-revenue"></div>
                                 </div>
                             </div>
                             <div class="subsection">
                                 <!-- Chỉ ra sản phẩm chạy nhất và ế nhất (theo số lượng bán ra (doanh số)) -->
-                                <div class="special-product">
-                                    <h2>Sản phẩm chạy nhất</h2>
-                                    <p>Tên: <span>Samsung S24</span> </p>
-                                    <p>Doanh số: <span>123456</span> </p>
-    
-                                    <h2>Sản phẩm ế nhất</h2>
-                                    <p>Tên: <span>Bphone 10</span> </p>
-                                    <p>Doanh số: <span>10</span> </p>
+                                <div id="statistics-product__special-product">
                                 </div>
                             </div>
                             
@@ -562,23 +546,12 @@
                                         <th>DOANH THU KHÁCH HÀNG</th>
                                         <tr>
                                             <th>Username</th>
-                                            <th>Tên khách hàng</th>
                                             <th>Số điện thoại</th>
                                             <th>Doanh thu</th>
                                             <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
-                                        <tr data-id="10042">
-                                            <td>quy</td>
-                                            <td>doduyquy</td>
-                                            <td>0123456789</td>
-                                            <td>123.456.789 VND</td>
-                                            <td>
-                                                <button type="button">Hóa đơn</button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="statistics-customer-table__body">
                                     </tbody>
                                 </table>
                                 <div id="pagination-statistics"></div>
@@ -589,7 +562,8 @@
                                 <!-- Tổng doanh thu của khách hàng -->
                                 <div class="total-revenue">
                                     <h2>Tổng doanh thu</h2>
-                                    <div>123.456.789.000 VND</div>
+                                    <div id="statistics-customer__total-revenue">
+                                    </div>
                                 </div>
                             </div>
                             <div class="subsection">
@@ -597,7 +571,7 @@
                                 <div class="top-customers">
                                     <h2>Top khách hàng</h2>
                                     <p>Top: 
-                                        <input type="number" name="" id=""> 
+                                        <input type="number" id="statistics-customer__top-input"> 
                                     </p>
                                 </div>
                             </div>                            

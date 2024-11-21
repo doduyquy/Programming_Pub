@@ -1,6 +1,6 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
-import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray } from '../common/data/orderArray.js'; 
+import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray, createStatisticsCustomerArray } from '../common/data/orderArray.js'; 
 
 localStorage.removeItem('productArray');
 // localStorage.removeItem('customerArray')
@@ -965,6 +965,7 @@ function displayOrdersTable(orderArray){
 displayOrdersTable(orderArray);
 
 
+
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */
 // Lọc sản phẩm theo Date
 // Kiểm tra 2 input Date hợp lệ: ngày dateStart phải trước dateEnd
@@ -1064,12 +1065,155 @@ resetOrderFilter();
  * 2. Số lượng đã bán 
  * 3. Tổng doanh thu
  */
+// Mảng statisticsProductArray:
+let statisticsProductArray = [];
 function displayStatisticsProduct(){
-    const statisticsProductArray = createStatisticsProductArray();
+    statisticsProductArray = createStatisticsProductArray();
     console.log('Thống kê sản phẩm: ');
     console.log(statisticsProductArray);
+
+    let tableHTML = ``;
+    statisticsProductArray.forEach((product) => {
+        tableHTML += `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.quantity * product.price}</td>
+                        <td>
+                            <button type="button">Hóa đơn</button>
+                        </td>
+                    </tr>
+                    `;
+    });
+    document.getElementById('statistics-product-table__body').innerHTML = tableHTML;
 }
 displayStatisticsProduct();
+
+/** Tổng doanh thu trên các đơn hàng */
+function calcTotalProductRevenue(){
+    let totalRevenue = 0;
+    statisticsProductArray.forEach((product) => {
+        if(product.name){
+            totalRevenue += (product.quantity) * (product.price);        
+        }
+    });
+    document.getElementById('statistics-product__total-revenue').innerHTML = totalRevenue;
+    console.log('Tổng doanh thu theo sản phẩm: ' + totalRevenue);
+}
+calcTotalProductRevenue();
+
+function displaySpecialProduct(){
+    let bestProduct = statisticsProductArray[0];
+    let worstProduct = statisticsProductArray[0];
+    statisticsProductArray.forEach((product) => {
+        // Nếu sản phẩm nào có doanh số cao hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá cao hơn
+        if(product.quantity > bestProduct.quantity){
+            bestProduct = product;
+        } else if(product.quantity === bestProduct.quantity){
+            if(product.price > bestProduct.price){
+                bestProduct = product;
+            }
+        }
+        // Nếu sản phẩm nào có doanh số thấp hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá thấp hơn
+        if(product.quantity < worstProduct.quantity){
+            worstProduct = product;
+        } else if(product.quantity === worstProduct.quantity){
+            if(product.price < worstProduct.price){
+                worstProduct = product;
+            }
+        }
+    });
+
+    let specialProductHTML = `
+                                <h2>Sản phẩm chạy nhất</h2>
+                                <p>Tên: <span>${bestProduct.name}</span> </p>
+                                <p>Doanh số: <span>${bestProduct.quantity}</span> </p>
+
+                                <h2>Sản phẩm ế nhất</h2>
+                                <p>Tên: <span>${worstProduct.name}</span> </p>
+                                <p>Doanh số: <span>${worstProduct.quantity}</span> </p>
+                            `;
+    document.getElementById('statistics-product__special-product').innerHTML = specialProductHTML;
+}
+displaySpecialProduct();
+
+/** FUNC: thống kê, tạo ra một array các customer đã mua hàng, trong đó:
+ * 1. Username
+ * 2. Họ và tên 
+ * 3. Số điện thoại 
+ * 4. Doanh thu
+ */
+let statisticsCustomerArray = [];
+/**  FUNC: hiển thị mảng thống kê theo khách hàng đã mua. */
+function displayStatisticsCustomer(){
+    statisticsCustomerArray = createStatisticsCustomerArray();
+    let tableHTML = ``;
+    statisticsCustomerArray.forEach((customer) => {
+        tableHTML += `
+                    <tr>
+                        <td>${customer.customerId}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.totalRevenue}</td>
+                        <td>
+                            <button type="button">Hóa đơn</button>
+                        </td>
+                    </tr>
+        `;
+    });
+
+    document.getElementById('statistics-customer-table__body').innerHTML = tableHTML;
+    console.log(statisticsCustomerArray);
+}
+displayStatisticsCustomer();
+
+/** Tổng doanh thu theo khách hàng */
+function calcTotalCustomerRevenue(){
+    let total = 0;
+    statisticsCustomerArray.forEach((customer) => {
+        total += customer.totalRevenue;
+    });
+    document.getElementById('statistics-customer__total-revenue').innerHTML = total;
+    console.log("Tổng doanh thu theo khách hàng: " + total);
+}
+calcTotalCustomerRevenue();
+
+/** FUNC: hiển thị top khách hàng có doanh thu cao nhất */
+/** FUNC: hiển thị top khách hàng có doanh thu cao nhất */
+function displayTopCustomer() {
+    // Nhận giá trị người dùng nhập vào input -> top
+    const topInput = document.getElementById('statistics-customer__top-input');
+    // Số | 0 (nếu người dùng nhập không phải số)
+    const top = parseInt(topInput.value) || 0; 
+    const tableBody = document.getElementById('statistics-customer-table__body');
+
+    // Kiểm tra nếu không hợp lệ hoặc nhỏ hơn 1
+    if (top < 1 || isNaN(top)) {
+        tableBody.innerHTML = '<tr><td colspan="4">Không có dữ liệu</td></tr>';
+        return;
+    }
+
+    // Hiển thị bảng cho top khách hàng được nhập
+    let tableHTML = '';
+    for (let i = 0; i < top && i < statisticsCustomerArray.length; i++) {
+        tableHTML += `
+            <tr>
+                <td>${statisticsCustomerArray[i].customerId}</td>
+                <td>${statisticsCustomerArray[i].phone}</td>
+                <td>${statisticsCustomerArray[i].totalRevenue}</td>
+                <td>
+                    <button type="button">Hóa đơn</button>
+                </td>
+            </tr>
+        `;
+    }
+
+    // Cập nhật nội dung bảng
+    tableBody.innerHTML = tableHTML;
+}
+// Lắng nghe sự kiện khi nhập vào ô input
+document.getElementById('statistics-customer__top-input').addEventListener('input', displayTopCustomer);
+   
+
 
 
 
@@ -1088,6 +1232,9 @@ window.saveProductChanges = saveProductChanges;
 window.displayOrdersTable = displayOrdersTable;
 window.handleStatusChange = handleStatusChange;
 window.displayOrderByStatus = displayOrderByStatus;
+window.displayStatisticsProduct = displayStatisticsProduct;
+window.displaySpecialProduct = displaySpecialProduct;
+window.displayTopCustomer = displayTopCustomer;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;
