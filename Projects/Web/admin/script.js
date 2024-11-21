@@ -206,7 +206,7 @@ function displayProductPage(page) {
             '</td>' +
             '<td>' +
                 '<button class="delete-btn" data-index="' + i + '">Xóa</button>' +
-                '<button class="edit-btn" data-index="' + i + '">Sửa</button>' +
+                '<button id="edit-product-btn" class="edit-btn" data-index="' + i + '">Sửa</button>' +
             '</td>' +
         '</tr>';
         dem++;
@@ -226,7 +226,7 @@ function displayProductPage(page) {
     });
 
     // Thêm event listeners cho các nút sửa
-    document.querySelectorAll('.edit-btn').forEach(button => {
+    document.querySelectorAll('#main__products .edit-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productIndex = parseInt(this.getAttribute('data-index'));
             showChangeProductBox(productIndex);
@@ -724,7 +724,7 @@ function displayCustomerPage(page) {
     createPagination(totalCustomerPages, 'customer');
 
     // Thêm event listeners cho các nút sửa
-    document.querySelectorAll('.edit-btn').forEach(button => {
+    document.querySelectorAll('#main__customers .edit-btn').forEach(button => {
         button.addEventListener('click', function() {
             const customerIndex = parseInt(this.getAttribute('data-index'));
             showChangeCustomerBox(customerIndex);
