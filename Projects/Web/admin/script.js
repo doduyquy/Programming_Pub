@@ -503,9 +503,9 @@ function deleteProduct(productIndex) {
 // Hiển thị modal chỉnh sửa sản phẩm
 function showChangeProductBox(productIndex) {
     // Hiển thị modal
-    const modal = document.getElementById('modal-changeproduct');
-    if (modal) {
-        modal.style.display = 'flex';
+    const modalChangeProduct = document.getElementById('modal-changeproduct');
+    if (modalChangeProduct) {
+        modalChangeProduct.style.display = 'flex';
     }
 
     // Lấy thông tin sản phẩm
@@ -528,6 +528,10 @@ function showChangeProductBox(productIndex) {
     // Cập nhật sự kiện lưu
     const saveProductButton = document.getElementById('save-product');
     saveProductButton.onclick = () => saveProductChanges(productIndex);
+
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-changeproduct').addEventListener('click', closeChangeProductBox);
+
 }
 
 // Lưu thay đổi sản phẩm
@@ -598,9 +602,9 @@ function saveProductChanges(productIndex) {
 
 // Đóng modal
 function closeChangeProductBox() {
-    const modal = document.getElementById('modal-changeproduct');
-    if (modal) {
-        modal.style.display = 'none';
+    const modalChangeProduct = document.getElementById('modal-changeproduct');
+    if (modalChangeProduct) {
+        modalChangeProduct.style.display = 'none';
     }
 }
 
@@ -632,9 +636,9 @@ function previewImage(event) {
 }
 // Hàm hiển thị chi tiết sản phẩm
 function showProductDetails(productIndex) {
-    const modal = document.getElementById('modal-detailproduct');
-    if (modal) {
-        modal.style.display = 'flex';
+    const modalProductDetails = document.getElementById('modal-detailproduct');
+    if (modalProductDetails) {
+        modalProductDetails.style.display = 'flex';
     }
     
     // Lấy thông tin sản phẩm
@@ -651,11 +655,18 @@ function showProductDetails(productIndex) {
     document.getElementById('detail-pin').innerText = product.pin || "";
     document.getElementById('detail-size').innerText = product.size || "";
     document.getElementById('detail-f').innerText = product.f || "";
+
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailproduct').addEventListener('click', closeDetailProductBox);
+
 }
 
 // Hàm đóng pop-up
 function closeDetailProductBox() {
-    document.getElementById('modal-detailproduct').style.display = 'none';
+    const modalProductDetails = document.getElementById('modal-detailproduct');
+    if (modalProductDetails) {
+        modalProductDetails.style.display = 'none';
+    }
 }
 
 
@@ -827,9 +838,9 @@ function addCustomer(event) {
 }
 function showChangeCustomerBox(customerIndex) {
     // Hiển thị modal
-    const modal = document.getElementById('modal-changecustomer');
-    if (modal) {
-        modal.style.display = 'flex';
+    const modalChangeCustomer = document.getElementById('modal-changecustomer');
+    if (modalChangeCustomer) {
+        modalChangeCustomer.style.display = 'flex';
     }
 
     // Lấy thông tin sản phẩm
@@ -844,6 +855,9 @@ function showChangeCustomerBox(customerIndex) {
     // Cập nhật sự kiện lưu
     const saveCustomerButton = document.getElementById('save-customer');
     saveCustomerButton.onclick = () => saveCustomerChanges(customerIndex);
+
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-changecustomer').addEventListener('click', closeChangeCustomerBox);
 }
 
 // Lưu thay đổi sản phẩm
@@ -896,9 +910,9 @@ function saveCustomerChanges(customerIndex) {
 
 // Đóng modal
 function closeChangeCustomerBox() {
-    const modal = document.getElementById('modal-changecustomer');
-    if (modal) {
-        modal.style.display = 'none';
+    const modalChangeCustomer = document.getElementById('modal-changecustomer');
+    if (modalChangeCustomer) {
+        modalChangeCustomer.style.display = 'none';
     }
 }
 

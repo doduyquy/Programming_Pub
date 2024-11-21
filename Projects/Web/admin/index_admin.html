@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" href="./style.css">
-    <title>Twi2light Admin</title>
+    <title>Twilight Store | Admin Viewport</title>
+    <link rel="icon" href="./img/twilight-logo-icon.png">
 </head>
 <body>
     <div id="wrap">
@@ -17,6 +18,7 @@
                 <img src="./img/twilight-logo.png" alt="Logo">
                 <!-- <span class="text">Admin</span> -->
             </a>
+            <div class="line"></div>
             <ul class="side-menu">
                 <li id="sidebar__dashboard" class="item--active">
                     <a >
@@ -65,10 +67,7 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Admin Dashboard</div>
-                        <div id="logout">
-                            <img src="./img/log-out-color-24.png" alt="Logout">
-                            <div id="user-mode">User</div>
-                        </div>
+
                     </nav> 
                     <div class="products-orders">
                         <div class="products">
@@ -105,6 +104,13 @@
                                     <span class="product__text text"> 
                                         <h2>15</h2>
                                         <p>BPhone</p>
+                                    </span>
+                                </li>
+                                <li class="vivo">
+                                    <img class="product__icon icon" src="./img/vivologo.png" alt="BPhone">
+                                    <span class="product__text text"> 
+                                        <h2>15</h2>
+                                        <p>Vivo</p>
                                     </span>
                                 </li>
                             </ul>
@@ -192,10 +198,7 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Quản lý Sản Phẩm</div>
-                        <div id="logout">
-                            <img src="./img/log-out-color-24.png" alt="Logout">
-                            <div id="user-mode">User</div>
-                        </div>
+
                     </nav>
                     <div id="container">
                         <!-- PRODUCTS TABLE -->
@@ -299,7 +302,7 @@
                     <!-- POP-UP SỬA SẢN PHẨM -->
                     <div id="modal-changeproduct" class="modal">
                         <div id="changeproduct">
-                            <button class="close-pop" onclick="closeChangeProductBox()">+</button>
+                            <button class="close-pop" id="close-changeproduct">+</button>
                             <div class="image">
                                 <img id="imgbefore" alt="Ảnh trước">
                                 <img id="imgafter" alt="Ảnh sau">
@@ -317,7 +320,7 @@
                     <!-- POP-UP XEM CHI TIẾT SẢN PHẨM -->
                     <div id="modal-detailproduct" class="modal">
                         <div id="detailproduct">
-                            <button class="close-pop" onclick="closeDetailProductBox()">+</button>
+                            <button class="close-pop" id="close-detailproduct">+</button>
                             <div class="product-details">
                                 <img id="detail-img" alt="Hình ảnh sản phẩm">
                                 <div>
@@ -342,10 +345,7 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Quản lý Khách Hàng</div>
-                        <div id="logout">
-                            <img src="./img/log-out-color-24.png" alt="Logout">
-                            <div id="user-mode">User</div>
-                        </div>
+
                     </nav>
                     <div id="container">
                         <!-- CUSTOMERS TABLE -->
@@ -386,7 +386,7 @@
                         <!-- POP-UP SỬA KHÁCH HÀNG -->
                         <div id="modal-changecustomer" class="modal">
                             <div id="changecustomer">
-                                <button class="close-pop" onclick="closeChangeCustomerBox()">+</button>
+                                <button class="close-pop" id="close-changecustomer">+</button>
                                 <div class="info-customer">
                                     <label for="edit-username">Tên đăng nhập</label>
                                     <input type="text" id="edit-username"><br>
@@ -409,13 +409,10 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Quản lý Đơn Hàng</div>
-                        <div id="logout">
-                            <img src="./img/log-out-color-24.png" alt="Logout">
-                            <div id="user-mode">User</div>
-                        </div>
+
                     </nav>
                     <div id="container">
-                        <!-- ORDER TABLE -->
+                        <!-- PRODUCTS TABLE -->
                         <div id="leftsection">
                             <div id="table_list">
                                 <table class="table-content">
@@ -480,10 +477,6 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Thống kê</div>
-                        <div id="logout">
-                            <img src="./img/log-out-color-24.png" alt="Logout">
-                            <div id="user-mode">User</div>
-                        </div>
                     </nav>
                     <!-- Thống kê theo khoảng thời gian (ngày -> ngày) -->
                     <div class="period">
@@ -503,17 +496,29 @@
                         <div id="leftsection">
                             <div id="table_list">
                                 <table class="table-content">
-                                    <thead class="table-content__header">
+                                    <thead class="product-header">
                                         <th>DOANH THU THEO SẢN PHẨM</th>
                                         <tr>
+                                            <!-- <th>#ID</th> -->
+                                            <th>#ID</th>
                                             <th>Tên sản phẩm</th>
                                             <th>Doanh số</th>
                                             <th>Doanh thu</th>
                                             <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="statistics-product-table__body">
-                                        
+                                    <tbody>
+                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
+                                        <tr data-id="10042">
+                                            <td>01</td>
+                                            <td>Samsung</td>
+                                            <td>1234</td>
+                                            <td>123.456.789 VND</td>
+                                            <td>
+                                                <button type="button">Hóa đơn</button>
+                                            </td>
+                                        </tr>
+                                        <!-- Lặp lại các dòng sản phẩm nếu cần -->
                                     </tbody>
                                 </table>
                                 <div id="pagination-statistics"></div>
@@ -524,12 +529,19 @@
                                 <!-- Tổng doanh thu của các sản phẩm -->
                                 <div class="total-revenue">
                                     <h2>Tổng doanh thu</h2>
-                                    <div id="statistics-product__total-revenue"></div>
+                                    <div>123.456.789.000 VND</div>
                                 </div>
                             </div>
                             <div class="subsection">
                                 <!-- Chỉ ra sản phẩm chạy nhất và ế nhất (theo số lượng bán ra (doanh số)) -->
-                                <div id="statistics-product__special-product">
+                                <div class="special-product">
+                                    <h2>Sản phẩm chạy nhất</h2>
+                                    <p>Tên: <span>Samsung S24</span> </p>
+                                    <p>Doanh số: <span>123456</span> </p>
+    
+                                    <h2>Sản phẩm ế nhất</h2>
+                                    <p>Tên: <span>Bphone 10</span> </p>
+                                    <p>Doanh số: <span>10</span> </p>
                                 </div>
                             </div>
                             
@@ -542,16 +554,27 @@
                         <div id="leftsection">
                             <div id="table_list">
                                 <table class="table-content">
-                                    <thead class="table-content__header">
+                                    <thead class="product-header">
                                         <th>DOANH THU KHÁCH HÀNG</th>
                                         <tr>
                                             <th>Username</th>
+                                            <th>Tên khách hàng</th>
                                             <th>Số điện thoại</th>
                                             <th>Doanh thu</th>
                                             <th>Xem hóa đơn</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="statistics-customer-table__body">
+                                    <tbody>
+                                        <!-- Thêm các dòng sản phẩm khác ở đây -->
+                                        <tr data-id="10042">
+                                            <td>quy</td>
+                                            <td>doduyquy</td>
+                                            <td>0123456789</td>
+                                            <td>123.456.789 VND</td>
+                                            <td>
+                                                <button type="button">Hóa đơn</button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <div id="pagination-statistics"></div>
@@ -562,8 +585,7 @@
                                 <!-- Tổng doanh thu của khách hàng -->
                                 <div class="total-revenue">
                                     <h2>Tổng doanh thu</h2>
-                                    <div id="statistics-customer__total-revenue">
-                                    </div>
+                                    <div>123.456.789.000 VND</div>
                                 </div>
                             </div>
                             <div class="subsection">
@@ -571,7 +593,7 @@
                                 <div class="top-customers">
                                     <h2>Top khách hàng</h2>
                                     <p>Top: 
-                                        <input type="number" id="statistics-customer__top-input"> 
+                                        <input type="number" name="" id=""> 
                                     </p>
                                 </div>
                             </div>                            
