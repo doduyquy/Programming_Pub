@@ -975,6 +975,14 @@ function displayOrdersTable(orderArray){
     });
     // console.log(tableHTML);
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
+
+    updatePagination('order');
+
+    // Tính toán tổng số trang cho Orders
+    totalOrderPages = Math.ceil(orderArray.length / itemsPerPageOrder);
+
+    // Tạo phân trang cho đơn hàng
+    createPagination(totalOrderPages, 'order');
 }
 displayOrdersTable(orderArray);
 
