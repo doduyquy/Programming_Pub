@@ -132,7 +132,7 @@ function customAlert(message, type) {
 
 /* MAIN__PRODUCTS */
 let filteredProducts = []; // Lấy productArray từ localStorage đã được import từ productArray.js
-
+let currentOrdersArray = [];
 // *** Bắt đầu thêm các biến phân trang cho Products và Customers ***
 // Phân trang cho Products với 8 sản phẩm mỗi trang
 let currentProductPage = 1;
@@ -147,12 +147,17 @@ const itemsPerPageCustomer = 10;
 // Phân trang cho Orders với 5 đơn hàng mỗi trang
 let currentOrderPage = 1;
 let totalOrderPages = 1;
-const itemsPerPageOrder = 2;
+const itemsPerPageOrder = 10;
 
 // Phân trang cho Statistics với 10 thống kê mỗi trang
-let currentStatisticsPage = 1;
-let totalStatisticsPages = 2;
-const itemsPerPageStatistics = 2;
+let currentStatisticsProductPage = 1;
+let totalStatisticsProductPages = 1;
+const itemsPerPageStatisticsProduct = 10;
+
+// Phân trang cho Statistics với 10 thống kê mỗi trang
+let currentStatisticsCustomerPage = 1;
+let totalStatisticsCustomerPages = 1;
+const itemsPerPageStatisticsCustomer = 10;
 // *** Kết thúc thêm các biến phân trang ***
 
 // Chức năng tìm kiếm sản phẩm
@@ -251,9 +256,11 @@ function createPagination(totalPages, type) {
     } else if (type === 'customer') {
         paginationId = 'pagination-customers';
     } else if (type === 'order') {
-        paginationId = 'pagination-orders'; 
-    } else if (type === 'statistics') {
-        paginationId = 'pagination-statistics';
+        paginationId = 'pagination-orders';
+    } else if (type === 'statistics-product') {
+        paginationId = 'pagination-statistics-products';
+    } else if (type === 'statistics-customer') {
+        paginationId = 'pagination-statistics-customers';
     } else {
         paginationId = 'pagination';
     }
@@ -280,12 +287,16 @@ function createPagination(totalPages, type) {
             updatePagination('customer');
         } else if (type === 'order' && currentOrderPage > 1) {
             currentOrderPage--;
-            displayOrderPage(currentOrderPage);
+            displayOrdersTable(currentOrdersArray);
             updatePagination('order');
-        } else if (type === 'statistics' && currentStatisticsPage > 1) {
-            currentStatisticsPage--;
-            displayStatisticsPage(currentStatisticsPage);
-            updatePagination('statistics');
+        } else if (type === 'statistics-product' && currentStatisticsProductPage > 1) {
+            currentStatisticsProductPage--;
+            displayStatisticsProduct(currentStatisticsProductPage);
+            updatePagination('statistics-product');
+        } else if (type === 'statistics-customer' && currentStatisticsCustomerPage > 1) {
+            currentStatisticsCustomerPage--;
+            displayStatisticsCustomer(currentStatisticsCustomerPage);
+            updatePagination('statistics-customer');
         }
     });
     pagination.appendChild(prevButton);
@@ -307,19 +318,24 @@ function createPagination(totalPages, type) {
                 updatePagination('customer');
             } else if (type === 'order') {
                 currentOrderPage = i;
-                displayOrderPage(currentOrderPage);
+                displayOrdersTable(currentOrdersArray);
                 updatePagination('order');
-            } else if (type === 'statistics') {
-                currentStatisticsPage = i;
-                displayStatisticsPage(currentStatisticsPage);
-                updatePagination('statistics');
+            } else if (type === 'statistics-product') {
+                 currentStatisticsProductPage = i;
+                 displayStatisticsProduct( currentStatisticsProductPage);
+                updatePagination('statistics-product');
+            } else if (type === 'statistics-customer') {
+                currentStatisticsCustomerPage = i;
+                displayStatisticsCustomer(currentStatisticsCustomerPage);
+                updatePagination('statistics-customer');
             }
         });
         if (
             (type === 'product' && i === currentProductPage) ||
             (type === 'customer' && i === currentCustomerPage) ||
             (type === 'order' && i === currentOrderPage) ||
-            (type === 'statistics' && i === currentStatisticsPage)
+            (type === 'statistics-product' && i === currentStatisticsProductPage) ||
+            (type === 'statistics-customer' && i === currentStatisticsCustomerPage)
         ) {
             button.classList.add('active');
         }
@@ -342,12 +358,16 @@ function createPagination(totalPages, type) {
             updatePagination('customer');
         } else if (type === 'order' && currentOrderPage < totalOrderPages) {
             currentOrderPage++;
-            displayOrderPage(currentOrderPage);
+            displayOrdersTable(currentOrdersArray);
             updatePagination('order');
-        } else if (type === 'statistics' && currentStatisticsPage < totalStatisticsPages) {
-            currentStatisticsPage++;
-            displayStatisticsPage(currentStatisticsPage);
-            updatePagination('statistics');
+        } else if (type === 'statistics-product' && currentStatisticsProductPage < totalStatisticsProductPages) {
+            currentStatisticsProductPage++;
+            displayStatisticsProduct(currentStatisticsProductPage);
+            updatePagination('statistics-product');
+        } else if (type === 'statistics-customer' && currentStatisticsCustomerPage < totalStatisticsCustomerPages) {
+            currentStatisticsCustomerPage++;
+            displayStatisticsCustomer(currentStatisticsCustomerPage);
+            updatePagination('statistics-customer');
         }
     });
     pagination.appendChild(nextButton);
@@ -361,8 +381,10 @@ function updatePagination(type) { // Thêm tham số 'type'
         paginationId = 'pagination-customers';
     } else if (type === 'order') {
         paginationId = 'pagination-orders';
-    } else if (type === 'statistics') {
-        paginationId = 'pagination-statistics';
+    } else if (type === 'statistics-product') {
+        paginationId = 'pagination-statistics-products';
+    } else if (type === 'statistics-customer') {
+        paginationId = 'pagination-statistics-customers';
     } else {
         paginationId = 'pagination';
     }
@@ -382,8 +404,12 @@ function updatePagination(type) { // Thêm tham số 'type'
             if (parseInt(link.textContent) === currentOrderPage) {
                 link.classList.add('active');
             }
-        } else if (type === 'statistics') {
-            if (parseInt(link.textContent) === currentStatisticsPage) {
+        } else if (type === 'statistics-product') {
+            if (parseInt(link.textContent) === currentStatisticsProductPage) {
+                link.classList.add('active');
+            }
+        } else if (type === 'statistics-customer') {
+            if (parseInt(link.textContent) === currentStatisticsCustomerPage) {
                 link.classList.add('active');
             }
         }
@@ -426,50 +452,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     totalOrderPages = Math.ceil(orderArray.length / itemsPerPageOrder);
     createPagination(totalOrderPages, 'order'); // Tạo nút phân trang cho đơn hàng
-    displayOrderPage(currentOrderPage); // Hiển thị trang đầu tiên của đơn hàng
+    displayOrdersTable(orderArray); // Hiển thị trang đầu tiên của đơn hàng
 
 
     totalStatisticsPages = Math.ceil(statisticsProductArray.length / itemsPerPageStatistics);
-    createPagination(totalStatisticsPages, 'statistics'); // Tạo nút phân trang cho thống kê
-    displayStatisticsPage(currentStatisticsPage); // Hiển thị trang đầu tiên của thống kê
+    createPagination(totalStatisticsProductPages, 'statistics-product'); // Tạo nút phân trang cho thống kê
+    displayStatisticsProduct(currentStatisticsProductPage); // Hiển thị trang đầu tiên của thống kê
 
 
     totalStatisticsPages = Math.ceil(createStatisticsCustomerArray.length / itemsPerPageStatistics);
-    createPagination(totalStatisticsPages, 'statistics'); // Tạo nút phân trang cho thống kê
-    displayStatisticsPage(currentStatisticsPage); // Hiển thị trang đầu tiên của thống kê
+    createPagination(totalStatisticsCustomerPages, 'statistics-customer'); // Tạo nút phân trang cho thống kê
+    displayStatisticsCustomer(currentStatisticsCustomerPage); // Hiển thị trang đầu tiên của thống kê
 
 });
-// document.addEventListener('DOMContentLoaded', () => {
-//     showCorrespondingMain();
-
-//     // Kiểm tra nếu allProducts rỗng thì tải từ localStorage
-//     if (allProducts.length === 0) {
-//         alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
-//     } else {
-//         filteredProducts = allProducts.slice(); // Sao chép mảng sản phẩm
-//         totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
-//         createPagination(totalProductPages, 'product'); // Tạo nút phân trang cho sản phẩm
-//         displayProductPage(currentProductPage); // Hiển thị trang đầu tiên của sản phẩm
-//     }
-
-//     // Thêm sự kiện submit cho form thêm sản phẩm 
-//     const addProductForm = document.getElementById('add-product-form'); 
-//     if (addProductForm) { 
-//         addProductForm.addEventListener('submit', addProduct); 
-//     }
-
-//     // Kiểm tra nếu customerArray rỗng thì tải từ localStorage
-//     if (customerArray.length === 0) {
-//         alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
-//     } else {
-//         displayCustomerPage(currentCustomerPage);
-//     }
-//     // Thêm sự kiện submit cho form thêm khách hàng
-//     const addCustomerForm = document.getElementById('add-customer-form'); 
-//     if (addCustomerForm) { 
-//         addCustomerForm.addEventListener('submit', addCustomer); 
-//     }
-// });
 
 function addProduct(event) {
     event.preventDefault(); // Ngăn form tự submit
@@ -939,16 +934,6 @@ function closeChangeCustomerBox() {
     }
 }
 
-// ORDER
-function displayOrderPage(page) {
-    // Hiển thị đơn hàng của trang hiện tại
-}
-
-// STATISTICS
-function displayStatisticsPage(page) {
-    // Hiển thị thống kê của trang hiện tại
-}
-
 
 /* MAIN_ORDERS */
 
@@ -959,52 +944,70 @@ function displayStatisticsPage(page) {
 function findCustomerByUsername(username) {
     return customerArray.find((customer) => customer.username === username);
 }
-function displayOrdersTable(orderArray){
+
+
+function getOrdersByPage(page) {
+    const start = (page - 1) * itemsPerPageOrder;
+    const end = start + itemsPerPageOrder;
+    return currentOrdersArray.slice(start, end);
+}
+
+function displayOrdersTable(orders){
+    // Cập nhật mảng đơn hàng hiện tại
+    currentOrdersArray = orders;
+
+    // Tính toán tổng số trang dựa trên tổng số đơn hàng
+    totalOrderPages = Math.ceil(currentOrdersArray.length / itemsPerPageOrder);
+
+    // Điều chỉnh currentOrderPage nếu vượt quá tổng số trang
+    if (currentOrderPage > totalOrderPages) {
+        currentOrderPage = totalOrderPages;
+    }
+    if (currentOrderPage < 1) {
+        currentOrderPage = 1;
+    }
+
+    // Lấy ra các đơn hàng của trang hiện tại
+    const currentPageOrders = getOrdersByPage(currentOrderPage);
+
     let tableHTML = `
-                        <tr>
-                            <th>Khách hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Thời điểm đặt hàng</th>
-                            <th>Địa chỉ giao hàng</th>
-                            <th>Chi tiết</th>
-                            <th>Tình trạng</th>
-                        </tr>
-                    `;
-    orderArray.forEach((order, index) => {
+        <tr>
+            <th>Khách hàng</th>
+            <th>Số điện thoại</th>
+            <th>Thời điểm đặt hàng</th>
+            <th>Địa chỉ giao hàng</th>
+            <th>Chi tiết</th>
+            <th>Tình trạng</th>
+        </tr>
+    `;
+    currentPageOrders.forEach((order, index) => {
 
         const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
         const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
         tableHTML += `
-                    <tr>
-                        <td>${matchingCustomer.username}</td>
-                        <td>${matchingCustomer.phone}</td>
-                        <td>${formattedDate}</td>
-                        <td>${formattedAddress}</td>    
-                        <td>
-                            <button class="detail-btn" onclick="">Chi tiết</button>
-                        </td>
-                        <td>
-                            <!-- index tại từng order để lấy ra từng order tương ứng khi onchange -->
-                            <select id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
-                                <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
-                                <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
-                                <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
-                                <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
-                            </select>
-                        </td>
-                    </tr> 
+            <tr>
+                <td>${matchingCustomer.username}</td>
+                <td>${matchingCustomer.phone}</td>
+                <td>${formattedDate}</td>
+                <td>${formattedAddress}</td>    
+                <td>
+                    <button class="detail-btn" onclick="">Chi tiết</button>
+                </td>
+                <td>
+                    <select id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
+                        <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
+                        <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
+                        <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
+                        <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
+                    </select>
+                </td>
+            </tr> 
         `;
     });
-    // console.log(tableHTML);
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
 
-    updatePagination('order');
-
-    // Tính toán tổng số trang cho Orders
-    totalOrderPages = Math.ceil(orderArray.length / itemsPerPageOrder);
-
-    // Tạo phân trang cho đơn hàng
+    // Tạo phân trang
     createPagination(totalOrderPages, 'order');
 }
 displayOrdersTable(orderArray);
@@ -1045,16 +1048,20 @@ displayOrdersByDate();
 /** FUNC: thay đổi status của từng order */
 function handleStatusChange(orderIndex, newStatus){
     console.log("New status: " + newStatus);
-    // Lấy ra order tương ứng cần thay đổi status
-    const order = orderArray[orderIndex];
+    // Tính chỉ số thực trong currentOrdersArray
+    const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
+    const order = currentOrdersArray[realIndex];
     if(order){
         // Lưu trạng thái ban đầu của dropdown (select)
         const previousStatus = order.status;
         // Kiểm tra thay đổi có thành công?
         const isChange = order.changeOrderStatus(newStatus);
         if(false === isChange){      // Thay đổi status failed 
-            // Giữ nguyên status chũ cho dropdown (select)
+            // Giữ nguyên status chữ cho dropdown (select)
             document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
+        } else {
+            // Cập nhật trạng thái trong currentOrdersArray nếu cần
+            currentOrdersArray[realIndex].status = newStatus;
         }
     } else {    // Không tồn tại order tương ứng
         console.log("Error: không tìm thấy order(index) để thay đổi status");
@@ -1066,27 +1073,34 @@ function displayOrderByStatus(){
     const status = document.getElementById('filter__status-selection').value;
     if('ALL' === status){
         // Hiển thị lại toàn bộ orderArray:
+        currentOrderPage = 1; // Đặt lại trang hiện tại về 1
         displayOrdersTable(orderArray);
     } else {    
         // Hiển thị orderArray với status tương ứng:
-        displayOrdersTable(filterOrderByStatus(status));
+        const filteredOrders = filterOrderByStatus(status);
+        currentOrderPage = 1; // Đặt lại trang hiện tại về 1
+        displayOrdersTable(filteredOrders);
     }
 }
-displayOrderByStatus();
+document.getElementById('filter__status-selection').addEventListener('change', displayOrderByStatus);
 
 /** FUNC: sort order array theo quận (tạo ra một orderArray mới):
  * 1. Số nhỏ -> số lớn
  * 2. Alphabet
  */
 function displaySortOrderArrayByDistrict(){
-    // console.log(sortOrderByDistrict());
     document.getElementById('order__sort-by-district').addEventListener('click',(event) => {
-        displayOrdersTable(sortOrderByDistrict());
+        const sortedOrders = sortOrderByDistrict();
+        currentOrderPage = 1; // Đặt lại trang hiện tại về 1
+        displayOrdersTable(sortedOrders);
     });
 }
 displaySortOrderArrayByDistrict();
 
-
+function initializeOrdersDisplay() {
+    displayOrdersTable(orderArray);
+}
+document.addEventListener('DOMContentLoaded', initializeOrdersDisplay);
 
 function resetOrderFilter(){
     const resetBtn = document.getElementById('order__reset-filter-btn');
@@ -1098,6 +1112,7 @@ function resetOrderFilter(){
         // Reset trường select về giá trị mặc định
         document.getElementById('filter__status-selection').value = 'ALL';
 
+        currentOrderPage = 1; // Đặt lại trang hiện tại về 1
         displayOrdersTable(orderArray);
     });
 }
@@ -1112,35 +1127,41 @@ resetOrderFilter();
  */
 // Mảng statisticsProductArray:
 let statisticsProductArray = [];
-function displayStatisticsProduct(){
+function displayStatisticsProduct(page = 1) {
+    currentStatisticsProductPage = page;
+    const itemsPerPage = itemsPerPageStatisticsProduct;
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
     statisticsProductArray = createStatisticsProductArray();
     console.log('Thống kê sản phẩm: ');
     console.log(statisticsProductArray);
+    const paginatedData = statisticsProductArray.slice(start, end);
 
     let tableHTML = ``;
-    statisticsProductArray.forEach((product) => {
+    paginatedData.forEach((product, index) => {
         tableHTML += `
-                    <tr>
-                        <td>${product.name}</td>
-                        <td>${product.quantity}</td>
-                        <td>${product.quantity * product.price}</td>
-                        <td>
-                            <button type="button">Hóa đơn</button>
-                        </td>
-                    </tr>
-                    `;
+            <tr>
+                <td>${start + index + 1}</td>
+                <td>${product.name}</td>
+                <td>${product.quantity}</td>
+                <td>${product.quantity * product.price}</td>
+                <td>
+                    <button type="button">Hóa đơn</button>
+                </td>
+            </tr>
+        `;
     });
     document.getElementById('statistics-product-table__body').innerHTML = tableHTML;
 
-    updatePagination('statistics');
-
     // Tính toán tổng số trang cho Statistics
-    totalStatisticsPages = Math.ceil(statisticsProductArray.length / itemsPerPageStatistics);
+    totalStatisticsProductPages = Math.ceil(statisticsProductArray.length / itemsPerPage);
 
-    // Tạo phân trang cho statistics
-    createPagination(totalStatisticsPages, 'statistics');
+    // Tạo phân trang cho statistics-product
+    createPagination(totalStatisticsProductPages, 'statistics-product');
 }
-displayStatisticsProduct();
+
+// Gọi hàm để hiển thị trang đầu tiên
+displayStatisticsProduct(currentStatisticsProductPage);
 
 /** Tổng doanh thu trên các đơn hàng */
 function calcTotalProductRevenue(){
@@ -1201,34 +1222,47 @@ displaySpecialProduct();
  */
 let statisticsCustomerArray = [];
 /**  FUNC: hiển thị mảng thống kê theo khách hàng đã mua. */
-function displayStatisticsCustomer(){
+function displayStatisticsCustomer(page = 1) {
+    currentStatisticsCustomerPage = page;
+    const itemsPerPage = itemsPerPageStatisticsCustomer;
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
     statisticsCustomerArray = createStatisticsCustomerArray();
-    let tableHTML = ``;
-    statisticsCustomerArray.forEach((customer) => {
+    
+    const paginatedData = statisticsCustomerArray.slice(start, end);
+
+    let tableHTML = `
+        <tr>
+            <th>Customer ID</th>
+            <th>Phone</th>
+            <th>Total Revenue</th>
+            <th>Hành Động</th>
+        </tr>
+    `;
+    paginatedData.forEach((customer, index) => {
         tableHTML += `
-                    <tr>
-                        <td>${customer.customerId}</td>
-                        <td>${customer.phone}</td>
-                        <td>${customer.totalRevenue}</td>
-                        <td>
-                            <button type="button">Hóa đơn</button>
-                        </td>
-                    </tr>
+            <tr>
+                <td>${customer.customerId}</td>
+                <td>${customer.phone}</td>
+                <td>${customer.totalRevenue}</td>
+                <td>
+                    <button type="button">Hóa đơn</button>
+                </td>
+            </tr>
         `;
     });
-
     document.getElementById('statistics-customer-table__body').innerHTML = tableHTML;
     console.log(statisticsCustomerArray);
 
-    updatePagination('statistics');
+    // Tính toán tổng số trang cho Statistics Customer
+    totalStatisticsCustomerPages = Math.ceil(statisticsCustomerArray.length / itemsPerPage);
 
-    // Tính toán tổng số trang cho Statistics
-    totalStatisticsPages = Math.ceil(statisticsCustomerArray.length / itemsPerPageStatistics);
-
-    // Tạo phân trang cho statistics
-    createPagination(totalStatisticsPages, 'statistics');
+    // Tạo phân trang cho statistics-customer
+    createPagination(totalStatisticsCustomerPages, 'statistics-customer');
 }
-displayStatisticsCustomer();
+
+// Gọi hàm để hiển thị trang đầu tiên
+displayStatisticsCustomer(currentStatisticsCustomerPage);
 
 /** Tổng doanh thu theo khách hàng */
 function calcTotalCustomerRevenue(){
