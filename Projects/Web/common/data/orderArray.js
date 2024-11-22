@@ -1,4 +1,4 @@
-import {customerArray} from './customerArray.js';
+import {customerArray, Address} from './customerArray.js';
 
 
 /** ORDER CLASS: đối tượng hóa đơn, sau khi user chọn product trong cart và thanh toán. */
@@ -6,13 +6,21 @@ class Order {
     customerId = undefined;
     checkoutCart = [];      // Array
     date = undefined;       // Date object
+    
+    // name = undefined;       // Real name
+    phone = undefined;      // Phone to call for receiver order
+    address = undefined;    // Address object
+    
     // Tình trạng đơn hàng: UNPROCESSED | CONFIRMED | SUCCEEDED | FAILED
     status = undefined;             
 
-    constructor(customerId, checkoutCart, date, status = 'UNPROCESSED'){
+    constructor(customerId, checkoutCart, date, phone, address, status = 'UNPROCESSED'){
         this.customerId = customerId;
         this.checkoutCart = checkoutCart;
         this.date = date;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
         this.status = status;
     }
 
@@ -83,7 +91,7 @@ if (!orderArray) {
     // => Chuyển đổi string -> Order object
     // Chuyển đổi từng đối tượng thành instance của Order
     orderArray = orderArray.map(order => 
-        new Order(order.customerId, order.checkoutCart, new Date(order.date), order.status)
+        new Order(order.customerId, order.checkoutCart, new Date(order.date), order.phone, order.address, order.status)
     );
 
 }
@@ -94,8 +102,8 @@ export function saveOrderArrayToStorage(){
     localStorage.setItem('orderArray', JSON.stringify(orderArray));
 
 }
-export function addOrderToArray(customerId, checkoutCart, date, status = 'UNPROCESSED'){
-    const newOrder = new Order(customerId, checkoutCart, date, status);
+export function addOrderToArray(customerId, checkoutCart, date, phone, address, status = 'UNPROCESSED'){
+    const newOrder = new Order(customerId, checkoutCart, date, phone, address, status);
     orderArray.push(newOrder);
     saveOrderArrayToStorage();
 }

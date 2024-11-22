@@ -1,4 +1,4 @@
-import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage} from '../common/data/customerArray.js';
+import {customerArray, Address, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage} from '../common/data/customerArray.js';
 import {orderArray, saveOrderArrayToStorage, addOrderToArray} from '../common/data/orderArray.js'
 import {Cart } from '../common/data/cart.js';
 
@@ -437,7 +437,8 @@ function createOrder(){
     const now = new Date();
     const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    addOrderToArray(customerId, cartItemChecked, orderDate);
+    addOrderToArray(customerId, cartItemChecked, orderDate, currentCustomer.phone, currentCustomer.address);
+    console.log('Order: ');
     console.log(orderArray);
 }
 
@@ -449,9 +450,13 @@ function createOrder(){
  */
 function completeUserPurchase(){
     document.getElementById('place-order-btn').addEventListener('click', function(){
-        createOrder();
-        deleteAllProductIsPicked();
+        createOrder();                  // Tạo order
+        deleteAllProductIsPicked();     // Xóa các sản phẩm được pick, đã mua
+                                        // Lưu toàn bộ thông tin người dùng 
         console.log('User click Thanh toán');
+        console.log("Current customer: ");
+        console.log(currentCustomer);
+
     });
 }
 completeUserPurchase();
@@ -464,7 +469,7 @@ completeUserPurchase();
 const provinceDistrictMap = {  
     'TP.HCM': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7'],  
     'Long An': ['Thành phố Tân An', 'Huyện Đức Hòa', 'Huyện Cần Đước', 'Huyện Bến Lức'],  
-    'Bình Định': ['Thành phố Quy Nhơn', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Hoài Nhơn']  
+    'Bình Định': ['Thành phố Quy Nhơn', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Hoài Nhơn'],  
 };    
 
 
@@ -700,7 +705,6 @@ function thanhtoan()
 
         updateSummary(); // Update tóm tắt phương thức thanh toán
         updateAddressSummary(); // Update tóm tắt địa chỉ
-        
     }  
 }
 
@@ -800,6 +804,10 @@ function updateAddressSummary()
             phone: newAddressPhone,
             detail: `${newAddressDetail} - ${district} - ${province}`
         };
+        //----- Lưu thông tin người dùng vào currentCustomer để đầy qua orderArray
+        currentCustomer.phone = newAddressPhone;
+        currentCustomer.address = new Address(province, district, newAddressDetail);
+        //------------------------------------------------------------------------
     }
     // Cập nhật địa chỉ
     const summaryAddressElement = document.getElementById('summary-address');

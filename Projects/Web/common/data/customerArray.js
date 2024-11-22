@@ -6,16 +6,16 @@
  *  -
  *  -
  */
-class Address {
+export class Address {
     city = '';           // String: Thành phố
     district = '';       // Number: Quận *
-    ward = '';           // Phường
+    // ward = '';           // Phường
     numberAndRoad = '';  // Số nhà và tên đường
 
-    constructor(city, district, ward, numberAndRoad) {
+    constructor(city, district, numberAndRoad) {
         this.city = city;
         this.district = district;
-        this.ward = ward;
+        // this.ward = ward;
         this.numberAndRoad = numberAndRoad;
       }
 
