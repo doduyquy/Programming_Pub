@@ -1,6 +1,6 @@
 import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray} from '../common/data/customerArray.js';
 import {Cart } from '../common/data/cart.js';
-import {productArray} from '../common/data/productArray.js';
+import {productArray, allProducts} from '../common/data/productArray.js';
 //-----
 let cart = undefined;
 //-----
@@ -343,8 +343,8 @@ document.getElementById('log-out').addEventListener('click', function(event)
 
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
-let currentProducts = productArray;
-let allProducts = productArray;
+let currentProducts = allProducts;
+let allProductArray = allProducts;
 
 function newPrice(a) {
     return a * 0.9;
@@ -374,17 +374,17 @@ document.querySelectorAll('.sub-nav-links-text a').forEach(link => {
         currentPage = 1; // Reset trang hiện tại
 
         if (brandId === 'TRANG_CHU') {
-            currentProducts = shuffleArray(productArray.slice()); // Xáo trộn mảng sản phẩm khi vào trang chủ
+            currentProducts = shuffleArray(allProducts.slice()); // Xáo trộn mảng sản phẩm khi vào trang chủ
         } else {
             currentProducts = shuffleArray(filterProductsByBrand(brandId));
         }
-        allProducts = currentProducts; // Update allProducts
+        allProductArray = currentProducts; // Update allProductArray
         renderProducts(currentProducts, currentPage);
     });
 });
 // Hàm search theo tên Brand
 function filterProductsByBrand(brandId) {
-    return productArray.filter(product => product.brandId.toUpperCase() === brandId.toUpperCase());
+    return allProducts.filter(product => product.brandId.toUpperCase() === brandId.toUpperCase());
 }
 // Lắng nghe sự kiện click cho các liên kết sắp xếp
 document.querySelectorAll('.select-input__link').forEach(link => {
@@ -411,7 +411,7 @@ const searchButton = document.querySelector('.header__search-btn');
 
 function performSearch() {
     const searchTerm = searchInput.value.toLowerCase();
-    const filteredProducts = allProducts.filter(product => {
+    const filteredProducts = allProductArray.filter(product => {
         return product.name.toLowerCase().includes(searchTerm);
     });
 
@@ -478,7 +478,7 @@ function filterProducts()
 
     const searchTerm = document.querySelector('.auto-form__input2').value.toLowerCase();
 
-    let filteredProducts = productArray.slice(); 
+    let filteredProducts = allProducts.slice(); 
     // 1. Search theo tên Brands
     if (selectedBrands.length > 0) {
         filteredProducts = filteredProducts.filter(product => selectedBrands.includes(product.brandId.toUpperCase()));
@@ -505,7 +505,7 @@ const detailsContainer = document.getElementById('hienthi');
 let vs,gia;
 function showProductDetails(productName)
 {
-    const product = productArray.find(p => p.name === productName);
+    const product = allProducts.find(p => p.name === productName);
     if(!product) return;
 
     const chooseHTML = `
@@ -771,8 +771,8 @@ function changePage(page) {
 //-----------TAO HAM KHOI TAO LAI TRANG------------
 function reloadPage(){
     document.addEventListener('DOMContentLoaded', () => {
-        currentProducts = shuffleArray(productArray.slice());
-        allProducts = currentProducts;
+        currentProducts = shuffleArray(allProducts.slice());
+        allProductArray = currentProducts;
         renderProducts(currentProducts, currentPage);
         
         // Lấy thông tin người đang đăng nhập để reset trang không bị mất thông tin

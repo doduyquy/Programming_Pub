@@ -147,12 +147,12 @@ const itemsPerPageCustomer = 10;
 // Phân trang cho Orders với 5 đơn hàng mỗi trang
 let currentOrderPage = 1;
 let totalOrderPages = 1;
-const itemsPerPageOrder = 8;
+const itemsPerPageOrder = 2;
 
 // Phân trang cho Statistics với 10 thống kê mỗi trang
 let currentStatisticsPage = 1;
-let totalStatisticsPages = 1;
-const itemsPerPageStatistics = 8;
+let totalStatisticsPages = 2;
+const itemsPerPageStatistics = 2;
 // *** Kết thúc thêm các biến phân trang ***
 
 // Chức năng tìm kiếm sản phẩm
@@ -522,7 +522,10 @@ function addProduct(event) {
 
     // Thêm sản phẩm vào mảng và lưu vào localStorage
     allProducts.push(newProduct);
-    localStorage.setItem('allProducts', JSON.stringify(allProducts));
+    // localStorage.setItem('allProducts', JSON.stringify(allProducts));
+    localStorage.setItem('productArray', JSON.stringify(allProducts));
+    console.log(allProducts);
+    console.log(JSON.parse(localStorage.getItem('productArray')));
 
     // Cập nhật danh sách sản phẩm và thông báo thành công
     filterProducts();
@@ -609,7 +612,7 @@ function saveProductChanges(productIndex) {
 
     // Cập nhật localStorage
     localStorage.setItem('productArray', JSON.stringify(allProducts));
-
+    
     // Cập nhật lại danh sách sản phẩm
     filterProducts();
 
