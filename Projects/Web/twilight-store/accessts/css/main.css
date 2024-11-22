@@ -279,7 +279,7 @@ html, body {
 
 .search-input {
     width: 100%;
-    padding: 1rem 2.5rem 1rem 1.5rem;
+    padding: 1rem 3rem 1rem 1.5rem;
     border: none;
     border-radius: 9999px;
     margin-right: -42px;
@@ -549,7 +549,7 @@ html, body {
     font-size: larger;
 }
 .cart-button {
-    margin-top: 10px;
+    margin-top: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -560,6 +560,7 @@ html, body {
     padding: 12px 12px;
     border-radius: 32px;
     transition: all 100ms cubic-bezier(0.77, 0, 0.175, 1);
+    font-size: large;
 }
 
 .cart-button:hover {
@@ -1276,7 +1277,7 @@ html, body {
 
 }
 .auto-form__header{
-    margin-top: 15px;
+    margin-top: 250;
     display: flex;    
     align-items: center;
     justify-content: space-between;
@@ -2087,5 +2088,4 @@ html, body {
 .footer-bottom p {
     margin: 3px 0;
 }
-
 

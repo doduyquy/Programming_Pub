@@ -150,8 +150,10 @@ export function filterOrderByStatus(status){
  */
 export function sortOrderByDistrict(){
     return orderArray.slice().sort((orderA, orderB) => {
-        const districtA = getDistrictByCustomerId(orderA.customerId);
-        const districtB = getDistrictByCustomerId(orderB.customerId);
+        const districtA = orderA.address.district;
+        const districtB = orderB.address.district;
+        // const districtA = getDistrictByCustomerId(orderA.customerId);
+        // const districtB = getDistrictByCustomerId(orderB.customerId);
         return compareDistrict(districtA, districtB);
     });
 }
@@ -175,10 +177,10 @@ function compareDistrict(districtA, districtB){
         return districtA.localeCompare(districtB);
     }
 }
-function getDistrictByCustomerId(customerId){
-    const matchingCustomer = customerArray.find(customer => customerId === customer.username);
-    return matchingCustomer.address.getDistrict();
-}
+// function getDistrictByCustomerId(customerId){
+//     const matchingCustomer = customerArray.find(customer => customerId === customer.username);
+//     return matchingCustomer.address.getDistrict();
+// }
 
 
 /** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:

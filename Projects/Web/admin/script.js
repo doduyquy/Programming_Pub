@@ -951,13 +951,13 @@ function displayOrdersTable(orderArray){
 
         const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
-        // const formattedAddress = `${matchingCustomer.address.numberAndRoad}, Phường ${matchingCustomer.address.ward}, Quận ${matchingCustomer.address.district}, TP ${matchingCustomer.address.city}`;
+        const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
         tableHTML += `
                     <tr>
                         <td>${matchingCustomer.username}</td>
                         <td>${matchingCustomer.phone}</td>
                         <td>${formattedDate}</td>
-                        <td>Address</td>    
+                        <td>${formattedAddress}</td>    
                         <td>
                             <button class="detail-btn" onclick="">Chi tiết</button>
                         </td>
