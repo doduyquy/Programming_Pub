@@ -461,7 +461,8 @@ margin-top: 10px;
             animation: growth linear 0.1s;
         }
         .form-container {
-        
+            max-height: 100vh;
+            overflow-y: auto;   
             width: 500px;
             margin: 0 auto;
             background-color: white;
@@ -938,18 +939,56 @@ margin-top: 10px;
     }
 
     .form-container {
-        width: 100%;
+
         padding: 15px;
     }
 
     .modal-box {
 
-        width: 800px;
+        width: 500px;
         margin: auto;
         padding: 30px;
     }
+    .payment-section{
+        display: block;
+    }
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+@media screen and (max-width: 600px) {
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .form-container {
+
+        padding: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .goback, .submit-button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
 
+@media screen and (max-width: 400px) {
+    .form-container {
+        padding: 5px;
+    }
+
+    .form-input {
+        padding: 8px;
+    }
+    .form-control {
+        padding: 8px;
+    }
+}
 @media screen and (max-width: 480px) {
     .header__logo {
         width: 120px;
@@ -970,5 +1009,8 @@ margin-top: 10px;
 
     #buy-button {
         padding: 8px 15px;
+    }
+    .total-info2{
+        display: block;
     }
 }
