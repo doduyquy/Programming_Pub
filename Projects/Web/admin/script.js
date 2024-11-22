@@ -146,12 +146,12 @@ const itemsPerPageCustomer = 10;
 // Phân trang cho Orders với 5 đơn hàng mỗi trang
 let currentOrderPage = 1;
 let totalOrderPages = 1;
-const itemsPerPageOrder = 5;
+const itemsPerPageOrder = 8;
 
 // Phân trang cho Statistics với 10 thống kê mỗi trang
 let currentStatisticsPage = 1;
 let totalStatisticsPages = 1;
-const itemsPerPageStatistics = 10;
+const itemsPerPageStatistics = 8;
 // *** Kết thúc thêm các biến phân trang ***
 
 // Chức năng tìm kiếm sản phẩm
