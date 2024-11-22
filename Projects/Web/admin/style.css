@@ -450,14 +450,18 @@ body {
 
 /*pagination web*/
 #container #leftsection #pagination-products,
-#container #leftsection #pagination-customers {
+#container #leftsection #pagination-customers,
+#container #leftsection #pagination-orders,
+#container #leftsection #pagination-statistics {
     display: flex;
     justify-content: center;
     padding: 10px 0;
 }
 
 #container #leftsection #pagination-products a,
-#container #leftsection #pagination-customers a {
+#container #leftsection #pagination-customers a,
+#container #leftsection #pagination-orders a,
+#container #leftsection #pagination-statistics a {
     color: var(--dark);
     float: left;
     padding: 8px 16px;
@@ -468,12 +472,16 @@ body {
     border-radius: 5px;
 }
 #container #leftsection #pagination-products a.active,
-#container #leftsection #pagination-customers a.active {
+#container #leftsection #pagination-customers a.active,
+#container #leftsection #pagination-orders a.active,
+#container #leftsection #pagination-statistics a.active {
     background-color:#db504a;
     color: white;
 }
 #container #leftsection #pagination-products a:hover,
-#container #leftsection #pagination-customers a:hover {
+#container #leftsection #pagination-customers a:hover,
+#container #leftsection #pagination-orders a:hover,
+#container #leftsection #pagination-statistics a:hover {
     background-color: var(--blue);
     color: white;
     border: 1px solid var(--blue);

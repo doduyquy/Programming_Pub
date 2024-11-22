@@ -302,7 +302,7 @@
                     <!-- POP-UP SỬA SẢN PHẨM -->
                     <div id="modal-changeproduct" class="modal">
                         <div id="changeproduct">
-                            <button class="close-pop" onclick="closeChangeProductBox()">+</button>
+                            <button class="close-pop" id="close-changeproduct">+</button>
                             <div class="image">
                                 <img id="imgbefore" alt="Ảnh trước">
                                 <img id="imgafter" alt="Ảnh sau">
@@ -320,7 +320,7 @@
                     <!-- POP-UP XEM CHI TIẾT SẢN PHẨM -->
                     <div id="modal-detailproduct" class="modal">
                         <div id="detailproduct">
-                            <button class="close-pop" onclick="closeDetailProductBox()">+</button>
+                            <button class="close-pop" id="close-detailproduct">+</button>
                             <div class="product-details">
                                 <img id="detail-img" alt="Hình ảnh sản phẩm">
                                 <div>
@@ -386,7 +386,7 @@
                         <!-- POP-UP SỬA KHÁCH HÀNG -->
                         <div id="modal-changecustomer" class="modal">
                             <div id="changecustomer">
-                                <button class="close-pop" onclick="closeChangeCustomerBox()">+</button>
+                                <button class="close-pop" id="close-changecustomer">+</button>
                                 <div class="info-customer">
                                     <label for="edit-username">Tên đăng nhập</label>
                                     <input type="text" id="edit-username"><br>
