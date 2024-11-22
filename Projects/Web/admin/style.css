@@ -526,7 +526,7 @@ body {
 }
 
 #container #rightsection .subsection label {
-    font-size: 14px;
+    font-size: 20px;
     margin-bottom: 8px;
     color: var(--dark);
     font-weight: 500;
@@ -1161,16 +1161,26 @@ body {
 }
 /*css thong ke */
 /* Phần chọn ngày tháng */
+
 .period {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px 20px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    /* background-color: #d9534f;  */
+    background: var(--light);
+    z-index: 1000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc; 
+    display: flex;  
+    justify-content: space-evenly; 
+    align-items: center; 
+    max-width: 100%; 
+    margin: 0 auto; 
+    width: calc(100% - 40px); 
 }
-.period .from-time, 
-.period .to-time {
-    flex: 1; /* Đảm bảo hai phần này có cùng kích thước */
-}
+
 
 .period div {
     display: flex;
@@ -1179,36 +1189,26 @@ body {
 }
 
 .period span {
-    font-size: 14px;
-    margin-bottom: 5px; /* Khoảng cách giữa label và input */
+    font-size: 17px;
+    margin-bottom: 5px; 
 }
 
-.period input[type="date"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px; /* Góc bo tròn */
-    font-size: 14px;
-    width: 200px; /* Chiều rộng của input */
-    background-color: #f9f9f9;
-}
-
-.period input[type="date"]:focus {
-    outline: none;
-    border-color: #007bff; /* Màu viền khi focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng focus */
+.from-time input,
+.to-time input {
+    width: 200px; 
+    height: 35px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    padding: 5px; 
+    box-sizing: border-box; 
+    font-size: 14px; 
+    background-color: #fff; 
 }
 @media (max-width: 768px) {
     .period {
-        flex-direction: column; /* Xếp các phần theo cột trên màn hình nhỏ */
+        flex-direction: column;
         align-items: flex-start;
-    }
-
-    .table-content {
-        font-size: 12px; /* Thu nhỏ chữ trên màn hình nhỏ */
-    }
-
-    .period input[type="date"] {
-        width: 100%; /* Để input chiếm toàn bộ chiều rộng */
+        width: calc(100% - 20px);
     }
 }
 
@@ -1254,36 +1254,23 @@ body {
     font-size: 20px;
     font-weight: bold;
     margin-top: 10px;
+    text-align: center;
 }
 
-/* Sản phẩm đặc biệt */
 #statistics-product__special-product {
     background-color: #e6f7ff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
-/* Top khách hàng */
-.top-customers {
-    background-color: #fff7e6;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+#statistics-product__special-product #bestProduct {
+    margin-bottom: 21px;
+}
+#statistics-product__special-product p span {
+    margin-left: 45px;
 }
 
-.top-customers h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #ff7f50;
-}
 
-.top-customers input[type="number"] {
-    margin-top: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
 .table-content__til{
     padding:14px;
     background-color: #ff7f50;
@@ -1292,4 +1279,30 @@ body {
     border:1px solid #aaaaaa;
     border-radius: 4px;
     color:#fff7e6;
+}
+.top-customers {
+    margin-top: 20px;
+}
+
+.top-customers h2 {
+    margin-bottom: 10px;
+}
+.top-row h4{
+    font-size: 200px;
+    font-weight: 100px;
+}
+
+.top-row {
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+
+#statistics-customer__top-input {
+    width: 80px; 
+    padding: 5px; 
+    font-size: 14px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
 }

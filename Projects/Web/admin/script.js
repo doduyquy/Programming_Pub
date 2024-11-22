@@ -1189,13 +1189,16 @@ function displaySpecialProduct(){
     });
 
     let specialProductHTML = `
+                            <div id="bestProduct">
                                 <h2>Sản phẩm chạy nhất</h2>
                                 <p>Tên: <span>${bestProduct.name}</span> </p>
                                 <p>Doanh số: <span>${bestProduct.quantity}</span> </p>
-
+                            </div>
+                            <div id="worstProduct">
                                 <h2>Sản phẩm ế nhất</h2>
                                 <p>Tên: <span>${worstProduct.name}</span> </p>
                                 <p>Doanh số: <span>${worstProduct.quantity}</span> </p>
+                            </div>
                             `;
     document.getElementById('statistics-product__special-product').innerHTML = specialProductHTML;
 }
