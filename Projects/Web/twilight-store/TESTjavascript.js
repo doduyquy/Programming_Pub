@@ -201,7 +201,7 @@ function Dangnhap()
     }  
     
     // Change: kiểm tra đăng nhập đúng với customerArray
-    if(true == checkValidAccount(username, password))
+    if(1 == checkValidAccount(username, password))
     {
         // Khi đăng nhập thành công, load Cart tưng ứng lên từ localStorage
         cart = new Cart(username);
@@ -212,7 +212,10 @@ function Dangnhap()
         alert("Đã đăng nhập thành công với tài khoản: " + username);  
         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
         TAIKHOAN(username);
-    } 
+    } else if(0 == checkValidAccount(username, password)){
+        // Tài khoản đã bị khóa
+        alert("Tài khoản không còn hoạt động");
+    }
     else if(checkExistedUsername(username) == true) 
     {
         alert("Sai mật khẩu!\nVui lòng nhập lại!");
@@ -224,6 +227,40 @@ function Dangnhap()
         a.style.display = "block"; // Hiển thị phần đăng ký  
     }  
 }
+// function Dangnhap() 
+// {
+//     const username = document.querySelector('.auto-form__input[type="username"]').value;
+//     const password = document.querySelector('.auto-form__input[type="password"]').value;
+//     if (!username || !password) 
+//     {  
+//         alert("Vui lòng điền đầy đủ thông tin!");  
+//         return;  
+//     }  
+    
+//     // Change: kiểm tra đăng nhập đúng với customerArray
+//     if(true == checkValidAccount(username, password))
+//     {
+//         // Khi đăng nhập thành công, load Cart tưng ứng lên từ localStorage
+//         cart = new Cart(username);
+//         updateCartCount();
+//         current_user = username;
+//         localStorage.setItem('currentUser',JSON.stringify(current_user));       
+//         //-----------
+//         alert("Đã đăng nhập thành công với tài khoản: " + username);  
+//         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
+//         TAIKHOAN(username);
+//     } 
+//     else if(checkExistedUsername(username) == true) 
+//     {
+//         alert("Sai mật khẩu!\nVui lòng nhập lại!");
+//     }
+//     else
+//     {  
+//         alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");  
+//         b.style.display = "none"; // Ẩn phần thông tin đăng nhập  
+//         a.style.display = "block"; // Hiển thị phần đăng ký  
+//     }  
+// }
 //===== HÀM XỬ LÝ ĐĂNG KÝ =====//
 function Dangky() 
 {

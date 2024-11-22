@@ -163,8 +163,9 @@ export function checkExistedUsername(username) {
 }
 
 // Kiểm tra đăng nhập đúng và tài khoản chưa bị khóa
-// false: username không tồn tại hoặc mật khẩu không đúng.
-// true: hợp lệ
+// -1: username không tồn tại hoặc mật khẩu không đúng.
+// 0: tài khoản đã bị khóa
+// 1: hợp lệ
 export function checkValidAccount(username, password){
     const matchingCustomer = customerArray.find(customer => (customer.username === username));
     // if(!matchingCustomer || matchingCustomer.password !== password){
@@ -172,22 +173,45 @@ export function checkValidAccount(username, password){
     // }    
     if(!matchingCustomer){
         console.log(`Username "${username}" không tồn tại.`);
-        return false;
+        return -1;
     } else {
         if(matchingCustomer.locked){
             console.log(`Username ${username} đã bị khóa`);
-            return false;
+            return 0;
         }
         if(matchingCustomer.password !== password){
             console.log('Mật khẩu không đúng.');
-            return false;
+            return -1;
         }
 
     }
     console.log('Lock: ');
     console.log(matchingCustomer.locked);
-    return true;
+    return 1;
 }
+// export function checkValidAccount(username, password){
+//     const matchingCustomer = customerArray.find(customer => (customer.username === username));
+//     // if(!matchingCustomer || matchingCustomer.password !== password){
+//     //     return false;
+//     // }    
+//     if(!matchingCustomer){
+//         console.log(`Username "${username}" không tồn tại.`);
+//         return false;
+//     } else {
+//         if(matchingCustomer.locked){
+//             console.log(`Username ${username} đã bị khóa`);
+//             return false;
+//         }
+//         if(matchingCustomer.password !== password){
+//             console.log('Mật khẩu không đúng.');
+//             return false;
+//         }
+
+//     }
+//     console.log('Lock: ');
+//     console.log(matchingCustomer.locked);
+//     return true;
+// }
 
 // Thêm new customer vào Array
 // Chỉ cần truyền username, password (khi customer mới đăng kí)
