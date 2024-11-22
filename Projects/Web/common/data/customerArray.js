@@ -50,6 +50,7 @@ class Customer {
     
     /* Information của khách hàng: 
     có thể gộp thành Object nhưng để đơn giản -> không gộp */
+    name = '';
     phone = '';      
     address;// Địa chỉ của khách hàng
     infoCard;
@@ -59,9 +60,10 @@ class Customer {
      */
     locked = false;     // Default: false
     
-    constructor(username, password, phone, address = new Address(), infoCard = new InfoCard(), locked = false){
+    constructor(username, password, name, phone, address = new Address(), infoCard = new InfoCard(), locked = false){
         this.username = username;
         this.password = password;
+        this.name = name;
         this.phone = phone;
         this.address = address;
         this.infoCard = infoCard;
@@ -83,8 +85,8 @@ class Customer {
 
 /* MẢNG KHÁCH HÀNG */
 const AllCustomerArray = [
-    new Customer("user1", "pass1111", "1000000001", new Address("City1", "8", "Ward1", "1 Road A"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
-    new Customer("user2", "pass2", "1000000002", new Address("City2", "5", "Ward2", "2 Road B"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user1", "pass1111", "User one", "1000000001", new Address("City1", "8", "Ward1", "1 Road A"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
+    new Customer("user2", "pass2", "User Two", "1000000002", new Address("City2", "5", "Ward2", "2 Road B"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user3", "pass3", "1000000003", new Address("City3", "Bình Thạnh", "Ward3", "3 Road C"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user4", "pass4", "1000000004", new Address("City4", "Tân Phú", "Ward4", "4 Road D"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
     // new Customer("user5", "pass5", "1000000005", new Address("City5", "Tân Bình", "Ward5", "5 Road E"), new InfoCard("1234567812345678", "12/24", "123", "John Doe", "123 Billing St", "54321"), false),
@@ -215,13 +217,13 @@ export function checkValidAccount(username, password){
 
 // Thêm new customer vào Array
 // Chỉ cần truyền username, password (khi customer mới đăng kí)
-export function addCustomerToArray(username, password, phone = '', email = '', address = new Address(), infoCard = new InfoCard(), status = 1){
+export function addCustomerToArray(username, password, name = '', phone = '', address = new Address(), infoCard = new InfoCard(), locked = false){
     // Kiểm tra username đã tồn tại chưa
     if(checkExistedUsername(username)){
         console.log(`Username "${username}" đã tồn tại.`);
         return false;
     }
-    const customer = new Customer(username, password, phone, email, address, infoCard, status);
+    const customer = new Customer(username, password, name, phone, address, infoCard, locked = false);
     customerArray.push(customer);
     console.log('Added customer to customerArray');
 

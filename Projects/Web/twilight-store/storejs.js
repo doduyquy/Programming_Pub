@@ -437,7 +437,7 @@ function createOrder(){
     const now = new Date();
     const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    addOrderToArray(customerId, cartItemChecked, orderDate, currentCustomer.phone, currentCustomer.address);
+    addOrderToArray(customerId, cartItemChecked, orderDate, currentUsername.name, currentCustomer.phone, currentCustomer.address);
     console.log('Order: ');
     console.log(orderArray);
 }
@@ -805,6 +805,7 @@ function updateAddressSummary()
             detail: `${newAddressDetail} - ${district} - ${province}`
         };
         //----- Lưu thông tin người dùng vào currentCustomer để đầy qua orderArray
+        currentCustomer.name = newAddressName;
         currentCustomer.phone = newAddressPhone;
         currentCustomer.address = new Address(province, district, newAddressDetail);
         //------------------------------------------------------------------------
