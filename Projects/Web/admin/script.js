@@ -1135,13 +1135,12 @@ function displayStatisticsProduct(page = 1) {
     statisticsProductArray = createStatisticsProductArray();
     console.log('Thống kê sản phẩm: ');
     console.log(statisticsProductArray);
-    const paginatedData = statisticsProductArray.slice(start, end);
+    const paginatedDataProduct = statisticsProductArray.slice(start, end);
 
     let tableHTML = ``;
-    paginatedData.forEach((product, index) => {
+    paginatedDataProduct.forEach((product) => {
         tableHTML += `
             <tr>
-                <td>${start + index + 1}</td>
                 <td>${product.name}</td>
                 <td>${product.quantity}</td>
                 <td>${product.quantity * product.price}</td>
@@ -1229,17 +1228,10 @@ function displayStatisticsCustomer(page = 1) {
     const end = start + itemsPerPage;
     statisticsCustomerArray = createStatisticsCustomerArray();
     
-    const paginatedData = statisticsCustomerArray.slice(start, end);
+    const paginatedDataCustomer = statisticsCustomerArray.slice(start, end);
 
-    let tableHTML = `
-        <tr>
-            <th>Customer ID</th>
-            <th>Phone</th>
-            <th>Total Revenue</th>
-            <th>Hành Động</th>
-        </tr>
-    `;
-    paginatedData.forEach((customer, index) => {
+    let tableHTML = ``;
+    paginatedDataCustomer.forEach((customer) => {
         tableHTML += `
             <tr>
                 <td>${customer.customerId}</td>
