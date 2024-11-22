@@ -1,6 +1,6 @@
 import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray} from '../common/data/customerArray.js';
-import {Cart } from '../common/data/cart.js';
-import {productArray} from '../common/data/productArray.js';
+import {Cart } from '../common/data/cart.js'
+import productArray from '../common/data/productArray.js';
 //-----
 let cart = undefined;
 //-----
@@ -104,6 +104,35 @@ rangeInput.forEach(input => {
     });
 });
 
+
+
+/** LƯU TÀI KHOẢN HIỆN TẠI CỦA USER -> CHUYỂN ĐỔI QUA LẠI GIỮA PAGE CART-INDEX
+ * Khi người dùng đăng nhập thành công, 
+ * lưu {username, password} -> localStorage, key: currentUser
+ * 
+ * => Khi người dùng vào Cart, hay go-back về index, tự động đăng nhập cho người dùng hiện tại.
+*/
+let currentUser;
+function createCurrentUser (){
+    const localCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(localCurrentUser){
+        currentUser = localCurrentUser;
+        console.log('Current user from local: ' + currentUser.username + ' ' + currentUser.status);
+    } else {
+        currentUser = {
+            username: '',
+            password: '',
+            /** 1: chưa đăng xuất -> auto đăng nhập
+             *  0: đã đăng | chưa tồn tại -> không auto đăng nhập     */
+            status: 0,      
+        } 
+        console.log('Not exist current user from local.');
+    }
+}
+createCurrentUser();
+
+// var accounts = [];
+var dem = 0;
 //ĐĂNG NHẬP - ĐĂNG KÝ
 const DNDK = document.getElementsByClassName('nav-link');  //Nút đăng nhập - đăng ký
 const modal=document.querySelector('.modal'); //form dkdn
@@ -176,20 +205,43 @@ function TAIKHOAN(username)
     b.style.display = "none";  
     const userNameElement = document.querySelector('.header__navbar-user-name'); // Lấy phần tử tên người dùng  
     userNameElement.textContent = username;
-    console.log(username + ": current user");
     for (let i = 0; i < DNDK.length; i++) 
         {  
             DNDK[i].style.display = "none";
         }
 }
 
-//===== HÀM XỬ LÝ ĐĂNG NHẬP =====//
-/** KIỂM TRA NGƯỜI DÙNG CÓ ĐĂNG NHẬP HAY CHƯA (dùng biến current user để kiểm soát người đang đăng nhập)
- * DONE: current_user = username    ## Đã đăng nhập
- * NOT: current_user = ''    ## Chưa đăng nhập nhưng vẫn có thể thêm vào giỏ hàng như tài khoản vô danh 
- */
+/** HÀM XỬ LÝ ĐĂNG NHẬP */
+/** Hàm tự động đăng nhập khi người dùng đã đăng nhập trước đó
+ * hay khi người dùng từ checkoutCart page trở về lại index
+ * !!! Chỉ KHÔNG tự động đăng nhập khi người dùng đã Đăng xuất.  */ 
+function autoDangnhap(){
+    // const currentUserLoggedIn = JSON.parse(localStorage.getItem('currentUser')); 
+    if(currentUser){
+        // User đã đăng nhập và chưa đăng xuất.
+        if(currentUser.status === 1){
+            /**  Khi đăng nhập thành công, 
+             * Load Cart,... tưng ứng lên từ localStorage 
+             */
+            cart = new Cart(currentUser.username);
+            updateCartCount();
+    
+            TAIKHOAN(currentUser.username);
+            console.log('Account: ' + currentUser.username + ' auto login');
+        } else {
+            console.log("Can't auto login");
+        }
+    } else {
+        console.log("Not exist current user. Can't auto login");
+    }
+}
+autoDangnhap();
 
-let current_user = ''; 
+
+
+/** KIỂM TRA NGƯỜI DÙNG CÓ ĐĂNG NHẬP HAY CHƯA
+ */
+// let isSignIn = false;
 function Dangnhap() 
 {
     const username = document.querySelector('.auto-form__input[type="username"]').value;
@@ -199,32 +251,62 @@ function Dangnhap()
         alert("Vui lòng điền đầy đủ thông tin!");  
         return;  
     }  
+  
+    let flag = false;
+    let check = false; // Biến kiểm tra đăng nhập thành công  
     
     // Change: kiểm tra đăng nhập đúng với customerArray
-    if(true == checkValidAccount(username, password))
-    {
-        // Khi đăng nhập thành công, load Cart tưng ứng lên từ localStorage
+    if(true == checkValidAccount(username, password)){
+        /**  Khi đăng nhập thành công, 
+         * 1.Load Cart,... tưng ứng lên từ localStorage 
+         * 2.Lưu account của user hiện tại vào localStorage         
+         * 3.updateCartCount();
+         * */
         cart = new Cart(username);
+        // Cập nhật currentUser và lưu vào localStorage
+        currentUser.username = username;
+        currentUser.password = password;
+        currentUser.status = 1;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        console.log('Saved currentUser' + currentUser.username + ' ' + currentUser.status + ' to localStorage');
+        // Cập nhật số lượng products trong Cart
         updateCartCount();
-        current_user = username;
-        localStorage.setItem('currentUser',JSON.stringify(current_user));       
-        //-----------
+
         alert("Đã đăng nhập thành công với tài khoản: " + username);  
+        flag = true;  
         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
         TAIKHOAN(username);
-    } 
-    else if(checkExistedUsername(username) == true) 
-    {
-        alert("Sai mật khẩu!\nVui lòng nhập lại!");
+    } else {
+        alert("Sai mật khẩu hoặc tên đăng nhập!\nVui lòng nhập lại!");
+        check = true;
     }
-    else
+
+    // for (let account of accounts) 
+    // {  
+    //     if (username === account.usn && password === account.mk) 
+    //     {  
+    //         alert("Đã đăng nhập thành công với tài khoản: " + username);  
+    //         flag = true;  
+    //         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
+    //         TAIKHOAN(username);
+    //         break; // Dừng vòng lặp khi đã tìm thấy tài khoản  
+    //     }
+    //     else if (username === account.usn || password === account.mk)  
+    //     {
+    //         alert("Sai mật khẩu hoặc tên đăng nhập!\nVui lòng nhập lại!");
+    //         check = true;
+    //         break;            
+    //     }
+    // }  
+  
+    if (!flag&&!check) 
     {  
         alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");  
         b.style.display = "none"; // Ẩn phần thông tin đăng nhập  
         a.style.display = "block"; // Hiển thị phần đăng ký  
     }  
 }
-//===== HÀM XỬ LÝ ĐĂNG KÝ =====//
+//HÀM XỬ LÝ ĐĂNG KÝ
 function Dangky() 
 {
     const username = document.querySelector('#register-form .auto-form__input[type="username"]').value;
@@ -248,61 +330,114 @@ function Dangky()
     if(checkExistedUsername(username) == true){
         alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
         return;
-    } else 
-    {
+    } else {
         alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
         b.style.display = "block"; // Hiển thị phần thông tin  
         a.style.display = "none";  // Ẩn phần đăng ký  
 
         // Change: thêm new customer vào customerArray khi đăng kí thành công
         addCustomerToArray(username, password);
+        dem++; 
         console.log('Added to customerArray user: ' + username );
 
         // Khi đăng kí thành công, tạo Cart obj tương ứng với username
-        //cart = new Cart(username);
+        cart = new Cart(username);
         console.log('Create Cart with username: ' + username);
         //-----------------
     }
+
+    // ###
     // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
-    function containsUppercaseOrSpecialChar(str) 
-    {  
-        // Biểu thức chính quy để kiểm tra ký tự in hoa và ký tự đặc biệt  
-        const inhoa = /[A-Z]/;
-        const dacbiet = /[!@#$%^&*(),.?":{}|<>]/;  
-        return (inhoa.test(str) && dacbiet.test(str) && str.length>8);  
-    }  
-    if(username.includes(' ')) 
-        {
-            alert("Tên đăng nhập không có khoảng trống!");
-            return;
-        }
-    if(!containsUppercaseOrSpecialChar(password))
-        {
-            alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
-            return;
-        }
+    // function containsUppercaseOrSpecialChar(str) 
+    // {  
+    //     // Biểu thức chính quy để kiểm tra ký tự in hoa và ký tự đặc biệt  
+    //     const inhoa = /[A-Z]/;
+    //     const dacbiet = /[!@#$%^&*(),.?":{}|<>]/;  
+    //     return (inhoa.test(str) && dacbiet.test(str) && str.length>8);  
+    // }  
+    // if(username.includes(' ')) 
+    //     {
+    //         alert("Tên đăng nhập không có khoảng trống!");
+    //         return;
+    //     }
+    // if(!containsUppercaseOrSpecialChar(password))
+    //     {
+    //         alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+    //         return;
+    //     }
 }
-//===== HÀM ĐĂNG XUẤT =====//
-document.getElementById('log-out').addEventListener('click', function(event) 
-{  
-    event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết  
-        
-    //--- Đăng xuất nên reset current_user thành tài khoản vô danh 
-    current_user = '';
-    cart = new Cart(current_user);
-    cart.removeAllFromCart();    // Reset lại toàn bộ như một khách mới 
-    localStorage.setItem('currentUser',JSON.stringify(current_user));
-    //-------
-        
-    u1.style.display = "none";
-    u2.style.display = "none";
-    for (let i = 0; i < DNDK.length; i++) 
-        DNDK[i].style.display = "flex";
-    TRANGCHU();
+// HÀM ĐĂNG XUẤT
+function Dangxuat(){
+    document.getElementById('log-out').addEventListener('click', function(event) 
+    {  
+        console.log('User had clicked Dangxuat button');
+        //-------For current user ----
+        currentUser.status = 0;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        //----------------
+        updateCartCount();
 
-    updateCartCount();  // Cập nhật số lượng giỏ thành 0
-}); 
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết  
+        u1.style.display = "none";
+        u2.style.display = "none";
+        for (let i = 0; i < DNDK.length; i++) 
+            DNDK[i].style.display = "flex";
+        TRANGCHU();
+    }); 
+}
 
+// MẢNG LƯU TRỮ SẢN PHẨM
+const productArray = [
+    {productId: '01', brandId: 'Samsung', img:'./img-prd/ss1.png', name: 'Samsung Galaxy A06', oldPrice: 4090000, pb1: '4GB/128GB', pb2: '8GB/512GB', chip: 'MediaTek G85', pin: '5.000mAh', size: '6.7"', f: '60Hz'},  
+    {productId: '02', brandId: 'Samsung', img:'img-prd/ss2.png', name: 'Samsung Galaxy A15', oldPrice: 4190000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Helio G99', pin: '5.000mAh', size: '6.5"', f: '90Hz'},  
+    {productId: '03', brandId: 'Samsung', img:'img-prd/ss3.png', name: 'Samsung Galaxy A05S', oldPrice: 3990000, pb1: '4GB/128GB', pb2: '8GB/512GB', chip: 'Snap 680', pin: '5.000mAh', size: '6.7"', f: '90Hz'},  
+    {productId: '04', brandId: 'Samsung', img:'img-prd/ss4.png', name: 'Samsung Galaxy A25 5G', oldPrice: 6590000, pb1: '6GB/128GB', pb2: '8GB/512GB', chip: 'Exynos 1280', pin: '5.000mAh', size: '6.5"', f: '120Hz'},  
+    {productId: '05', brandId: 'Samsung', img:'img-prd/ss5.png', name: 'Samsung Galaxy M34 5G', oldPrice: 7990000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Exynos 1280', pin: '6.000mAh', size: '6.5"', f: '120Hz'},  
+    {productId: '06', brandId: 'Samsung', img:'img-prd/ss6.png', name: 'Samsung Galaxy S23 FE 5G', oldPrice: 14890000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Exynos 2200', pin: '4.500mAh', size: '6.4"', f: '120Hz'},  
+    {productId: '07', brandId: 'Samsung', img:'img-prd/ss7.png', name: 'Samsung Galaxy Z Flip5', oldPrice: 25990000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Snap 8 Gen 2', pin: '3.700mAh', size: '6.7" - 3.4"', f: '120Hz'},  
+    {productId: '08', brandId: 'Samsung', img:'img-prd/ss8.png', name: 'Samsung Galaxy Z Pro', oldPrice: 29990000, pb1: '16GB/512GB', pb2: '32GB/1TB', chip: 'Snap 8 Gen 2', pin: '3.700mAh', size: '6.7" - 3.4"', f: '120Hz'},  
+    {productId: '09', brandId: 'Samsung', img:'img-prd/ss9.png', name: 'Samsung Galaxy S23 Ultra', oldPrice: 36990000, pb1: '12GB/512GB', pb2: '16GB/1TB', chip: 'Snap 8 Gen 2', pin: '5.000mAh', size: '6.8"', f: '120Hz'},  
+    {productId: '10', brandId: 'Samsung', img:'img-prd/ss10.png', name: 'Samsung Galaxy Z Fold5', oldPrice: 44990000, pb1: '12GB/512GB', pb2: '16GB/1TB', chip: 'Snap 8 Gen 2', pin: '4.400mAh', size: '7.6" - 6.2"', f: '120Hz'},  
+    {productId: '11', brandId: 'Samsung', img:'img-prd/ss11.png', name: 'Samsung Galaxy Z Fold6', oldPrice: 45990000, pb1: '12GB/512GB', pb2: '16GB/1TB', chip: 'Snap 8 Gen 3', pin: '4.400mAh', size: '7.6" - 6.3"', f: '120Hz'},  
+    {productId: '12', brandId: 'Samsung', img:'img-prd/ss12.png', name: 'Samsung Galaxy S24 Ultra', oldPrice: 44490000, pb1: '16GB/1TB', pb2: '32GB/1TB', chip: 'Snap 8 Gen 3', pin: '5.000mAh', size: '6.8"', f: '120Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap1.png', name: 'iPhone 11', oldPrice: 9990000, pb1: '8GB/64GB', pb2: '12GB/128GB', chip: 'A13 Bionic', pin: '3.110mAh', size: '6.1"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap2.png', name: 'iPhone 12', oldPrice: 11990000, pb1: '8GB/64GB', pb2: '12GB/128GB', chip: 'A14 Bionic', pin: '2.815mAh', size: '6.1"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap3.png', name: 'iPhone 13', oldPrice: 14990000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'A15 Bionic', pin: '3.240mAh', size: '6.1"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap4.png', name: 'iPhone 14', oldPrice: 17090000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'A15 Bionic', pin: '3.279mAh', size: '6.1"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap5.png', name: 'iPhone 14 Plus', oldPrice: 19390000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'A15 Bionic', pin: '4.325mAh', size: '6.7"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap6.png', name: 'iPhone 15 Plus', oldPrice: 21990000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'A16 Bionic', pin: '4.383mAh', size: '6.7"', f: '60Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap7.png', name: 'iPhone 16', oldPrice: 24990000, pb1: '12GB/256GB', pb2: '16GB/1TB', chip: 'A18 Bionic', pin: '4.500mAh', size: '6.1"', f: '120Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap8.png', name: 'iPhone 15 Pro Max', oldPrice: 28690000, pb1: '12GB256GB', pb2: '16GB/1TB', chip: 'A17 Pro', pin: '4.422mAh', size: '6.7"', f: '120Hz'},  
+    {productId: '', brandId: 'Apple', img: 'img-prd/ap9.png', name: 'iPhone 16 Plus', oldPrice: 28990000, pb1: '16GB/256GB', pb2: '16GB/1TB', chip: 'A18 Pro', pin: '3.274mAh', size: '6.1"', f: '120Hz'}, 
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv1.png', name: 'Vivo Y03T', oldPrice: 2790000, pb1: '4GB/64GB', pb2: '8GB/128GB', chip: 'Unisoc Tiger T612', pin: '5.000mAh', size: '6.56"', f: '60Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv2.png', name: 'Vivo Y02s', oldPrice: 2790000, pb1: '3GB/32GB', pb2: '6GB/64GB', chip: 'Helio P35', pin: '5.000mAh', size: '6.51"', f: '60Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv3.png', name: 'Vivo Y19S', oldPrice: 4790000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Unisoc Tiger T612', pin: '5.000mAh', size: '6.68"', f: '90Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv4.png', name: 'Vivo Y35', oldPrice: 6990000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Snap 680', pin: '5.000mAh', size: '6.58"', f: '90Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv5.png', name: 'Vivo Y36', oldPrice: 7490000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Snap 680', pin: '5.000mAh', size: '6.64"', f: '90Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv6.png', name: 'Vivo Y100', oldPrice: 7690000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Snap 685', pin: '5.000mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv7.png', name: 'Vivo T1X', oldPrice: 9990000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'SDM 680', pin: '5.000mAh', size: '6.58"', f: '120Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv8.png', name: 'Vivo V25e', oldPrice: 8490000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Helio G99', pin: '4.500mAh', size: '6.44"', f: '90Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv9.png', name: 'Vivo V27e 4G', oldPrice: 15990000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Helio G99', pin: '5.000mAh', size: '6.56"', f: '60Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv10.png', name: 'Vivo T1 5G', oldPrice: 18990000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Helio G99', pin: '4.600mAh', size: '6.62"', f: '120Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv11.png', name: 'Vivo V29e 5G', oldPrice: 12990000, pb1: '8GB/128GB', pb2: '', chip: 'Snap 695', pin: '4.800mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'VIVO', img: 'img-prd/vv12.png', name: 'Vivo V25 5G', oldPrice: 15490000, pb1: '8GB/128GB', pb2: '16GB/256GB', chip: 'Dimensity 900', pin: '4.500mAh', size: '6.44"', f: '90Hz'},
+    {productId: '', brandId: 'BPHONE', img: 'img-prd/bp1.png', name: 'Bphone A85 5G', oldPrice: 42490000, pb1: '12GB/256GB', pb2: '24GB/1TB', chip: 'Snap 7 Gen 3', pin: '5.200mAh', size: '6.7"', f: '120Hz'}, 
+    {productId: '', brandId: 'BPHONE', img: 'img-prd/bp2.png', name: 'Bphone A60 5G', oldPrice: 44990000, pb1: '12GB/1TB', pb2: '24GB/1TB', chip: 'Snap 8 Gen 3', pin: '4.400mAh', size: '7.6" - 6.3"', f: '120Hz'}, 
+    {productId: '', brandId: 'BPHONE', img: 'img-prd/bp3.png', name: 'Bphone A50 5G', oldPrice: 32990000, pb1: '12GB/512GB', pb2: '12GB/1TB', chip: 'Snap 8 Gen 3', pin: '4.000mAh', size: '6.7" - 3.4"', f: '120Hz'}, 
+    {productId: '', brandId: 'BPHONE', img: 'img-prd/bp4.png', name: 'Bphone A40 5G', oldPrice: 31490000, pb1: '12GB/512GB', pb2: '12GB/1TB', chip: 'Snap 8 Gen 3', pin: '5.000mAh', size: '6.8"', f: '120Hz'}, 
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm1.png', name: 'Xiaomi Redmi 12', oldPrice: 4790000, pb1: '8GB/128GB', pb2: '12GB/256GB', chip: 'Helio G88', pin: '5.000mAh', size: '6.79"', f: '90Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm2.png', name: 'Redmi Note 13', oldPrice: 4890000, pb1: '8GB/128GB', pb2: '12GB/256GB', chip: 'Snap 685', pin: '5.000mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm3.png', name: 'Redmi Note 12', oldPrice: 4990000, pb1: '8GB/128GB', pb2: '12GB/256GB', chip: 'Snap 685', pin: '5.000mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm4.png', name: 'POCO X6 5G', oldPrice: 8490000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Snap 7s Gen 2', pin: '5.100mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm5.png', name: 'Redmi Note 13 Pro 5G', oldPrice: 10990000, pb1: '8GB/256GB', pb2: '16GB/512GB', chip: 'Dimensity 7200', pin: '5.000mAh', size: '6.67"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm6.png', name: 'Xiaomi 14T', oldPrice: 13990000, pb1: '12GB/512GB', pb2: '16GB/1TB', chip: 'Dimensity 8300-Ultra', pin: '5.000mAh', size: '6.67"', f: '144Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm7.png', name: 'Xiaomi 13T', oldPrice: 12990000, pb1: '12GB/256GB', pb2: '16GB/512GB', chip: 'Dimensity 8200', pin: '5.000mAh', size: '6.67"', f: '144Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm8.png', name: 'Xiaomi 14 Ultra', oldPrice: 32990000, pb1: '16GB/512GB', pb2: '32GB/1TB', chip: 'Snap 8 Gen 3', pin: '5.000mAh', size: '6.73"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm9.png', name: 'Xiaomi 14T Pro', oldPrice: 17990000, pb1: '12GB/512GB', pb2: '16GB/1TB.', chip: 'MediaTek 9300+', pin: '5.000mAh', size: '6.67"', f: '144Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm10.png', name: 'Xiaomi 14', oldPrice: 22990000, pb1: '12GB/256GB', pb2: '16GB/512GB', chip: 'Snap 8 Gen 3', pin: '4.610mAh', size: '6.36"', f: '120Hz'},
+    {productId: '', brandId: 'XIAOMI', img: 'img-prd/xm11.png', name: 'Xiaomi 11 Lite 5G NE', oldPrice: 8990000, pb1: '6GB/128GB', pb2: '12GB/256GB', chip: 'Dimensity 7200', pin: '5.000mAh', size: '6.77"', f: '120Hz'}
+]; 
+localStorage.setItem('productArray', JSON.stringify(productArray));
 
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
@@ -731,31 +866,32 @@ function changePage(page) {
     });
 }
 
+//===== KHỞI TẠO LẠI TRANG =====//
+// Tổng số lượng sản phẩm đã được thêm vào cart
+
+// let slproductPicked = 0;     -> thay thế bằng counterProducts trong Cart obj
+
+//----------------KHOI TAO MANG productPicked EMPTY TRUOC KHI LOAD----------
+// let productPicked = [];
+// let productPicked;
+
 //-----------TAO HAM KHOI TAO LAI TRANG------------
 function reloadPage(){
     document.addEventListener('DOMContentLoaded', () => {
         currentProducts = shuffleArray(productArray.slice());
         allProducts = currentProducts;
         renderProducts(currentProducts, currentPage);
-        
-        // Lấy thông tin người đang đăng nhập để reset trang không bị mất thông tin
-        const flag = localStorage.getItem('currentUser');
-        if (flag) 
-            {
-                current_user = JSON.parse(flag);
-                cart = new Cart(current_user);
-            }
-        else 
-        {
-            current_user = '';
-            cart = new Cart(current_user);
-        }
-        localStorage.setItem('currentUser',JSON.stringify(current_user));
-        
-        if(current_user == '') TRANGCHU();  // Nếu chưa đăng nhập thì để trang mặc định
-        else TAIKHOAN(current_user);        // Nếu đã đăng nhập thì để giao diện đã đăng nhập
+        TRANGCHU();
+        Dangxuat();      // Chỉ đăng xuất khi người dùng ấn đăng xuất.
+        updateCartCount();
 
-        updateCartCount();  // Cập nhật số lượng giỏ hàng tùy vào user
+        //----------BỎ: VÌ CART ĐƯỢC LOAD TƯƠNG ỨNG KHI CUSTOMER ĐĂNG NHẬP----------
+        // const picked = localStorage.getItem('productPicked');  
+        // if (picked) productPicked = JSON.parse(picked);
+        
+        // const sl = localStorage.getItem('soluong');  
+        // if (sl) slproductPicked = JSON.parse(sl); 
+        //--------------------
     });
 }
 reloadPage();
@@ -768,20 +904,26 @@ reloadPage();
  * Thao tác với Cart đó, trong lúc người dùng đang đăng nhập với tài khoản của mình.
  */
 
-function giohang(product)
-{
+function giohang(product){
     // console.log(typeof product);         // => object
     // Số lượng product mà người dùng addToCart
     const addQuantity = parseInt(document.querySelector('.Number').value);   
     // Product mà người dùng addToCart
     const addProduct = {  
+        productId: product.productId,
         quantity: addQuantity,
         isPicked: false,
-        brandId: product.brandId || 'Unknown',  
-        img: product.img || 'default-image.jpg', 
-        name: product.name || 'Unnamed Product',  
-        pb: vs,  
+        brandId: product.brandId,
+        img: product.img,
+        name: product.name,
+        pb: vs,
         price: gia,
+        // pb: product.pb,
+        // price: newPrice(product.oldPrice),
+        chip: product.chip,
+        pin: product.pin,
+        size: product.size,
+        f: product.f,
     };  
     console.log(product);
     console.log(addProduct);
@@ -791,13 +933,38 @@ function giohang(product)
     // slproductPicked += addQuantity;
     updateCartCount();   
     console.log(cart.counterProducts);
-}
 
+}
+// function giohang(product) 
+// {  
+//     // console.log(typeof product);         // => object
+
+//     const numberInput = document.querySelector('.Number');  
+//     let value = parseInt(numberInput.value);   
+//     const sp = {  
+//         brandId: product.brandId || 'Unknown',  
+//         img: product.img || 'default-image.jpg', 
+//         name: product.name || 'Unnamed Product',  
+//         pb: vs,  
+//         price: gia,  
+//         sl: value,
+//     };  
+
+//     productPicked.unshift(sp);  
+//     slproductPicked += value;
+//     //localStorage.setItem('soluong',JSON.stringify(slproductPicked));
+//     localStorage.setItem('productPicked', JSON.stringify(productPicked));  
+//     updateCartCount();   
+// }  
 function updateCartCount() 
 {   
     const cartBadge = document.querySelector('.cart-badge');  
-    cartBadge.textContent = cart.counterProducts; // Cập nhật số lượng sản phẩm  
-    console.log(cart.counterProducts);
+    if(currentUser.status == 0){
+        // Khi người dùng đã đăng xuất
+        cartBadge.textContent = 0;   
+    } else {
+        cartBadge.textContent = cart.counterProducts; // Cập nhật số lượng sản phẩm  
+    }
 }
 
 
@@ -812,11 +979,14 @@ window.quayve = quayve;
 window.giohang = giohang;
 window.Dangky = Dangky;
 window.Dangnhap = Dangnhap;
+window.Dangxuat = Dangxuat;
 window.reloadPage = reloadPage;
 window.renderProducts = renderProducts;
 window.renderPagination = renderPagination;
 window.changePage = changePage;
 window.updateCartCount = updateCartCount;
+window.autoDangnhap = autoDangnhap;
+window.createCurrentUser = createCurrentUser;
 //-------------------------------------------
 
 

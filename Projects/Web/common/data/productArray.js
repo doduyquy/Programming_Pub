@@ -1,6 +1,6 @@
 
 // MẢNG LƯU TRỮ SẢN PHẨM
-const productArray = [
+export const productArray = [
     {productId: 1,brandId: 'Samsung', img:'img-prd/ss1.png', name: 'Samsung Galaxy A06', oldPrice: 4090000, pb1: '4GB/128GB', pb2: '8GB/512GB', chip: 'MediaTek G85', pin: '5.000mAh', size: '6.7"', f: '60Hz'},  
     {productId: 2,brandId: 'Samsung', img:'img-prd/ss2.png', name: 'Samsung Galaxy A15', oldPrice: 4190000, pb1: '8GB/128GB', pb2: '16GB/512GB', chip: 'Helio G99', pin: '5.000mAh', size: '6.5"', f: '90Hz'},  
     {productId: 3,brandId: 'Samsung', img:'img-prd/ss3.png', name: 'Samsung Galaxy A05S', oldPrice: 3990000, pb1: '4GB/128GB', pb2: '8GB/512GB', chip: 'Snap 680', pin: '5.000mAh', size: '6.7"', f: '90Hz'},  
@@ -50,5 +50,5 @@ const productArray = [
     {productId: 47,brandId: 'XIAOMI', img: 'img-prd/xm10.png', name: 'Xiaomi 14', oldPrice: 22990000, pb1: '12GB/256GB', pb2: '16GB/512GB', chip: 'Snap 8 Gen 3', pin: '4.610mAh', size: '6.36"', f: '120Hz'},
     {productId: 48,brandId: 'XIAOMI', img: 'img-prd/xm11.png', name: 'Xiaomi 11 Lite 5G NE', oldPrice: 8990000, pb1: '6GB/128GB', pb2: '12GB/256GB', chip: 'Dimensity 7200', pin: '5.000mAh', size: '6.77"', f: '120Hz'}
 ]; 
-let allProducts = JSON.parse(localStorage.getItem('productArray')) || productArray;
-export { allProducts };
+export let allProducts = JSON.parse(localStorage.getItem('productArray')) || productArray;
+// export { allProducts};

@@ -12,14 +12,24 @@
     <!--LINK ĐẾN CÁC FILE CSS / ICON-FONT-->
     <link rel="stylesheet" href="./accessts/css/main.css">
     <link rel="stylesheet" href="./accessts/fonts/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
+
 </head>
 <body>
     <header class="header">
         <div class="grid1">
-
+        <!--
+        <div class="mobile-menu">
+            <button type="button" class="menu-button" aria-label="Menu" aria-expanded="false">
+                <i class="icon icon-menu"></i>
+            </button>
+            <a href="/" class="logo logo-mobile" aria-label="Walmart Homepage">
+                <i class="icon icon-spark"></i>
+            </a>
+        </div>-->
+        
         <!--LOGO WEB-->
         <div class="header__logo">
-            <a href="./TESTindex.html" class="header__logo-link">
+            <a href="./index.html" class="header__logo-link">
                 <img src="./accessts/img/twilight-logo.png" alt="" class="header__logo-img">
             </a>
         </div>
@@ -64,7 +74,7 @@
                         <ul class="header__notify-list">
                             <li class="header__notify-item">
                                 <a href= "" class="header__notify-link header__notify-item--viewed">
-                                    <img src="./accessts/img/twilight-logo-icon.png" alt="" class="header__notify-img">
+                                    <img src="https://isupplytt.com/_next/image?url=https:%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0324%2F7747%2F8956%2Ffiles%2FiPhone14ProMaxDeepPurple_82ed8e44-9796-482b-ba57-4b007aa3c6cf.png%3Fv%3D1695882672&w=3840&q=70" alt="" class="header__notify-img">
                                     <div class="header__notify-info">
                                         <span class="header__notify-name">Apple ra mắt iPhone 14 Pro và iPhone 14 Pro Max</span>
                                         <span class="header__notify-discription">Cảm biến nhóm bốn điểm ảnh kết hợp cứ mỗi bốn điểm ảnh thành một điểm ảnh lớn hơn tương đương với 2.44 µm</span>
@@ -73,7 +83,7 @@
                             </li>
                             <li class="header__notify-item">
                                 <a href= "" class="header__notify-link header__notify-item--viewed">
-                                    <img src="./accessts/img/twilight-logo-icon.png" alt="" class="header__notify-img">
+                                    <img src="https://static1.xdaimages.com/wordpress/wp-content/uploads/2023/09/iphone-15-pro-max-render.png" alt="" class="header__notify-img">
                                     <div class="header__notify-info">
                                         <span class="header__notify-name">Phone 14 Pro giới thiệu một hệ thống camera cho phép mọi người dùng, nhiếp ảnh gia chuyên nghiệp</span>
                                         <span class="header__notify-discription">Camera Telephoto cải tiến với sức mạnh thu phóng quang học 3x</span>
@@ -82,7 +92,7 @@
                             </li>
                             <li class="header__notify-item">
                                 <a href= "" class="header__notify-link header__notify-item--viewed">
-                                    <img src="./accessts/img/twilight-logo-icon.png" alt="" class="header__notify-img">
+                                    <img src="https://askmewholesale.in/wp-content/uploads/2024/03/Iphone-14-Pro-Gold.webp" alt="" class="header__notify-img">
                                     <div class="header__notify-info">
                                         <span class="header__notify-name">Cảm biến nhóm bốn điểm ảnh với người mình yêu cũng mang lại lợi ích cho quy trình làm việc chuyên nghiệp, tối ưu hóa chi tiết trong ProRAW</span>
                                         <span class="header__notify-discription">Chế độ Điện ảnh, hiện hỗ trợ 4K ở tốc độ 30 fps và 4K ở tốc độ 24 fps.</span>
@@ -108,9 +118,18 @@
 
                 <!--ĐÃ ĐĂNG NHẬP-->
                 <li class="header__navbar-item header__navbar-user">
-                    <img src="./accessts/img/avatar.jpg" alt="" class="header__navbar-user-img">
-                    <span class="header__navbar-user-name"></span>
+                    <img src="./accessts/img/left.png" alt="" class="header__navbar-user-img">
+                    <span class="header__navbar-user-name"> </span>
                     <ul class="header__navbar-user-menu">
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <a href="">Tài khoản của tôi</a>
+                        </li>
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <a href="">Đơn mua</a>
+                        </li>
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <a href="">Địa chỉ</a>
+                        </li>
                         <li class="header__navbar-user-item header__navbar-user-item--separate">
                             <a href="#" id="log-out">Đăng xuất</a>
                         </li>
@@ -119,7 +138,7 @@
                 <!--GIỎ HÀNG-->
                 <li class="nav-item">
                     <div class="cart-button-wrapper">
-                        <button type="button" class="cart-button" onclick="window.location.href = './fillend.html';">  
+                        <button type="button" class="cart-button" onclick="window.location.href = './TESTcheckoutCart.html';">  
                             <i class="icon-cart fa-solid fa-cart-shopping"></i>  
                             <span class="cart-badge"></span>  
                         </button>  
@@ -425,6 +444,7 @@
     </footer>
 
     <script type="module" src="./TESTjavascript.js"></script>
-    <!-- <script  src="./TESTjavascript.js"></script> -->
+    <!-- <script src="./javascript.js"></script> -->
 </body>
 </html>
+

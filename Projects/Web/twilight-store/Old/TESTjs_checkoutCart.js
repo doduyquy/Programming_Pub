@@ -185,7 +185,7 @@ function changeQuantity(productName,productVersion, change) {
     // }  
 }  
 
-// Hàm xóa sản phẩm  
+// Hàm xóa sản phẩm - oke 
 function deleteProduct(productName, productVersion) {  
     // currentCart.cartItem = currentCart.cartItem.filter(product =>   
     //     !(product.name === productName && product.pb === productVersion)  
@@ -227,18 +227,6 @@ function toggleSelectAll() {
     // Cập nhật lại tổng giá trị sau khi thay đổi trạng thái  
     updateTotalPrice();  
 }  
-
-//!!! BỎ !!! Nút xóa sản phẩm được chọn (isPicked == true)
-// function markProductCheckedButton(){
-//     const productCheckboxes = document.querySelectorAll('.item-checkbox:checked');  
-//     productCheckboxes.forEach((item) => {
-//         const productElement = item.closest('.cart-item');  
-//         const productName = productElement.dataset.productName;  
-//         const productVersion = productElement.querySelector('.category').dataset.productVersion;
-//         currentCart.markProductToPay(productName, productVersion);
-//     });
-// }
-// markProductCheckedButton();
 
 // Xóa tất cả các sản phẩm đã checked trong Cart = nút deleteAllProductIsPicked-button
 function deleteAllProductIsPicked(){

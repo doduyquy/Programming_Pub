@@ -1,6 +1,6 @@
 import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray} from '../common/data/customerArray.js';
 import {Cart } from '../common/data/cart.js';
-import {productArray} from '../common/data/productArray.js';
+import productArray from '../common/data/productArray.js';
 //-----
 let cart = undefined;
 //-----
@@ -176,7 +176,6 @@ function TAIKHOAN(username)
     b.style.display = "none";  
     const userNameElement = document.querySelector('.header__navbar-user-name'); // Lấy phần tử tên người dùng  
     userNameElement.textContent = username;
-    console.log(username + ": current user");
     for (let i = 0; i < DNDK.length; i++) 
         {  
             DNDK[i].style.display = "none";
@@ -781,7 +780,7 @@ function giohang(product)
         img: product.img || 'default-image.jpg', 
         name: product.name || 'Unnamed Product',  
         pb: vs,  
-        price: gia,
+        price: gia
     };  
     console.log(product);
     console.log(addProduct);
