@@ -384,7 +384,7 @@ body {
 }
 
 #container #leftsection {
-    width: 66%;
+    width: 70%;
     padding: 20px 0px 20px 20px;
 }
 .line{
@@ -490,7 +490,7 @@ body {
 
 
 #container #rightsection {
-    width: 34%;
+    width: 30%;
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
@@ -1158,138 +1158,4 @@ body {
     background-color: var(--gray);
 
     color: white;
-}
-/*css thong ke */
-/* Phần chọn ngày tháng */
-.period {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px 20px;
-}
-.period .from-time, 
-.period .to-time {
-    flex: 1; /* Đảm bảo hai phần này có cùng kích thước */
-}
-
-.period div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.period span {
-    font-size: 14px;
-    margin-bottom: 5px; /* Khoảng cách giữa label và input */
-}
-
-.period input[type="date"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px; /* Góc bo tròn */
-    font-size: 14px;
-    width: 200px; /* Chiều rộng của input */
-    background-color: #f9f9f9;
-}
-
-.period input[type="date"]:focus {
-    outline: none;
-    border-color: #007bff; /* Màu viền khi focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng focus */
-}
-@media (max-width: 768px) {
-    .period {
-        flex-direction: column; /* Xếp các phần theo cột trên màn hình nhỏ */
-        align-items: flex-start;
-    }
-
-    .table-content {
-        font-size: 12px; /* Thu nhỏ chữ trên màn hình nhỏ */
-    }
-
-    .period input[type="date"] {
-        width: 100%; /* Để input chiếm toàn bộ chiều rộng */
-    }
-}
-
-
-.table-content {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.table-content th, .table-content td {
-    border: 1px solid #ccc;
-    text-align: left;
-    padding: 10px;
-}
-
-.table-content th {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.table-content__header th {
-    font-size: 14px;
-    text-align: center;
-}
-
-/* Tổng doanh thu */
-.total-revenue {
-    width:100%;
-    background-color: #f0f8ff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.total-revenue h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #007bff;
-}
-#statistics-product__total-revenue, 
-#statistics-customer__total-revenue {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* Sản phẩm đặc biệt */
-#statistics-product__special-product {
-    background-color: #e6f7ff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Top khách hàng */
-.top-customers {
-    background-color: #fff7e6;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.top-customers h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #ff7f50;
-}
-
-.top-customers input[type="number"] {
-    margin-top: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.table-content__til{
-    padding:14px;
-    background-color: #ff7f50;
-    text-align: center;
-    height: 45px;
-    border:1px solid #aaaaaa;
-    border-radius: 4px;
-    color:#fff7e6;
 }
