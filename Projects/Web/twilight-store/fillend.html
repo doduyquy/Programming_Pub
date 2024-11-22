@@ -142,14 +142,11 @@
                 <div class="form-container">
                     <h2 class="form-title">Thông tin khách hàng</h2>
                     
-                    <label class="form-label">Tên đăng nhập</label>
-                    <input type="text" class="form-input" id="username" >
-                    
                     <label class="form-label">Họ và tên</label>
                     <input type="text" class="form-input" id="fullname">
                     
                     <label class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-input" id="phone">
+                    <input type="text" class="form-input" id="phone" maxlength="10" placeholder="0000000000">
                     
                     <label class="form-label">Tỉnh/Thành phố</label>
                     <select class="form-input" id="province">
@@ -165,7 +162,7 @@
                     </select>
                     
                     <label class="form-label">Địa chỉ</label>
-                    <input type="text" class="form-input" id="ward">
+                    <input type="text" class="form-input" id="ward"  placeholder="273 An Dương Vương, Phường 3">
                     
                     <div class="button-container">
                         <input type="button" class="goback" value="Quay lại">
@@ -184,16 +181,16 @@
                     <h2 class="form-title">Thông tin Thẻ Tín dụng/Ghi nợ</h2>
                     
                     <label class="form-label">Số thẻ</label>
-                    <input type="text" class="form-control card-number" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                    <input type="text" class="form-control card-number" id="card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
                     
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Ngày hết hạn</label>
-                            <input type="text" class="form-control expiry-date" id="expiry-date" placeholder="MM/YY">
+                            <input type="text" class="form-control expiry-date" id="expiry-date" placeholder="MM/YY"  maxlength="5">
                         </div>
                         <div class="col">
                             <label class="form-label">Mã CVV</label>
-                            <input type="text" class="form-control cvv" id="cvv" placeholder="XXX">
+                            <input type="text" class="form-control cvv" id="cvv" placeholder="XXX"  maxlength="3">
                         </div>
                     </div>
                     
@@ -204,7 +201,7 @@
                     <input type="text" class="form-control billing-address" id="billing-address">
                     
                     <label class="form-label">Mã bưu chính</label>
-                    <input type="text" class="form-control zip-code" id="zip-code">
+                    <input type="text" class="form-control zip-code" id="zip-code"  maxlength="5" placeholder="XXXXX" >
                     
                     <div class="button-container">
                         <input type="button" class="goback" value="Quay lại">
@@ -245,7 +242,7 @@
                         <input type="text" class="form-input">
                       
                         <label class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-input" >
+                        <input type="text" class="form-input" maxlength="10" placeholder="0000000000">
                       
                         <label class="form-label">Tỉnh/Thành phố</label>
                         <select class="form-input" id="province2">
@@ -331,7 +328,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Mã bưu chính</label>
-                            <input type="text" class="form-control zip-code">
+                            <input type="text" class="form-control zip-code"  maxlength="5"  placeholder="XXXXX">
                         </div>
                     </div>
                 
@@ -345,7 +342,7 @@
                         <h4 class="section-header">Tóm tắt thông tin</h4>
                         <div id="summary-content">
                             <strong><p>Địa chỉ giao hàng:</p></strong> <span id="summary-address"></span><br>
-                            <strong><p>Phương thức thanh toán:</p></strong> <span id="summary-payment"></span><br>
+                            <strong><p style="margin-top: 15px;">Phương thức thanh toán:</p></strong> <span id="summary-payment"></span><br>
                         </div>
                         <div class="product-summary" id="summary-products">
                             <strong>Sản phẩm:</strong><br>
