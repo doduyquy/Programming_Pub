@@ -432,6 +432,37 @@ document.addEventListener('DOMContentLoaded', () => {
         displayOrderPage(currentOrderPage); // Hiển thị trang đầu tiên của đơn hàng
     }
 });
+// document.addEventListener('DOMContentLoaded', () => {
+//     showCorrespondingMain();
+
+//     // Kiểm tra nếu allProducts rỗng thì tải từ localStorage
+//     if (allProducts.length === 0) {
+//         alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
+//     } else {
+//         filteredProducts = allProducts.slice(); // Sao chép mảng sản phẩm
+//         totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
+//         createPagination(totalProductPages, 'product'); // Tạo nút phân trang cho sản phẩm
+//         displayProductPage(currentProductPage); // Hiển thị trang đầu tiên của sản phẩm
+//     }
+
+//     // Thêm sự kiện submit cho form thêm sản phẩm 
+//     const addProductForm = document.getElementById('add-product-form'); 
+//     if (addProductForm) { 
+//         addProductForm.addEventListener('submit', addProduct); 
+//     }
+
+//     // Kiểm tra nếu customerArray rỗng thì tải từ localStorage
+//     if (customerArray.length === 0) {
+//         alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
+//     } else {
+//         displayCustomerPage(currentCustomerPage);
+//     }
+//     // Thêm sự kiện submit cho form thêm khách hàng
+//     const addCustomerForm = document.getElementById('add-customer-form'); 
+//     if (addCustomerForm) { 
+//         addCustomerForm.addEventListener('submit', addCustomer); 
+//     }
+// });
 
 function addProduct(event) {
     event.preventDefault(); // Ngăn form tự submit
