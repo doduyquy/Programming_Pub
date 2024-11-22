@@ -187,8 +187,6 @@ export function checkValidAccount(username, password){
         }
 
     }
-    console.log('Lock: ');
-    console.log(matchingCustomer.locked);
     return 1;
 }
 // export function checkValidAccount(username, password){
