@@ -315,9 +315,9 @@ function changeQuantity(productName, productVersion, change)
     } 
     // !!! Khi số lượng còn 1, người dùng ấn '-' -> không làm gì cả.
     // Sản phẩm chỉ được xóa khi người dùng ấn xóa.
-    // else {  
-    //     deleteProduct(productName,productVersion);  
-    // }  
+    else {  
+        deleteProduct(productName,productVersion);  
+    }  
 }  
     
 //===== HÀM XÓA SẢN PHẨM =====//  

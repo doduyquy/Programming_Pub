@@ -146,7 +146,7 @@ export function saveCustomerArrayToStorage(){
 }
 
 /** ----- USER ----- */
-// Kiểm tra trong mảng customer đã có tồn tại username ?
+// Kiểm tra trong mảng customer đã có tồn tại username hoặc đã bị khóa
 // Có: return true
 // Không: return false
 export function checkExistedUsername(username) {
@@ -162,22 +162,30 @@ export function checkExistedUsername(username) {
     });
 }
 
-// Kiểm tra đăng nhập đúng:
+// Kiểm tra đăng nhập đúng và tài khoản chưa bị khóa
 // false: username không tồn tại hoặc mật khẩu không đúng.
 // true: hợp lệ
 export function checkValidAccount(username, password){
-    const matchingCustomer = customerArray.find(customer => customer.username === username);
+    const matchingCustomer = customerArray.find(customer => (customer.username === username));
     // if(!matchingCustomer || matchingCustomer.password !== password){
     //     return false;
     // }    
     if(!matchingCustomer){
         console.log(`Username "${username}" không tồn tại.`);
         return false;
+    } else {
+        if(matchingCustomer.locked){
+            console.log(`Username ${username} đã bị khóa`);
+            return false;
+        }
+        if(matchingCustomer.password !== password){
+            console.log('Mật khẩu không đúng.');
+            return false;
+        }
+
     }
-    if(matchingCustomer.password !== password){
-        console.log('Mật khẩu không đúng.');
-        return false;
-    }
+    console.log('Lock: ');
+    console.log(matchingCustomer.locked);
     return true;
 }
 
