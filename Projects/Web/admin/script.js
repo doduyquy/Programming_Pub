@@ -413,12 +413,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (customerArray.length === 0) {
         alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
     } else {
+        totalCustomerPages = Math.ceil(customerArray.length / itemsPerPageCustomer);
+        createPagination(totalCustomerPages, 'customer'); // Tạo nút phân trang cho khách hàng
         displayCustomerPage(currentCustomerPage);
     }
     // Thêm sự kiện submit cho form thêm khách hàng
     const addCustomerForm = document.getElementById('add-customer-form'); 
     if (addCustomerForm) { 
         addCustomerForm.addEventListener('submit', addCustomer); 
+    }
+
+    // Kiểm tra nếu orderArray rỗng thì tải từ localStorage
+    if (orderArray.length === 0) {
+        alert('Không có đơn hàng nào trong orderArray. Vui lòng kiểm tra lại.');
+    } else {
+        totalOrderPages = Math.ceil(orderArray.length / itemsPerPageOrder);
+        createPagination(totalOrderPages, 'order'); // Tạo nút phân trang cho đơn hàng
+        displayOrderPage(currentOrderPage); // Hiển thị trang đầu tiên của đơn hàng
     }
 });
 
