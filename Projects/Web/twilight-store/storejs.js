@@ -884,27 +884,36 @@ function checkNewCustomerDetails()
             numberAndRoad: ward  
         };  
         // //------------------------------
-        // Lần đầu nhập thông tin: lấy thông tin đó đổ vào customerArray với username tương ứng
-        console.log(JSON.parse(localStorage.getItem('customerArray')));
-        const matchingCustomer = customerArray.find(customer => customer.username === currentCustomer.username);
-        console.log('Username: ' + matchingCustomer.username);
-        console.log('Before: ' + matchingCustomer.name);
-        if (matchingCustomer) {
-            matchingCustomer.name = fullname;
-            matchingCustomer.phone = phone;
-            matchingCustomer.address = {  
-                city: province,  
-                district: district,  
-                numberAndRoad: ward  
-            }; 
-            saveCustomerArrayToStorage();
-        } else {
-            console.error("Customer not found!");
-        }   
-        console.log('After: ' + matchingCustomer.name);
-        console.log(JSON.parse(localStorage.getItem('customerArray')));
+        // // Lần đầu nhập thông tin: lấy thông tin đó đổ vào customerArray với username tương ứng
+        // console.log(currentCustomer.username);
+        // const matchingCustomer = customerArray.find(customer => (customer.username === currentCustomer.username));
+        // matchingCustomer.name = currentCustomer.name;
+        // matchingCustomer.phone = currentCustomer.phone;
+        // matchingCustomer.address = currentCustomer.address;
+        // saveCustomerArrayToStorage();   
         // //------------------------------
     }
+    //------------------------------
+    // Lần đầu nhập thông tin: lấy thông tin đó đổ vào customerArray với username tương ứng
+    console.log(JSON.parse(localStorage.getItem('customerArray')));
+    const matchingCustomer = customerArray.find(customer => customer.username === currentCustomer.username);
+    console.log('Username: ' + matchingCustomer.username);
+    console.log('Before: ' + matchingCustomer.name);
+    if (matchingCustomer) {
+        matchingCustomer.name = fullname;
+        matchingCustomer.phone = phone;
+        matchingCustomer.address = {  
+            city: province,  
+            district: district,  
+            numberAndRoad: ward  
+        }; 
+        saveCustomerArrayToStorage();
+    } else {
+        console.error("Customer not found!");
+    }   
+    console.log('After: ' + matchingCustomer.name);
+    console.log(JSON.parse(localStorage.getItem('customerArray')));
+    //------------------------------
     document.getElementById('default-address').checked = true;
     newAddressForm.style.display = 'none'; 
     return true;  
