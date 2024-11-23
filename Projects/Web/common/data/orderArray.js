@@ -91,7 +91,7 @@ if (!orderArray) {
     // => Chuyển đổi string -> Order object
     // Chuyển đổi từng đối tượng thành instance của Order
     orderArray = orderArray.map(order => 
-        new Order(order.customerId, order.checkoutCart, new Date(order.date), order.name, order.phone, order.address, order.status)
+        new Order(order.customerId, order.checkoutCart, new Date(order.date), order.name, order.phone, new Address(order.address.city, order.address.district, order.address.numberAndRoad), order.status)
     );
 
 }

@@ -1,4 +1,4 @@
-import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage} from '../common/data/customerArray.js';
+import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage, Address} from '../common/data/customerArray.js';
 import {Cart } from '../common/data/cart.js';
 import {orderArray, saveOrderArrayToStorage, addOrderToArray} from '../common/data/orderArray.js'
 /////
@@ -808,8 +808,13 @@ function updateAddressSummary()
             selectedAddress = {
                 name: currentCustomer.name,
                 phone: currentCustomer.phone,
-                detail: `${currentCustomer.address.numberAndRoad} - ${currentCustomer.address.district} - ${currentCustomer.address.city}`
+                address: new Address(currentCustomer.address.city, currentCustomer.address.district, currentCustomer.address.numberAndRoad),
             };
+            // selectedAddress = {
+            //     name: currentCustomer.name,
+            //     phone: currentCustomer.phone,
+            //     detail: `${currentCustomer.address.numberAndRoad} - ${currentCustomer.address.district} - ${currentCustomer.address.city}`
+            // };
         }
     } else if (selectedAddressOption.id === 'new-address-option') {
         const newAddressName = document.querySelector('.new-address-form .form-input[type="text"]')?.value || 'Chưa có tên';
@@ -820,14 +825,15 @@ function updateAddressSummary()
         selectedAddress = {
             name: newAddressName,
             phone: newAddressPhone,
-            detail: `${newAddressDetail} - ${district} - ${province}`
+            address: new Address(province, district, newAddressDetail),
+            // detail: `${newAddressDetail} - ${district} - ${province}`
         };
         newAddress = true;
     }
     // Cập nhật địa chỉ
     const summaryAddressElement = document.getElementById('summary-address');
     summaryAddressElement.innerText = selectedAddress 
-        ? `${selectedAddress.name}, ${selectedAddress.phone}, ${selectedAddress.detail}` 
+        ? `${selectedAddress.name}, ${selectedAddress.phone}, ${selectedAddress.address.numberAndRoad} - ${selectedAddress.address.district} - ${selectedAddress.address.city}` 
         : 'Chưa có địa chỉ giao hàng!';
 }
 // Ẩn hiện Form thông tin mới   
@@ -940,8 +946,8 @@ function createOrder(){
     const now = new Date();
     const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (selectedAddress && selectedAddress.name && selectedAddress.phone && selectedAddress.detail) {  
-        addOrderToArray(customerId, cartItemChecked, orderDate, selectedAddress.name, selectedAddress.phone, selectedAddress.detail);  
+    if (selectedAddress && selectedAddress.name && selectedAddress.phone && selectedAddress.address) {  
+        addOrderToArray(customerId, cartItemChecked, orderDate, selectedAddress.name, selectedAddress.phone, selectedAddress.address);  
         console.log('Order created successfully:');  
         console.log(orderArray);  
     } else {  

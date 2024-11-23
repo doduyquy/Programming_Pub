@@ -1346,7 +1346,7 @@ body {
 /* POP-UP xem chi tiết đơn hàng */
 
 #modal-detailorder #detailorder {
-    width: 700px;
+    width: 850px;
     padding: 20px;
     border-radius: 8px;
     position: relative;
@@ -1374,7 +1374,7 @@ body {
 
 #modal-detailorder #detailorder .info {
     flex: 1; /* Phần này sẽ tự co dãn */
-  }
+}
 #modal-detailorder #detailorder .order-content p {
     margin-bottom: 10px;
     font-size: 16px;
@@ -1391,7 +1391,8 @@ body {
     font-weight: bold;
 }
 
-#modal-detailorder #detailorder .checkout-info {
+#modal-detailorder #detailorder .checkout-info,
+#checkout-total-payment{
     flex: 1; /* Phần này sẽ tự co dãn */
     text-align: left;
 }
@@ -1408,3 +1409,34 @@ body {
     min-height: 100px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
     overflow-y: auto; /* Cuộn nếu nội dung vượt quá */
 }
+
+/* // */
+#modal-detailorder #detailorder .order-content {
+    display: flex; /* Thiết lập bố cục flex */
+    justify-content: space-around; /* Tách 2 cột cách đều */
+    align-items: flex-start; /* Canh trên cùng */
+    gap: 10px; /* Khoảng cách giữa 2 cột */
+}
+
+#modal-detailorder #detailorder .info {
+    flex: 1; /* Cột trái chiếm 1 phần */
+    max-width: 45%; /* Đặt chiều rộng tối đa */
+}
+
+#modal-detailorder #detailorder #checkout-section {
+    flex: 1; /* Cột phải chiếm 1 phần */
+    max-width: 50%; /* Đặt chiều rộng tối đa */
+}
+
+#modal-detailorder #detailorder .checkout-total-payment {
+    margin-top: 20px; /* Tạo khoảng cách giữa sản phẩm và tổng tiền */
+    text-align: left;
+}
+
+#modal-detailorder #detailorder #detail-total-payment {
+    color: red; /* Màu chữ đỏ cho tổng tiền */
+    font-weight: bold;
+    font-size: 21px; /* Tăng kích cỡ chữ (tùy chọn) */
+}
+
+/* // */

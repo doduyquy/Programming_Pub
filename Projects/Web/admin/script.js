@@ -711,7 +711,8 @@ function addPasswordToggleListeners() {
 // ---CUSTOMER---
 // Hiển thị trang khách hàng
 function displayCustomerPage(page) {
-    var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
+    // var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
+    var s = '';
     var dem = 0;
     var start = (page - 1) * itemsPerPageCustomer;
     var end = start + itemsPerPageCustomer;
@@ -722,7 +723,7 @@ function displayCustomerPage(page) {
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
-            '<td>' + customer.address.numberAndRoad + ', ' + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
+            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
             '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
             '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
         '</tr>';
@@ -818,14 +819,18 @@ function addCustomer(event) {
 
     //Chia thành các phần: Số nhà và đường, Phường, Quận, Thành phố
     const numberAndRoad = addressParts[0] || ''; 
-    const ward = addressParts[1] || '';
-    let district = addressParts[2] || '';
+    let district = addressParts[1] || '';
     district = district.replace(/quận\s*/i, ''); // Xóa chữ "Quận" nếu có
-    const city = addressParts[3] || '';
+    const city = addressParts[2] || '';
+    // const ward = addressParts[1] || '';
+    // let district = addressParts[2] || '';
+    // district = district.replace(/quận\s*/i, ''); // Xóa chữ "Quận" nếu có
+    // const city = addressParts[3] || '';
 
     //Kiểm tra địa chỉ có dạng hợp lệ không
-    if (!numberAndRoad || !ward || !district || !city) {
-        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường, Phường, Quận, Thành phố', 'warning');
+    if (!numberAndRoad || !district || !city) {
+        // if (!numberAndRoad || !ward || !district || !city) {
+        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường + Phường, Quận, Thành phố', 'warning');
         return false;
     }
 
@@ -837,7 +842,7 @@ function addCustomer(event) {
         address: {
             city: city,
             district: district,
-            ward: ward,
+            // ward: ward,
             numberAndRoad: numberAndRoad
         },
         locked: false // Trạng thái hoạt động
@@ -868,7 +873,8 @@ function showChangeCustomerBox(customerIndex) {
     document.getElementById('edit-username').value = customer.username;
     document.getElementById('edit-password').value = customer.password;
     document.getElementById('edit-phone').value = customer.phone;
-    document.getElementById('edit-address').value = `${customer.address.numberAndRoad}, ${customer.address.ward}, ${customer.address.district}, ${customer.address.city}`;
+    document.getElementById('edit-address').value = `${customer.address.numberAndRoad}, ${customer.address.district}, ${customer.address.city}`;
+    // document.getElementById('edit-address').value = `${customer.address.numberAndRoad}, ${customer.address.ward}, ${customer.address.district}, ${customer.address.city}`;
 
     // Cập nhật sự kiện lưu
     const saveCustomerButton = document.getElementById('save-customer');
@@ -894,9 +900,12 @@ function saveCustomerChanges(customerIndex) {
     const addressParts = updatedAddress.split(',').map(part => part.trim());
     customerArray[customerIndex].address = {
         numberAndRoad: addressParts[0] || '',
-        ward: addressParts[1] || '',
-        district: addressParts[2] || '',
-        city: addressParts[3] || ''
+        district: addressParts[1] || '',
+        city: addressParts[2] || ''
+        // numberAndRoad: addressParts[0] || '',
+        // ward: addressParts[1] || '',
+        // district: addressParts[2] || '',
+        // city: addressParts[3] || ''
     };
 
     // Kiểm tra thông tin cập nhật
@@ -905,9 +914,15 @@ function saveCustomerChanges(customerIndex) {
         !customerArray[customerIndex].password ||
         !customerArray[customerIndex].phone ||
         !customerArray[customerIndex].address.numberAndRoad ||
-        !customerArray[customerIndex].address.ward ||
         !customerArray[customerIndex].address.district ||
         !customerArray[customerIndex].address.city
+        // !customerArray[customerIndex].username ||
+        // !customerArray[customerIndex].password ||
+        // !customerArray[customerIndex].phone ||
+        // !customerArray[customerIndex].address.numberAndRoad ||
+        // !customerArray[customerIndex].address.ward ||
+        // !customerArray[customerIndex].address.district ||
+        // !customerArray[customerIndex].address.city
     ) {
         customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
         return false;
@@ -970,25 +985,17 @@ function displayOrdersTable(orders){
     // Lấy ra các đơn hàng của trang hiện tại
     const currentPageOrders = getOrdersByPage(currentOrderPage);
 
-    let tableHTML = `
-        <tr>
-            <th>Khách hàng</th>
-            <th>Số điện thoại</th>
-            <th>Thời điểm đặt hàng</th>
-            <th>Địa chỉ giao hàng</th>
-            <th>Chi tiết</th>
-            <th>Tình trạng</th>
-        </tr>
-    `;
+    let tableHTML = ``;
     currentPageOrders.forEach((order, index) => {
-
-        const matchingCustomer = findCustomerByUsername(order.customerId);
+        // console.log(order);
+        // const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
         const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
         tableHTML += `
             <tr>
-                <td>${matchingCustomer.username}</td>
-                <td>${matchingCustomer.phone}</td>
+                <td>${order.customerId}</td>
+                <td>${order.name}</td>
+                <td>${order.phone}</td>
                 <td>${formattedDate}</td>
                 <td>${formattedAddress}</td>    
                 <td>
@@ -1138,8 +1145,8 @@ function showOrderDetails(orderIndex) {
     // Điền dữ liệu vào pop-up
     document.getElementById('detail-order-customername').innerText = order.name;
     document.getElementById('detail-order-phone').innerText = order.phone;
-    document.getElementById('detail-order-address').innerText = `${order.address.street}, ${order.address.district}, ${order.address.city}`;
-    document.getElementById('detail-date').innerText = order.date;
+    document.getElementById('detail-order-address').innerText = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
+    document.getElementById('detail-date').innerText = (order.date).toLocaleDateString('vi-VN');;
     document.getElementById('detail-status').innerText = order.status;
 
     // Hiển thị các sản phẩm trong đơn hàng
@@ -1149,12 +1156,12 @@ function showOrderDetails(orderIndex) {
             <div class="product-item">
                 <span>${product.name}</span>
                 <span>${product.quantity}</span>
-                <span>${product.price}</span>
+                <span>${formatPrice(product.price)}</span>
             </div>
         `;
     });
     document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
-
+    document.getElementById('detail-total-payment').innerHTML = formatPrice(order.calculateTotalPayment());
     // Thêm sự kiện đóng pop-up
     document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
 }

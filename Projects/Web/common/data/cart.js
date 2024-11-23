@@ -120,32 +120,32 @@ export class Cart {
         // Cập nhật lại cart mới:
         this.saveCartToStorage();
     }
-    // removeFromCart(productName, productVersion){
-    //     const newCartItem = [];
-    //     this.counterProducts = 0;
-    //     this.cartItem.forEach((item) => {
-    //         // Không phải product cần xóa thì thêm vào newCartItem
-    //         if(!(item.name === productName && item.pb === productVersion)){
-    //             newCartItem.push(item);
-    //             this.counterProducts += item.quantity;
-    //         }
-    //     });
-    //     this.cartItem = newCartItem;
+    removeFromCart(productName, productVersion){
+        const newCartItem = [];
+        this.counterProducts = 0;
+        this.cartItem.forEach((item) => {
+            // Không phải product cần xóa thì thêm vào newCartItem
+            if(!(item.name === productName && item.pb === productVersion)){
+                newCartItem.push(item);
+                this.counterProducts += item.quantity;
+            }
+        });
+        this.cartItem = newCartItem;
 
-    //     this.saveCartToStorage();
-    // }
-    // Xóa product trong cart
-    removeFromCart(name, pb)  
-    {
-        const item = this.cartItem.find(product =>   
-            (product.name === name && product.pb === pb)  
-        );
-        this.counterProducts -= item.quantity;
-        this.cartItem = this.cartItem.filter(product =>   
-            !(product.name === name && product.pb === pb)  
-        );
         this.saveCartToStorage();
     }
+    // Xóa product trong cart
+    // removeFromCart(name, pb)  
+    // {
+    //     const item = this.cartItem.find(product =>   
+    //         (product.name === name && product.pb === pb)  
+    //     );
+    //     this.counterProducts -= item.quantity;
+    //     this.cartItem = this.cartItem.filter(product =>   
+    //         !(product.name === name && product.pb === pb)  
+    //     );
+    //     this.saveCartToStorage();
+    // }
     removeAllFromCart()
     {
         this.cartItem = [];          // Reset mảng các products

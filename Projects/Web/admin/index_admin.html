@@ -353,6 +353,15 @@
                             <div id="table_list">
                                 <table class="table-content">
                                     <thead class="table-content__header">
+                                        <tr>
+                                            <th>NO.</th>
+                                            <th>Tên đăng nhập</th>
+                                            <th>Mật khẩu</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Hành động</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
                                     
                                     </thead>
                                     <tbody id="customer-table-content__body">
@@ -369,7 +378,7 @@
                                 <form id="add-customer-form">
                                     <br>
                                     <label for="new-customer-name">Tên đăng nhập</label>
-                                    <input type="text" id="new-customer-name" placeholder="Nhập tên khách hàng...">
+                                    <input type="text" id="new-customer-name" placeholder="Nhập username...">
                                     <label for="new-customer-password">Mật khẩu</label>
                                     <input type="text" id="new-customer-password" placeholder="Nhập mật khẩu...">
                                     <label for="new-customer-phone">Số điện thoại</label>
@@ -417,14 +426,15 @@
                             <div id="table_list">
                                 <table class="table-content">
                                     <thead class="table-content__header">
-                                        <!-- <tr>
+                                        <tr>
                                             <th>Khách hàng</th>
+                                            <th>Tên người nhận</th>
                                             <th>Số điện thoại</th>
                                             <th>Thời điểm đặt hàng</th>
                                             <th>Địa chỉ</th>
                                             <th>Chi tiết</th>
                                             <th>Tình trạng</th>
-                                        </tr> -->
+                                        </tr>
                                     </thead>
                                     <tbody id="orders-table-content__body">
                                         <!-- Thêm các dòng sản phẩm khác ở đây -->
@@ -482,9 +492,14 @@
                                             <p>Thời điểm đặt hàng: <span id="detail-date"></span></p>
                                             <p>Trạng thái: <span id="detail-status"></span></p>                        
                                         </div>
-                                    <div class="checkout-info">
-                                        <p>Sản phẩm đã đặt:</p>
-                                        <div id="detail-checkoutCart"></div>
+                                    <div class="checkout-section">
+                                        <div class="checkout-info">
+                                            <p>Sản phẩm đã đặt:</p>
+                                            <div id="detail-checkoutCart"></div>
+                                        </div>
+                                        <div class="checkout-total-payment">
+                                            <p>Tổng tiền: <span id="detail-total-payment"></span></p>
+                                        </div>
                                     </div>
                                 </div>
                         </div>
