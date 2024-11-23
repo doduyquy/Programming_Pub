@@ -206,7 +206,7 @@ function displayProductPage(page) {
                 '<img src="' + filteredProducts[i].img + '" alt="Sản phẩm"></div></td>' +
             '<td>' + filteredProducts[i].name + '</td>' +
             '<td>' + filteredProducts[i].brandId.toUpperCase() + '</td>' +
-            '<td>' + filteredProducts[i].oldPrice + '</td>' +
+            '<td>' + formatPrice(filteredProducts[i].oldPrice) + '</td>' +
             '<td>' +
                 '<button class="detail-btn" data-index="' + i + '">Chi tiết</button>' +
             '</td>' +
@@ -224,7 +224,7 @@ function displayProductPage(page) {
     updatePagination('product'); // Cập nhật nút phân trang
 
     // Thêm event listeners cho các nút xem chi tiết
-    document.querySelectorAll('.detail-btn').forEach(button => {
+    document.querySelectorAll('#main__products .detail-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productIndex = parseInt(this.getAttribute('data-index'));
             showProductDetails(productIndex);
@@ -1009,6 +1009,11 @@ function displayOrdersTable(orders){
 
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
+
+    // Thêm sự kiện cho nút chi tiết
+    document.querySelectorAll('main__orders .detail-btn').forEach((button, index) => {
+        button.addEventListener('click', () => showOrderDetails(index));
+    });
 }
 displayOrdersTable(orderArray);
 
@@ -1118,21 +1123,61 @@ function resetOrderFilter(){
 }
 resetOrderFilter();
 
+function showOrderDetails(orderIndex) {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+
+    // Lấy thông tin đơn hàng
+    const order = orderArray[orderIndex];
+
+    // Điền dữ liệu vào pop-up
+    document.getElementById('detail-order-customername').innerText = order.name;
+    document.getElementById('detail-order-phone').innerText = order.phone;
+    document.getElementById('detail-order-address').innerText = `${order.address.street}, ${order.address.district}, ${order.address.city}`;
+    document.getElementById('detail-date').innerText = order.date;
+    document.getElementById('detail-status').innerText = order.status;
+
+    // Hiển thị các sản phẩm trong đơn hàng
+    let checkoutCartHTML = '';
+    order.checkoutCart.forEach(product => {
+        checkoutCartHTML += `
+            <div class="product-item">
+                <span>${product.name}</span>
+                <span>${product.quantity}</span>
+                <span>${product.price}</span>
+            </div>
+        `;
+    });
+    document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
+
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
+}
+
+function closeDetailOrderBox() {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
 
 
 /** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
  * 1. Tên sản phẩm
  * 2. Số lượng đã bán 
  * 3. Tổng doanh thu
+ * NOTE: mặc định(khi admin chưa nhập ngày): sẽ hiện toàn bộ 
  */
 // Mảng statisticsProductArray:
-let statisticsProductArray = [];
+let statisticsProductArray = createStatisticsProductArray();
 function displayStatisticsProduct(page = 1) {
     currentStatisticsProductPage = page;
     const itemsPerPage = itemsPerPageStatisticsProduct;
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    statisticsProductArray = createStatisticsProductArray();
+    // statisticsProductArray = createStatisticsProductArray();
     console.log('Thống kê sản phẩm: ');
     console.log(statisticsProductArray);
     const paginatedDataProduct = statisticsProductArray.slice(start, end);
@@ -1143,9 +1188,9 @@ function displayStatisticsProduct(page = 1) {
             <tr>
                 <td>${product.name}</td>
                 <td>${product.quantity}</td>
-                <td>${product.quantity * product.price}</td>
+                <td>${formatPrice(product.quantity * product.price)}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-product__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1170,45 +1215,55 @@ function calcTotalProductRevenue(){
             totalRevenue += (product.quantity) * (product.price);        
         }
     });
-    document.getElementById('statistics-product__total-revenue').innerHTML = totalRevenue;
+    document.getElementById('statistics-product__total-revenue').innerHTML = formatPrice(totalRevenue);
     console.log('Tổng doanh thu theo sản phẩm: ' + totalRevenue);
 }
 calcTotalProductRevenue();
 
 function displaySpecialProduct(){
     let bestProduct = statisticsProductArray[0];
-    let worstProduct = statisticsProductArray[0];
-    statisticsProductArray.forEach((product) => {
-        // Nếu sản phẩm nào có doanh số cao hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá cao hơn
-        if(product.quantity > bestProduct.quantity){
-            bestProduct = product;
-        } else if(product.quantity === bestProduct.quantity){
-            if(product.price > bestProduct.price){
-                bestProduct = product;
-            }
-        }
-        // Nếu sản phẩm nào có doanh số thấp hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá thấp hơn
-        if(product.quantity < worstProduct.quantity){
-            worstProduct = product;
-        } else if(product.quantity === worstProduct.quantity){
-            if(product.price < worstProduct.price){
-                worstProduct = product;
-            }
-        }
-    });
+    let worstProduct = statisticsProductArray[statisticsProductArray.length - 1];
 
+    /** VÌ MẢNG TRẢ VỀ ĐÃ ĐƯỢC SORT 
+     * => bestProduct: statisticsProductArray[0];
+     * => worstProduct: statisticsProductArray[length - 1];
+     */
+    // statisticsProductArray.forEach((product) => {
+        // // Nếu sản phẩm nào có doanh số cao hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá cao hơn
+        // if(product.quantity > bestProduct.quantity){
+        //     bestProduct = product;
+        // } else if(product.quantity === bestProduct.quantity){
+        //     if(product.price > bestProduct.price){
+        //         bestProduct = product;
+        //     }
+        // }
+        // // Nếu sản phẩm nào có doanh số thấp hơn thì gán lại, nếu bằng nhau thì lấy cái nào có giá thấp hơn
+        // if(product.quantity < worstProduct.quantity){
+        //     worstProduct = product;
+        // } else if(product.quantity === worstProduct.quantity){
+        //     if(product.price < worstProduct.price){
+        //         worstProduct = product;
+        //     }
+        // }
+    // });
+    // Kiểm tra special product tồn tại (mảng không rỗng)
+    if(!bestProduct && !worstProduct){
+        bestProduct = {name: '', quantity: '', price: ''};
+        worstProduct = {name: '', quantity: '', price: ''};
+    }
     let specialProductHTML = `
-                            <div id="bestProduct">
-                                <h2>Sản phẩm chạy nhất</h2>
-                                <p>Tên: <span>${bestProduct.name}</span> </p>
-                                <p>Doanh số: <span>${bestProduct.quantity}</span> </p>
-                            </div>
-                            <div id="worstProduct">
-                                <h2>Sản phẩm ế nhất</h2>
-                                <p>Tên: <span>${worstProduct.name}</span> </p>
-                                <p>Doanh số: <span>${worstProduct.quantity}</span> </p>
-                            </div>
-                            `;
+                                <div id="bestProduct">
+                                    <h2>Sản phẩm chạy nhất</h2>
+                                    <p>Tên: <span>${bestProduct.name}</span> </p>
+                                    <p>Doanh số: <span>${bestProduct.quantity}</span> </p>
+                                </div>
+                                <div id="worstProduct">
+                                    <h2>Sản phẩm ế nhất</h2>
+                                    <p>Tên: <span>${worstProduct.name}</span> </p>
+                                    <p>Doanh số: <span>${worstProduct.quantity}</span> </p>
+                                </div>
+                           `;
+
     document.getElementById('statistics-product__special-product').innerHTML = specialProductHTML;
 }
 displaySpecialProduct();
@@ -1218,15 +1273,16 @@ displaySpecialProduct();
  * 2. Họ và tên 
  * 3. Số điện thoại 
  * 4. Doanh thu
+ * NOTE: mặc định(khi admin chưa nhập ngày): sẽ hiện toàn bộ 
  */
-let statisticsCustomerArray = [];
+let statisticsCustomerArray = createStatisticsCustomerArray();
 /**  FUNC: hiển thị mảng thống kê theo khách hàng đã mua. */
 function displayStatisticsCustomer(page = 1) {
     currentStatisticsCustomerPage = page;
     const itemsPerPage = itemsPerPageStatisticsCustomer;
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    statisticsCustomerArray = createStatisticsCustomerArray();
+    // statisticsCustomerArray = createStatisticsCustomerArray();
     
     const paginatedDataCustomer = statisticsCustomerArray.slice(start, end);
 
@@ -1236,9 +1292,9 @@ function displayStatisticsCustomer(page = 1) {
             <tr>
                 <td>${customer.customerId}</td>
                 <td>${customer.phone}</td>
-                <td>${customer.totalRevenue}</td>
+                <td>${formatPrice(customer.totalRevenue)}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1262,7 +1318,7 @@ function calcTotalCustomerRevenue(){
     statisticsCustomerArray.forEach((customer) => {
         total += customer.totalRevenue;
     });
-    document.getElementById('statistics-customer__total-revenue').innerHTML = total;
+    document.getElementById('statistics-customer__total-revenue').innerHTML = formatPrice(total);
     console.log("Tổng doanh thu theo khách hàng: " + total);
 }
 calcTotalCustomerRevenue();
@@ -1291,7 +1347,7 @@ function displayTopCustomer() {
                 <td>${statisticsCustomerArray[i].phone}</td>
                 <td>${statisticsCustomerArray[i].totalRevenue}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1303,6 +1359,106 @@ function displayTopCustomer() {
 // Lắng nghe sự kiện khi nhập vào ô input
 document.getElementById('statistics-customer__top-input').addEventListener('input', displayTopCustomer);
    
+
+/** TÍNH NĂNG statistics: lọc 2 mảng product và customer theo ngày được nhập */
+function filterStatisticsByDate(){
+    const dateStartElem = document.getElementById('statistics__date-start');
+    const dateEndElem = document.getElementById('statistics__date-end');
+    const filterBtn = document.getElementById('statistics__date-btn');
+    let dateStart;
+    let dateEnd;
+    filterBtn.addEventListener('click', (event) => {
+        // Lấy giá trị từ các input
+        const dateStartValue = dateStartElem.value;
+        const dateEndValue = dateEndElem.value;
+
+        // Kiểm tra nếu cả hai ngày đều đã được nhập
+        if (!dateStartValue || !dateEndValue) {
+            alert("Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc.");
+            return;
+        }
+
+        // Chuyển đổi giá trị thành đối tượng Date
+        dateStart = new Date(dateStartValue);
+        dateEnd = new Date(dateEndValue);
+
+        // Kiểm tra ngày bắt đầu có trước hoặc bằng ngày kết thúc
+        if (dateStart > dateEnd) {
+            alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.");
+            return;
+        }
+
+        // Kiểm tra tính hợp lệ của các ngày
+        // if (isValidDateRange(dateStart, dateEnd)) {
+        console.log('Ngày hợp lệ: ', dateStart, dateEnd);
+        
+        statisticsProductArray = createStatisticsProductArray(dateStart, dateEnd);
+        console.log(statisticsProductArray);
+        // Cho phần Product
+        displayStatisticsProduct(currentStatisticsProductPage);
+        calcTotalProductRevenue();
+        displaySpecialProduct();
+
+        statisticsCustomerArray = createStatisticsCustomerArray(dateStart, dateEnd);
+        console.log(statisticsCustomerArray);
+        // Cho phần Customer
+        displayStatisticsCustomer(currentStatisticsCustomerPage);
+        calcTotalCustomerRevenue();
+    
+        // } else {
+        //     alert('Vui lòng nhập lại ngày hợp lệ: \n1. Cả 2 ngày phải được chọn. \n2. Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.');
+        // }
+
+    });
+    const resetBtn = document.getElementById('statistics__date-reset-btn');
+    resetBtn.addEventListener('click', (event) => {
+        // Trả về giá trị rỗng cho các input
+        document.getElementById('statistics__date-start').value = null;
+        document.getElementById('statistics__date-end').value = null;
+    
+
+        statisticsProductArray = createStatisticsProductArray();
+        console.log(statisticsProductArray);
+        // Cho phần Product
+        displayStatisticsProduct(currentStatisticsProductPage);
+        calcTotalProductRevenue();
+        displaySpecialProduct();
+
+        statisticsCustomerArray = createStatisticsCustomerArray();
+        console.log(statisticsCustomerArray);
+        // Cho phần Customer
+        displayStatisticsCustomer(currentStatisticsCustomerPage);
+        calcTotalCustomerRevenue();
+    });
+}
+filterStatisticsByDate();
+
+
+
+
+/** UTILITIES  */
+//-----------------------------------------
+function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(price);
+}
+/** Hàm kiểm tra 2 ngày được nhập có lệ hay không:
+    1. Cả 2 ngày phải nhập đủ
+    2. Ngày start phải trước hoặc bằng ngày end 
+*/
+function isValidDateRange(start, end) {
+    // Kiểm tra cả hai ngày đã được nhập
+    if (!start || !end) {
+        return false;
+    }
+    // Kiểm tra ngày bắt đầu phải trước hoặc bằng ngày kết thúc
+    if (start > end) {
+        return false;
+    }
+    return true;
+}
 
 
 
@@ -1318,6 +1474,8 @@ window.previewImage = previewImage;
 window.showChangeCustomerBox = showChangeCustomerBox;
 window.closeChangeCustomerBox = closeChangeCustomerBox;
 window.saveProductChanges = saveProductChanges;
+window.showOrderDetails = showOrderDetails;
+window.closeDetailOrderBox = closeDetailOrderBox;
 
 window.displayOrdersTable = displayOrdersTable;
 window.handleStatusChange = handleStatusChange;

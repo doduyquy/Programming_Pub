@@ -456,7 +456,8 @@ body {
 #container #leftsection #pagination-products,
 #container #leftsection #pagination-customers,
 #container #leftsection #pagination-orders,
-#container #leftsection #pagination-statistics {
+#container #leftsection #pagination-statistics-product,
+#container #leftsection #pagination-statistics-customer {
     display: flex;
     justify-content: center;
     padding: 10px 0;
@@ -465,7 +466,8 @@ body {
 #container #leftsection #pagination-products a,
 #container #leftsection #pagination-customers a,
 #container #leftsection #pagination-orders a,
-#container #leftsection #pagination-statistics a {
+#container #leftsection #pagination-statistics-product a,
+#container #leftsection #pagination-statistics-customer a {
     color: var(--dark);
     float: left;
     padding: 8px 16px;
@@ -478,14 +480,16 @@ body {
 #container #leftsection #pagination-products a.active,
 #container #leftsection #pagination-customers a.active,
 #container #leftsection #pagination-orders a.active,
-#container #leftsection #pagination-statistics a.active {
+#container #leftsection #pagination-statistics-product a.active,
+#container #leftsection #pagination-statistics-customer a.active {
     background-color:#db504a;
     color: white;
 }
 #container #leftsection #pagination-products a:hover,
 #container #leftsection #pagination-customers a:hover,
 #container #leftsection #pagination-orders a:hover,
-#container #leftsection #pagination-statistics a:hover {
+#container #leftsection #pagination-statistics-product a.hover,
+#container #leftsection #pagination-statistics-customer a.hover {
     background-color: var(--blue);
     color: white;
     border: 1px solid var(--blue);
@@ -1336,4 +1340,71 @@ body {
     font-size: 14px; 
     border: 1px solid #ccc; 
     border-radius: 4px;
+}
+
+
+/* POP-UP xem chi tiết đơn hàng */
+
+#modal-detailorder #detailorder {
+    width: 700px;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    gap: 20px;
+    background-color: #fff;
+    animation: topdown 0.5s;
+}
+
+
+#modal-detailorder #detailorder h2 {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#modal-detailorder #detailorder .order-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+#modal-detailorder #detailorder .info {
+    flex: 1; /* Phần này sẽ tự co dãn */
+  }
+#modal-detailorder #detailorder .order-content p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+#modal-detailorder #detailorder .order-content span {
+    display: inline-block;
+    text-align: left;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+#modal-detailorder #detailorder .checkout-info {
+    flex: 1; /* Phần này sẽ tự co dãn */
+    text-align: left;
+}
+  
+#modal-detailorder #detailorder .checkout-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+  
+#modal-detailorder #detailorder #detail-checkoutCart {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    min-height: 100px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
+    overflow-y: auto; /* Cuộn nếu nội dung vượt quá */
 }
