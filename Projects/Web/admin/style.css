@@ -1341,3 +1341,70 @@ body {
     border: 1px solid #ccc; 
     border-radius: 4px;
 }
+
+
+/* POP-UP xem chi tiết đơn hàng */
+
+#modal-detailorder #detailorder {
+    width: 700px;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    gap: 20px;
+    background-color: #fff;
+    animation: topdown 0.5s;
+}
+
+
+#modal-detailorder #detailorder h2 {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#modal-detailorder #detailorder .order-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+#modal-detailorder #detailorder .info {
+    flex: 1; /* Phần này sẽ tự co dãn */
+  }
+#modal-detailorder #detailorder .order-content p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+#modal-detailorder #detailorder .order-content span {
+    display: inline-block;
+    text-align: left;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+#modal-detailorder #detailorder .checkout-info {
+    flex: 1; /* Phần này sẽ tự co dãn */
+    text-align: left;
+}
+  
+#modal-detailorder #detailorder .checkout-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+  
+#modal-detailorder #detailorder #detail-checkoutCart {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    min-height: 100px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
+    overflow-y: auto; /* Cuộn nếu nội dung vượt quá */
+}
