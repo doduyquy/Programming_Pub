@@ -455,12 +455,12 @@ document.addEventListener('DOMContentLoaded', () => {
     displayOrdersTable(orderArray); // Hiển thị trang đầu tiên của đơn hàng
 
 
-    totalStatisticsPages = Math.ceil(statisticsProductArray.length / itemsPerPageStatisticsProduct);
+    totalStatisticsProductPages = Math.ceil(statisticsProductArray.length / itemsPerPageStatisticsProduct);
     createPagination(totalStatisticsProductPages, 'statistics-product'); // Tạo nút phân trang cho thống kê
     displayStatisticsProduct(currentStatisticsProductPage); // Hiển thị trang đầu tiên của thống kê
 
 
-    totalStatisticsPages = Math.ceil(createStatisticsCustomerArray.length / itemsPerPageStatisticsCustomer);
+    totalStatisticsCustomerPages = Math.ceil(createStatisticsCustomerArray.length / itemsPerPageStatisticsCustomer);
     createPagination(totalStatisticsCustomerPages, 'statistics-customer'); // Tạo nút phân trang cho thống kê
     displayStatisticsCustomer(currentStatisticsCustomerPage); // Hiển thị trang đầu tiên của thống kê
 
