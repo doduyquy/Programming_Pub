@@ -1,6 +1,7 @@
-import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage} from '../common/data/customerArray.js';
-import {Cart } from '../common/data/cart.js';
+import {customerArray, Address, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage} from '../common/data/customerArray.js';
 import {orderArray, saveOrderArrayToStorage, addOrderToArray} from '../common/data/orderArray.js'
+import {Cart } from '../common/data/cart.js';
+
 /////
 let currentCart = undefined;
 let currentUsername;
@@ -23,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () =>
     {
         currentUsername = JSON.parse(flag);
         currentCart = new Cart(currentUsername); // Cập nhật giỏ hàng theo người dùng hiện tại
+        console.log('Current cart: ');
+        console.log(currentCart);
     }
     else 
     {
@@ -33,10 +36,15 @@ document.addEventListener('DOMContentLoaded', () =>
     currentCustomer = customerArray.find(p => p.username === currentUsername);  
     document.querySelector('.username').innerText = currentUsername;
 
-    
+    const cardPaymentOption = document.getElementById('card-payment-option');
+    const additionalOptions = document.getElementById('additional-options');
+    const creditCardPaymentOption = document.getElementById('credit-card-payment');
+    const accountCardPaymentOption = document.getElementById('account-card-payment');
+    const cardPaymentForm = document.getElementById('card-payment-form');
     const modal = document.querySelector('.modal');
     const filea = document.querySelector('.modal-profile-a');
     const fileb = document.querySelector('.modal-profile-b');
+    const modalOverlay = document.querySelectorAll('.modal__overlay-profile');
     const gobackButtons = document.querySelectorAll('.goback');
     const switchButtons = document.querySelectorAll('.auto-form_switch-btn');
     const backButtons = document.querySelectorAll('.auto-form__controls-back');
@@ -90,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () =>
             modal.style.display = "none";
             filea.style.display = "none";
             fileb.style.display = "none";
+             
         });  
     });
     gobackButtons.forEach(button => {  
@@ -139,7 +148,7 @@ function Dangnhap()
     // Change: kiểm tra đăng nhập đúng với customerArray
     if(true == checkValidAccount(username, password))
     {
-        // Khi đăng nhập thành công, cập nhật currentCart của khách hàng tưng ứng 
+        // Khi đăng nhập thành công, cập nhật Cart của khách hàng tưng ứng 
         const temp = currentCart;
         currentCart = new Cart(username);
         temp.cartItem.forEach(product =>
@@ -190,6 +199,26 @@ function Dangky()
             alert('Mật khẩu nhập lại không khớp!');  
             return;  
         }  
+    
+    // Change: kiểm tra sự tồn tại của username trong customerArray  
+    if(checkExistedUsername(username) == true){
+        alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
+        return;
+    } else 
+    {
+        alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
+        b.style.display = "block"; // Hiển thị phần thông tin  
+        a.style.display = "none";  // Ẩn phần đăng ký  
+
+        // Change: thêm new customer vào customerArray khi đăng kí thành công
+        addCustomerToArray(username, password);
+        console.log('Added to customerArray user: ' + username );
+
+        // Khi đăng kí thành công, tạo Cart obj tương ứng với username
+        //cart = new Cart(username);
+        console.log('Create Cart with username: ' + username);
+        //-----------------
+    }
     // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
     function containsUppercaseOrSpecialChar(str) 
     {  
@@ -208,26 +237,6 @@ function Dangky()
             alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
             return;
         }
-    
-    // Kiểm tra sự tồn tại của username trong customerArray  
-    if(checkExistedUsername(username) == true){
-        alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
-        return;
-    } else 
-    {
-        alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
-        b.style.display = "block"; // Hiển thị phần thông tin  
-        a.style.display = "none";  // Ẩn phần đăng ký  
-
-        // Thêm new customer vào customerArray khi đăng kí thành công
-        addCustomerToArray(username, password);
-        console.log('Added to customerArray user: ' + username );
-
-        // Khi đăng kí thành công, tạo Cart obj tương ứng với username
-        //currentCart = new Cart(username);
-        console.log('Create Cart with username: ' + username);
-        //-----------------
-    }
 }
 
 //===== HIỂN THỊ SẢN PHẨM TRONG GIỎ HÀNG =====//
@@ -304,8 +313,10 @@ function changeQuantity(productName, productVersion, change)
         document.getElementById('select-all-footer').checked = false;  
         updateTotalPrice();
     } 
+    // !!! Khi số lượng còn 1, người dùng ấn '-' -> không làm gì cả.
+    // Sản phẩm chỉ được xóa khi người dùng ấn xóa.
     else {  
-        deleteProduct(productName, productVersion);  
+        deleteProduct(productName,productVersion);  
     }  
 }  
     
@@ -349,46 +360,7 @@ function updateTotalPrice()
 document.querySelectorAll('.item-checkbox').forEach(checkbox => {  
     checkbox.addEventListener('change', updateTotalPrice); 
     testAll(); 
-});    
-
-//----------------------------------------------------
-// Mảng lưu các products đã được check(item-checkbox) trong Cart
-let checkedProductArray = [];
-//---------------------------
-// Cập nhật mảng checkedProductsArray khi user check|uncheck
-function updateCheckedProducts(checkbox, productName, productVersion)
-{
-    if(checkbox.checked){
-        // Thêm vào mảng nếu product được checked
-        checkedProductArray.push({name: productName, pb: productVersion});
-        console.log('Check product: ' + productName);
-    } else {
-        // Xóa khỏi mảng nếu product bị bỏ checked
-        // Dùng filter()
-        checkedProductArray = checkedProductArray.filter(product => !(product.name === productName && product.pb === productVersion));
-        console.log('Uncheck product: ' + productName);
-    }
-    console.log(checkedProductArray);
-} 
-
-//===== NÚT XÓA CÁC SẢN PHẨM ĐƯỢC CHỌN =====// 
-// Xóa tất cả các sản phẩm đã checked trong Cart = nút deleteAllProductIsPicked-button
-function deleteAllProductIsPicked()
-{         
-    document.getElementById('select-all-footer').checked = false;
-    // Xóa từng sản phẩm trong danh sách đã chọn  
-    checkedProductArray.forEach(product => {  
-        deleteProduct(product.name, product.pb); // Gọi hàm để xóa sản phẩm  
-    }); 
-    checkedProductArray = [];
-    console.log(checkedProductArray);
-}
-function deleteAllWhenClickBtn(){
-    document.getElementById('delete-button').addEventListener('click', function() {  
-        deleteAllProductIsPicked();
-    });  
-}
-deleteAllWhenClickBtn(); 
+});
 
 //===== NÚT CHỌN TẤT CẢ =====// 
 function toggleSelectAll()
@@ -398,32 +370,106 @@ function toggleSelectAll()
     // Lặp qua tất cả các checkbox sản phẩm và cập nhật trạng thái của chúng  
     productCheckboxes.forEach(checkbox => {  
         checkbox.checked = selectAllCheckbox.checked;
+
     }); 
-    // Cập nhật checkedProductArray tùy vào nút chọn tất cả
-    if(selectAllCheckbox.checked)
-    {
-        currentCart.cartItem.forEach(product => 
-        {
-            const test = checkedProductArray.find(item => item.name === product.name && item.pb === product.pb); 
-            // Những sản phẩm chưa có trong mảng sẽ được thêm vào
-            if(!test) checkedProductArray.push({name: product.name, pb: product.pb});
-        });
-    }
-    else
-    {
-         // Ngược lại thì reset checkedProductArray
-        checkedProductArray=[];
-    }
     // Cập nhật lại tổng giá trị sau khi thay đổi trạng thái  
     updateTotalPrice(); 
+}    
+
+//----------------------------------------------------
+// Mảng lưu các products đã được check(item-checkbox) trong Cart
+let checkedProductArray = [];
+//---------------------------
+// Cập nhật mảng checkedProductsArray khi user check|uncheck
+function updateCheckedProducts(checkbox, productName, productVersion){
+    if(checkbox.checked){
+        // Thêm vào mảng nếu product được checked
+        checkedProductArray.push({productName, productVersion});
+        console.log('Check product: ' + productName);
+    } else {
+        // Xóa khỏi mảng nếu product bị bỏ checked
+        // Hoặc có thể dùng filter()
+        const tmpArray = [];
+        checkedProductArray.forEach((product) => {
+            if(!(product.productName === productName && product.productVersion === productVersion)){
+                tmpArray.push(product);
+            }
+        });
+        checkedProductArray = tmpArray;
+        console.log('Uncheck product: ' + productName);
+    }
+    console.log(checkedProductArray);
 }
+     
+//===== NÚT XÓA CÁC SẢN PHẨM ĐƯỢC CHỌN =====//
+// Xóa tất cả các sản phẩm đã checked trong Cart = nút deleteAllProductIsPicked-button
+function deleteAllProductIsPicked(){
+    // const productCheckboxes = document.querySelectorAll('.item-checkbox:checked');  
+        
+    document.getElementById('select-all-footer').checked = false;
+    // Xóa từng sản phẩm trong danh sách đã chọn  
+    checkedProductArray.forEach(product => {  
+        deleteProduct(product.productName, product.productVersion); // Gọi hàm để xóa sản phẩm  
+    }); 
+    checkedProductArray = [];
+    console.log(checkedProductArray);
+}
+function deleteAllWhenClickBtn(){
+    document.getElementById('delete-button').addEventListener('click', function() {  
+        deleteAllProductIsPicked();
+    });  
+}
+deleteAllWhenClickBtn();
+
+// Tạo Order và push vào orderArray khi người dùng hoàn tất việc mua hàng.
+function createOrder(){
+    const customerId = currentCart.localStorageKey;
+    const cartItemChecked = [];
+    // Kiểm tra trong mảng cartItem những sản phẩm nào có trong checkedProductArray thì thêm vào.
+    checkedProductArray.forEach((checkedProduct) => {
+        currentCart.cartItem.forEach((item) => {
+            if(checkedProduct.productName === item.name && checkedProduct.productVersion === item.pb){
+                cartItemChecked.push(item);
+            }
+        });
+    });
+    // Date gồm: ngày tháng năm
+    const now = new Date();
+    const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    addOrderToArray(customerId, cartItemChecked, orderDate, currentUsername.name, currentCustomer.phone, currentCustomer.address);
+    console.log('Order: ');
+    console.log(orderArray);
+}
+
+/** THÊM VÀO ORDER ARRAY KHI NGƯỜI DÙNG NHẤN THANH TOÁN */
+/** Sau khi User nhấn hoàn tất thanh toán(hiện tại: ấn nút thanh toán)
+ * 1. Tạo Order với các products trong Cart mà user đã chọn
+ * 2. Xóa các products đó trong Cart
+ * 3. Lưu toàn bộ thông tin mà người dùng đã nhập trước khi thanh toán
+ */
+function completeUserPurchase(){
+    document.getElementById('place-order-btn').addEventListener('click', function(){
+        createOrder();                  // Tạo order
+        deleteAllProductIsPicked();     // Xóa các sản phẩm được pick, đã mua
+                                        // Lưu toàn bộ thông tin người dùng 
+        console.log('User click Thanh toán');
+        console.log("Current customer: ");
+        console.log(currentCustomer);
+
+    });
+}
+completeUserPurchase();
+
+//----------------------------------------------------
+
 
 
  //===== XÁC ĐỊNH ĐỊA ĐIỂM HOẠT ĐỘNG =====//  
 const provinceDistrictMap = {  
     'TP.HCM': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7'],  
     'Long An': ['Thành phố Tân An', 'Huyện Đức Hòa', 'Huyện Cần Đước', 'Huyện Bến Lức'],  
-    'Bình Định': ['Thành phố Quy Nhơn', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Hoài Nhơn']  
+    'Bình Định': ['Thành phố Quy Nhơn', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Hoài Nhơn'],  
 };    
 
 
@@ -475,7 +521,6 @@ provinceSelect.addEventListener('change', function() {
 //===== LƯU THÔNG TIN NGƯỜI DÙNG =====// 
 function saveCustomerDetails() 
 {  
-    console.log('KHÁCH HÀNG NHẬP THÔNG TIN MỚI -> CUSTOMER ARRAY');
     const fullname = document.getElementById('fullname').value;  
     const phone = document.getElementById('phone').value;  
     const province = document.getElementById('province').value;  
@@ -486,11 +531,7 @@ function saveCustomerDetails()
         alert('Vui lòng điền tất cả thông tin khách hàng.');  
         return;  
     }  
-    if(phone[0]!=0 || phone.length !== 10) 
-        {
-            alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
-            return;
-        }
+
     if (currentCustomer) {  
         currentCustomer.phone = phone;  
         currentCustomer.name = fullname;  
@@ -516,15 +557,6 @@ function saveCardDetails() {
     const billingAddress = document.getElementById('billing-address').value;  
     const zipCode = document.getElementById('zip-code').value;  
 
-    if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress || !zipCode) {  
-        alert('Vui lòng điền tất cả thông tin thẻ!');  
-        return;  
-    }
-    if(cardNumber.length !== 19) 
-    {
-        alert('Số thẻ không đúng định dạng!');  
-        return;
-    }  
     if (currentCustomer) {  
         currentCustomer.card = {
             cardNumber : cardNumber,
@@ -536,7 +568,7 @@ function saveCardDetails() {
         };
 
         saveCustomerArrayToStorage();  
-        alert('Thông tin thẻ đã được lưu!');  
+        alert('Thông tin thẻ đã được lưu.');  
     } else {  
         console.error("Customer not found");  
     }  
@@ -596,16 +628,26 @@ function thanhtoan()
             const pb = cartItem.querySelector('.category').getAttribute('data-product-version'); // Lấy phiên bản sản phẩm từ thuộc tính data  
             const price = parseFloat(cartItem.querySelector('.price').getAttribute('data-unit-price')); // Lấy giá sản phẩm từ thuộc tính data  
             const quantity = parseInt(cartItem.querySelector('.quantity').value); // Lấy số lượng của sản phẩm  
-            const img = cartItem.querySelector('.product-img').src; // Lấy đường dẫn hình ảnh 
+            const img = cartItem.querySelector('.product-img').src; // Lấy đường dẫn hình ảnh
+                
+            /// XXX // Cập nhật trạng thái isPicked cho sản phẩm trong giỏ hàng  
+            // currentCart.cartItem = currentCart.cartItem.map(product => {  
+            //     if (product.name === name && product.pb === pb) {  
+            //         return { ...product, isPicked: true };  
+            //     }  
+            //     return product;  
+            // });  
             
             // Thêm sản phẩm đã chọn vào mảng pickedProducts  
-            pickedProducts.push({ name, pb, price, quantity, img }); 
+            pickedProducts.unshift({ name, pb, price, quantity, img }); 
     
             // Tính tổng giá sản phẩm đã chọn  
             totalPrice += price * quantity;  
+    
+            // Lưu giỏ hàng vào storage  
+            currentCart.saveCartToStorage();  
         }   
     }); 
-    // Khi người dùng ẩn danh, chưa đăng nhập -> return để đăng nhập
     if(currentUsername === '') 
     {
         alert("Vui lòng đăng nhập để thanh toán!");  
@@ -618,9 +660,8 @@ function thanhtoan()
     {
         // Hiện hóa đơn xác nhận thanh toán
         document.querySelector('.modal-overlay').style.display = 'flex';
-    
+        
         // Cập nhật thông tin user    
-        // Nếu khách hang đã nhập thông tin trước đó, lấy thông tin đó, show lên
         if(currentCustomer.address) 
         {
             document.querySelector('.address-name').innerText = currentCustomer.name;  
@@ -656,7 +697,6 @@ function thanhtoan()
         });
         // Hiển thị sản phẩm trong phần tóm tắt
         const tt_product = document.getElementById('summary-products');
-        tt_product.innerHTML='<strong>Sản phẩm:</strong><br>';
         pickedProducts.forEach(product => {  
             tt_product.insertAdjacentHTML('beforeend', `  
                 Tên: ${product.name} - Phiên bản: ${product.pb} - Số lượng: ${product.quantity} - Giá: ${formatPrice(product.price * product.quantity)} <br>
@@ -664,14 +704,12 @@ function thanhtoan()
         });
 
         updateSummary(); // Update tóm tắt phương thức thanh toán
-        updateAddressSummary(); // Update tóm tắt địa chỉ  
+        updateAddressSummary(); // Update tóm tắt địa chỉ
     }  
 }
 
 //===== HÀM CẬP NHẬT PHƯƠNG THỨC THANH TOÁN KHÁCH CHỌN =====//
-let newCreditCard = false; // Biến check xem khách hàng có chọn phương thức thẻ mới không
 function updateSummary() {
-    
     const paymentMethods = document.getElementsByName('payment');
     let selectedPayment = null;
 
@@ -702,14 +740,9 @@ function updateSummary() {
 // Nút chọn phương thức thẻ mới  
 creditCardPaymentOption.addEventListener('change', () => {  
     if (creditCardPaymentOption.checked) {  
-        cardPaymentForm.style.display = 'block';
-        newCreditCard = true;  
+        cardPaymentForm.style.display = 'block';  
     }  
-    else 
-    {
-        cardPaymentForm.style.display = 'none';
-        newCreditCard = false;
-    } 
+    else cardPaymentForm.style.display = 'none'; 
 });  
 // Nút chọn phương thức thẻ đã lưu trước đó 
 accountCardPaymentOption.addEventListener('change', () => {  
@@ -717,14 +750,13 @@ accountCardPaymentOption.addEventListener('change', () => {
     if (currentCustomer.card === undefined) {  
         alert('Thông tin thẻ của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
         creditCardPaymentOption.checked = true;   // Chuyển qua phương thức nhập thẻ mới
-        newCreditCard = true;
         cardPaymentForm.style.display = 'block'; 
     } else {  
-        cardPaymentForm.style.display = 'none';
-        newCreditCard = false; 
+        cardPaymentForm.style.display = 'none'; 
     }  
 });
-// Hiện mã QR khi người dùng chọn phương thức chuyển khoản
+
+//===== HIỆN MÃ QR KHI THANH TOÁN CK =====//
 const bankPaymentOption = document.getElementById('bank-payment-option');
 const bankImageContainer = document.getElementById('bank-image-container');
 bankPaymentOption.addEventListener('change', () => {
@@ -732,70 +764,20 @@ bankPaymentOption.addEventListener('change', () => {
         bankImageContainer.style.display = 'block';
     }
 });
-// Lưu thông tin thẻ mới khi chưa lưu
-function checkNewCard()
-{
-    const cardNumber = document.getElementById('new-card-number').value;  
-    const expiryDate = document.getElementById('new-expiry-date').value;  
-    const cvv = document.getElementById('new-cvv').value;  
-    const cardholderName = document.getElementById('new-cardholder-name').value;  
-    const billingAddress = document.getElementById('new-billing-address').value;  
-    const zipCode = document.getElementById('new-zip-code').value;  
 
-    if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress || !zipCode) {  
-        alert('Vui lòng điền tất cả thông tin thẻ!');  
-        return false;  
-    }
-    if(cardNumber.length !== 19) 
-    {
-        alert('Số thẻ không đúng định dạng!');  
-        return false;
-    }
-    if(zipCode.length !==5)
-    {
-        alert('Mã bưu chính không đúng định dạng!');  
-        return false;
-    }
-    if(cvv.length !==3)
-    {
-        alert('Mã CVV gồm 3 chữ số!');  
-        return false;
-    }
-    if(expiryDate[2]!=='/' || expiryDate.length!==5)
-    {
-        alert('Ngày hết hạn không đúng định dạng!');  
-        return false;
-    } 
-    if (!currentCustomer.card) {  
-        currentCustomer.card = {
-            cardNumber : cardNumber,
-            expiryDate : expiryDate,
-            cvv : cvv,
-            cardholderName : cardholderName,
-            billingAddress : billingAddress,
-            zipCode : zipCode
-        };
-        saveCustomerArrayToStorage();   
-    }
-    document.getElementById('cash').checked = true;
-    cardPaymentForm.style.display = 'none';
-    return true;
-}
 // Update thông tin thẻ khi thay đổi phương thức  
 const paymentOptions = document.getElementsByName('payment');  
 paymentOptions.forEach(option => {  
     option.addEventListener('change', updateSummary);   
-});
+});  
 
 
 //===== HÀM CẬP NHẬT ĐỊA CHỈ KHÁCH CHỌN =====//
-let selectedAddress; // Biến lưu địa chỉ giao hàng mà khách chọn
-let newAddress = false; // // Biến check xem khách hàng có chọn nhập địa chỉ mới không
 function updateAddressSummary() 
 {
     const addressOptions = document.getElementsByName('address');
     const selectedAddressOption = Array.from(addressOptions).find(option => option.checked);
-    selectedAddress = null;
+    let selectedAddress = null;
 
     if (!selectedAddressOption) {
         document.getElementById('summary-address').innerText = 'Chưa có địa chỉ giao hàng!';
@@ -822,7 +804,11 @@ function updateAddressSummary()
             phone: newAddressPhone,
             detail: `${newAddressDetail} - ${district} - ${province}`
         };
-        newAddress = true;
+        //----- Lưu thông tin người dùng vào currentCustomer để đầy qua orderArray
+        currentCustomer.name = newAddressName;
+        currentCustomer.phone = newAddressPhone;
+        currentCustomer.address = new Address(province, district, newAddressDetail);
+        //------------------------------------------------------------------------
     }
     // Cập nhật địa chỉ
     const summaryAddressElement = document.getElementById('summary-address');
@@ -831,139 +817,34 @@ function updateAddressSummary()
         : 'Chưa có địa chỉ giao hàng!';
 }
 // Ẩn hiện Form thông tin mới   
-const addressOptions = document.getElementsByName('address');
-const newAddressForm = document.getElementById('new-address-form');   
+const addressOptions = document.getElementsByName('address');  
 addressOptions.forEach(option => {  
-    option.addEventListener('change', () => {   
+    option.addEventListener('change', () => {  
+        const newAddressForm = document.getElementById('new-address-form');  
+        
         if (option.id === 'new-address-option') {    
-            newAddressForm.style.display = 'block';
-            newAddress = true;  
+            newAddressForm.style.display = 'block';  
         } else if (option.id === 'default-address') {  
             // Kiểm tra người dùng đã nhập thông tin địa chỉ trước đó chưa  
             if (currentCustomer.address === undefined) {  
                 alert('Thông tin khách hàng của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
                 document.getElementById('new-address-option').checked = true; // Chuyển qua lựa chọn nhập địa chỉ mới  
-                newAddress = true;
                 newAddressForm.style.display = 'block'; 
             } else {  
-                newAddressForm.style.display = 'none';
-                newAddress = false; 
+                newAddressForm.style.display = 'none'; 
             }  
         } else {  
-            newAddressForm.style.display = 'none';
-            newAddress = false;  
+            newAddressForm.style.display = 'none';  
         }  
         updateAddressSummary(); // Cập nhật lại thông tin mỗi khi thay đổi lựa chọn
     });  
-});
-// Lưu thông tin địa chỉ mới khi chưa lưu
-function checkNewCustomerDetails() 
-{  
-    console.log('NHẬP ĐỊA CHỈ MỚI ĐỂ NHẬN HÀNG');
-    const fullname = document.getElementById('fullname2').value;  
-    const phone = document.getElementById('phone2').value;  
-    const province = document.getElementById('province2').value;  
-    const district = document.getElementById('district2').value;  
-    const ward = document.getElementById('ward2').value;  
-        
-    if (!fullname || !phone || !province || !district || !ward) {  
-        alert('Vui lòng điền tất cả thông tin khách hàng.');  
-        return false;  
-    }  
-    if(phone[0]!=0 || phone.length !== 10) 
-    {
-        alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
-        return false;
-    }
-    if (!currentCustomer.address) {  
-        currentCustomer.phone = phone;  
-        currentCustomer.name = fullname;  
-        currentCustomer.address = {  
-            city: province,  
-            district: district,  
-            numberAndRoad: ward  
-        };  
-        // //------------------------------
-        // Lần đầu nhập thông tin: lấy thông tin đó đổ vào customerArray với username tương ứng
-        console.log(JSON.parse(localStorage.getItem('customerArray')));
-        const matchingCustomer = customerArray.find(customer => customer.username === currentCustomer.username);
-        console.log('Username: ' + matchingCustomer.username);
-        console.log('Before: ' + matchingCustomer.name);
-        if (matchingCustomer) {
-            matchingCustomer.name = fullname;
-            matchingCustomer.phone = phone;
-            matchingCustomer.address = {  
-                city: province,  
-                district: district,  
-                numberAndRoad: ward  
-            }; 
-            saveCustomerArrayToStorage();
-        } else {
-            console.error("Customer not found!");
-        }   
-        console.log('After: ' + matchingCustomer.name);
-        console.log(JSON.parse(localStorage.getItem('customerArray')));
-        // //------------------------------
-    }
-    document.getElementById('default-address').checked = true;
-    newAddressForm.style.display = 'none'; 
-    return true;  
-}    
+});    
 // Update thông tin địa chỉ khi nhập địa chỉ mới  
 const newAddressInputs = document.querySelectorAll('.new-address-form .form-input');   
 newAddressInputs.forEach(input => {  
     input.addEventListener('input', updateAddressSummary);  
 });
 
-
-// Tạo Order và push vào orderArray khi người dùng hoàn tất việc mua hàng.
-function createOrder(){
-    const customerId = currentCart.localStorageKey;
-    const cartItemChecked = [];
-    // Kiểm tra trong mảng cartItem những sản phẩm nào có trong checkedProductArray thì thêm vào.
-    checkedProductArray.forEach((checkedProduct) => {
-        const matchedItems = currentCart.cartItem.filter(item =>   
-            checkedProduct.name === item.name && checkedProduct.pb === item.pb  
-        );  
-        cartItemChecked.push(...matchedItems);
-    });
-    // Date gồm: ngày tháng năm
-    const now = new Date();
-    const orderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    if (selectedAddress && selectedAddress.name && selectedAddress.phone && selectedAddress.detail) {  
-        addOrderToArray(customerId, cartItemChecked, orderDate, selectedAddress.name, selectedAddress.phone, selectedAddress.detail);  
-        console.log('Order created successfully:');  
-        console.log(orderArray);  
-    } else {  
-        console.error('Failed to create order: Address information is incomplete.');  
-    }
-}
-
-/** THÊM VÀO ORDER ARRAY KHI NGƯỜI DÙNG NHẤN THANH TOÁN */
-/** Sau khi User nhấn hoàn tất thanh toán(hiện tại: ấn nút thanh toán)
- * 1. Tạo Order với các products trong Cart mà user đã chọn
- * 2. Xóa các products đó trong Cart
- * 3. Lưu toàn bộ thông tin mà người dùng đã nhập trước khi thanh toán
- */
-function completeUserPurchase()
-{
-    let flag = true;
-    if(newAddress) flag=checkNewCustomerDetails();
-    if(newCreditCard && flag) flag=checkNewCard();
-    
-    if(flag)
-    {
-        createOrder();                  // Tạo order
-        deleteAllProductIsPicked();     // Xóa các sản phẩm được pick, đã mua
-        alert("Đặt hàng thành công!");
-        document.getElementById('modal-overlay').style.display = 'none';                                // Lưu toàn bộ thông tin người dùng 
-        
-        console.log('User click Thanh toán');
-        console.log("Current customer: ");
-        console.log(currentCustomer);
-    }    
-}
 
 //-------------------------------------------
 /** MODULE: khi tạo 'module', các file trong js trở thành scope chỉ trong file đó.
@@ -985,11 +866,6 @@ window.saveCustomerDetails = saveCustomerDetails;
 window.thanhtoan = thanhtoan;
 window.updateAddressSummary = updateAddressSummary;
 window.updateSummary = updateSummary;
-window.deleteAllProductIsPicked = deleteAllProductIsPicked;
+
 window.updateCheckedProducts = updateCheckedProducts;
-window.deleteAllWhenClickBtn = deleteAllWhenClickBtn;
-window.checkNewCard = checkNewCard;
-window.checkNewCustomerDetails = checkNewCustomerDetails; 
-window.createOrder = createOrder;
-window.completeUserPurchase = completeUserPurchase; 
 //-------------------------------------------

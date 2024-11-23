@@ -14,27 +14,53 @@ export class Cart {
     }
 
     // Private method
-    loadCartFromStorage(){
+    loadCartFromStorage()
+    {
         /** Get data for cart from localStorage:
          * Lấy cart JSON từ localStorage thông qua key
          * Parse -> array để lưu vào cartItem
          */ 
-        // this.cartItem = JSON.parse(localStorage.getItem(this.localStorageKey));
-        const localCart = JSON.parse(localStorage.getItem(this.localStorageKey));
-        if(localCart){
+        try {  
+            const localCart = JSON.parse(localStorage.getItem(this.localStorageKey));  
             // Nếu localCart tồn tại, lấy giá trị từ đó.
-            this.cartItem = localCart.cartItem || [];
-            this.counterProducts = localCart.counterProducts || 0;
-        } else {
-            // Nếu ko tồn tại, thì lấy giá trị mặc định:
-            this.cartItem = [];
-            this.counterProducts = 0;
-            console.log('Cart null');
-        }
-
-        console.log('Loaded cart of ' + this.localStorageKey);
-        console.log('Counter products   : ' + this.counterProducts);
+            if (localCart) {  
+                this.cartItem = localCart.cartItem || [];
+                if(this.cartItem.length === 0)  
+                    this.counterProducts = 0;
+                else this.counterProducts = localCart.counterProducts;   
+            } // Nếu ko tồn tại, thì lấy giá trị mặc định: 
+            else {  
+                this.cartItem = [];  
+                this.counterProducts = 0;  
+            }  
+            console.log('Loaded cart: ', this.cartItem);  
+        } catch (error) {  
+            console.error('Failed to load cart from storage', error);  
+            this.cartItem = [];  
+            this.counterProducts = 0;  
+        }  
     }
+    // loadCartFromStorage(){
+    //     /** Get data for cart from localStorage:
+    //      * Lấy cart JSON từ localStorage thông qua key
+    //      * Parse -> array để lưu vào cartItem
+    //      */ 
+    //     // this.cartItem = JSON.parse(localStorage.getItem(this.localStorageKey));
+    //     const localCart = JSON.parse(localStorage.getItem(this.localStorageKey));
+    //     if(localCart){
+    //         // Nếu localCart tồn tại, lấy giá trị từ đó.
+    //         this.cartItem = localCart.cartItem || [];
+    //         this.counterProducts = localCart.counterProducts || 0;
+    //     } else {
+    //         // Nếu ko tồn tại, thì lấy giá trị mặc định:
+    //         this.cartItem = [];
+    //         this.counterProducts = 0;
+    //         console.log('Cart null');
+    //     }
+
+    //     console.log('Loaded cart of ' + this.localStorageKey);
+    //     console.log('Counter products   : ' + this.counterProducts);
+    // }
     /** SAVE CART TO localStorage: 
      * Chuyển cartItem về string
      * Lưu vào localStorage

@@ -722,7 +722,7 @@ function displayCustomerPage(page) {
             '<td>' + customer.username + '</td>' +
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
-            '<td>' + customer.address.numberAndRoad + ', ' + customer.address.ward + ', Quận ' + customer.address.district + ', ' + customer.address.city + '</td>' +
+            '<td>' + customer.address.numberAndRoad + ', ' + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
             '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
             '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
         '</tr>';

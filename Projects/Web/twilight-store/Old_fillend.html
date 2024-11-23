@@ -162,7 +162,7 @@
                     </select>
                     
                     <label class="form-label">Địa chỉ</label>
-                    <input type="text" class="form-input" id="ward" placeholder="273 An Dương Vương, Phường 3">
+                    <input type="text" class="form-input" id="ward"  placeholder="273 An Dương Vương, Phường 3">
                     
                     <div class="button-container">
                         <input type="button" class="goback" value="Quay lại">
@@ -186,11 +186,11 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Ngày hết hạn</label>
-                            <input type="text" class="form-control expiry-date" id="expiry-date" placeholder="MM/YY" maxlength="5">
+                            <input type="text" class="form-control expiry-date" id="expiry-date" placeholder="MM/YY"  maxlength="5">
                         </div>
                         <div class="col">
                             <label class="form-label">Mã CVV</label>
-                            <input type="text" class="form-control cvv" id="cvv" placeholder="XXX" maxlength="3">
+                            <input type="text" class="form-control cvv" id="cvv" placeholder="XXX"  maxlength="3">
                         </div>
                     </div>
                     
@@ -201,7 +201,7 @@
                     <input type="text" class="form-control billing-address" id="billing-address">
                     
                     <label class="form-label">Mã bưu chính</label>
-                    <input type="text" class="form-control zip-code" id="zip-code" maxlength="5" placeholder="XXXXX">
+                    <input type="text" class="form-control zip-code" id="zip-code"  maxlength="5" placeholder="XXXXX" >
                     
                     <div class="button-container">
                         <input type="button" class="goback" value="Quay lại">
@@ -239,10 +239,10 @@
                 <form>
                     <div id="new-address-form" class="new-address-form" style="display: none;">
                         <label class="form-label">Họ và tên</label>
-                        <input type="text" class="form-input" id="fullname2">
+                        <input type="text" class="form-input">
                       
                         <label class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-input" id="phone2" maxlength="10" placeholder="0000000000">
+                        <input type="text" class="form-input" maxlength="10" placeholder="0000000000">
                       
                         <label class="form-label">Tỉnh/Thành phố</label>
                         <select class="form-input" id="province2">
@@ -258,7 +258,7 @@
                         </select>
                       
                         <label class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-input" id="ward2" placeholder="273 An Dương Vương, Phường 3">
+                        <input type="text" class="form-input" placeholder="273 An Dương Vương, Phường 3">
                       </div>
                 </form>
                   
@@ -276,7 +276,7 @@
                 <div class="section payment-method">
                     <h4 class="section-header">Phương thức thanh toán</h4>
 
-                    <div class="vd"><p><input type="radio" name="payment" value="cash" id="cash" checked> Thanh toán khi nhận hàng</p></div>
+                    <div class="vd"><p><input type="radio" name="payment" value="cash" checked> Thanh toán khi nhận hàng</p></div>
 
                     <div class="vd">
                         <p>
@@ -306,29 +306,29 @@
                     <div id="card-payment-form" class="card-payment-form" style="display: none;">
                         <div class="form-group">
                             <label class="form-label">Số thẻ</label>
-                            <input type="text" class="form-control card-number" id="new-card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                            <input type="text" class="form-control card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
                         </div>
                         <div class="row">
                             <div class="col">
                                 <label class="form-label">Ngày hết hạn</label>
-                                <input type="text" class="form-control expiry-date" id="new-expiry-date" placeholder="MM/YY" maxlength="5">
+                                <input type="text" class="form-control expiry-date" placeholder="MM/YY" maxlength="5">
                             </div>
                             <div class="col">
                                 <label class="form-label">Mã CVV</label>
-                                <input type="text" class="form-control cvv" id="new-cvv" placeholder="XXX" maxlength="3">
+                                <input type="text" class="form-control cvv" placeholder="XXX" maxlength="3">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Họ và tên chủ thẻ</label>
-                            <input type="text" class="form-control cardholder-name" id="new-cardholder-name">
+                            <input type="text" class="form-control cardholder-name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Địa chỉ đăng ký thẻ</label>
-                            <input type="text" class="form-control billing-address" id="new-billing-address">
+                            <input type="text" class="form-control billing-address">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Mã bưu chính</label>
-                            <input type="text" class="form-control zip-code" id="new-zip-code" maxlength="5"  placeholder="XXXXX">
+                            <input type="text" class="form-control zip-code"  maxlength="5"  placeholder="XXXXX">
                         </div>
                     </div>
                 
@@ -345,11 +345,11 @@
                             <strong><p style="margin-top: 15px;">Phương thức thanh toán:</p></strong> <span id="summary-payment"></span><br>
                         </div>
                         <div class="product-summary" id="summary-products">
-                            <!-- HIỂN THỊ BẰNG JAVASCRIPT -->
+                            <strong>Sản phẩm:</strong><br>
                         </div>
                     </div>
     
-                    <button class="btn-buy" id="place-order-btn" onclick="completeUserPurchase();">Đặt hàng</button>
+                    <button class="btn-buy" id="place-order-btn">Đặt hàng</button>
                 </div>
             </div>
         
