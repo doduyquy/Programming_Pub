@@ -188,7 +188,7 @@ function compareDistrict(districtA, districtB){
  * 2. Số lượng đã bán 
  * 3. Tổng doanh thu
  */
-export function createStatisticsProductArray(){
+export function createStatisticsProductArray(stDate = null, ndDate = null){
     let statisticsProductArray = [
         // {
         //     name: undefined,
@@ -196,26 +196,50 @@ export function createStatisticsProductArray(){
         //     price: undefined,
         // }
     ];
-    // Duyệt qua từng order trong orderArray
-    orderArray.forEach((order) => {
-        //  Trong mỗi order, duyệt từng item trong checkoutCart
-        order.checkoutCart.forEach((item) => {
-            // Tìm trong staArray đã có item.name chưa?
-            const matchingProduct = statisticsProductArray.find((product) => product.name === item.name);
-            // Nếu sản phẩm đã có trong staArray thì tăng quantity và totalRevenue
-            if(matchingProduct){   
-                matchingProduct.quantity += item.quantity;
-            } else {    // Nếu chưa có thì thêm vào.
-                statisticsProductArray.push(
-                    {
-                        name: item.name,
-                        quantity: item.quantity,
-                        price: item.price,
+    if(stDate == null && ndDate == null){
+        // Duyệt qua từng order trong orderArray
+        orderArray.forEach((order) => {
+            //  Trong mỗi order, duyệt từng item trong checkoutCart
+            order.checkoutCart.forEach((item) => {
+                // Tìm trong staArray đã có item.name chưa?
+                const matchingProduct = statisticsProductArray.find((product) => product.name === item.name);
+                // Nếu sản phẩm đã có trong staArray thì tăng quantity và totalRevenue
+                if(matchingProduct){   
+                    matchingProduct.quantity += item.quantity;
+                } else {    // Nếu chưa có thì thêm vào.
+                    statisticsProductArray.push(
+                        {
+                            name: item.name,
+                            quantity: item.quantity,
+                            price: item.price,
+                        }
+                    );
+                }
+            });
+        });
+    } else {
+        orderArray.forEach((order) => {
+            if(isBetweenTwoDate(order.date, stDate, ndDate)){
+                //  Trong mỗi order, duyệt từng item trong checkoutCart
+                order.checkoutCart.forEach((item) => {
+                    // Tìm trong staArray đã có item.name chưa?
+                    const matchingProduct = statisticsProductArray.find((product) => product.name === item.name);
+                    // Nếu sản phẩm đã có trong staArray thì tăng quantity và totalRevenue
+                    if(matchingProduct){   
+                        matchingProduct.quantity += item.quantity;
+                    } else {    // Nếu chưa có thì thêm vào.
+                        statisticsProductArray.push(
+                            {
+                                name: item.name,
+                                quantity: item.quantity,
+                                price: item.price,
+                            }
+                        );
                     }
-                );
+                });
             }
         });
-    });
+    }
     // Sắp xếp giảm dần trước khi trả về:
     statisticsProductArray = sortStatisticsProductArrayBySales(statisticsProductArray);
     return statisticsProductArray;
@@ -223,11 +247,18 @@ export function createStatisticsProductArray(){
 // Sắp xếp mảng thống kê giảm dần theo doanh số của từng sản phẩm
 function sortStatisticsProductArrayBySales(statisticsProductArray){
     return statisticsProductArray.slice().sort((productA, productB) => {
-        return productB.quantity - productA.quantity;
+        // return productB.quantity - productA.quantity;
+        // Nếu khách số lượng thì sort giảm dần theo số lượng
+        if(productA.quantity != productB.quantity){
+            return productB.quantity - productA.quantity;
+        } else {
+            // Nếu bằng số lượng thì sort giảm dần theo giá
+            return productB.price - productA.price;
+        }
     });
 }
 
-export function createStatisticsCustomerArray(){
+export function createStatisticsCustomerArray(stDate = null, ndDate = null){
     let statisticsCustomerArray = [
         // {
         //     customerId: undefined,
@@ -235,24 +266,47 @@ export function createStatisticsCustomerArray(){
         //     totalRevenue: undefined,
         // }
     ];
-    orderArray.forEach((order) => {
-        const matchingCustomer = statisticsCustomerArray.find((customer) => customer.customerId === order.customerId);
-        if(matchingCustomer){
-            // Nếu đã có thì tăng doanh thu
-            matchingCustomer.totalRevenue += order.calculateTotalPayment();
-        } else {
-            // Nếu chưa có thì thêm vào
-            // Tìm thông tin của khách đã đặt đơn:
-            const newCustomer = customerArray.find((customer) => customer.username === order.customerId);
-            statisticsCustomerArray.push(
-                {
-                    customerId: order.customerId,
-                    phone: newCustomer.phone,
-                    totalRevenue: order.calculateTotalPayment(),
+    if(stDate == null && ndDate == null){
+        orderArray.forEach((order) => {
+            const matchingCustomer = statisticsCustomerArray.find((customer) => customer.customerId === order.customerId);
+            if(matchingCustomer){
+                // Nếu đã có thì tăng doanh thu
+                matchingCustomer.totalRevenue += order.calculateTotalPayment();
+            } else {
+                // Nếu chưa có thì thêm vào
+                // Tìm thông tin của khách đã đặt đơn:
+                const newCustomer = customerArray.find((customer) => customer.username === order.customerId);
+                statisticsCustomerArray.push(
+                    {
+                        customerId: order.customerId,
+                        phone: newCustomer.phone,
+                        totalRevenue: order.calculateTotalPayment(),
+                    }
+                );
+            }
+        });
+    } else {
+        orderArray.forEach((order) => {
+            if(isBetweenTwoDate(order.date, stDate, ndDate)){
+                const matchingCustomer = statisticsCustomerArray.find((customer) => customer.customerId === order.customerId);
+                if(matchingCustomer){
+                    // Nếu đã có thì tăng doanh thu
+                    matchingCustomer.totalRevenue += order.calculateTotalPayment();
+                } else {
+                    // Nếu chưa có thì thêm vào
+                    // Tìm thông tin của khách đã đặt đơn:
+                    const newCustomer = customerArray.find((customer) => customer.username === order.customerId);
+                    statisticsCustomerArray.push(
+                        {
+                            customerId: order.customerId,
+                            phone: newCustomer.phone,
+                            totalRevenue: order.calculateTotalPayment(),
+                        }
+                    );
                 }
-            );
-        }
-    });
+            }
+        });
+    }
     // Sắp xếp trước khi trả về
     statisticsCustomerArray = sortStatisticsCustomerArrayByRevenue(statisticsCustomerArray);
     return statisticsCustomerArray;
@@ -264,6 +318,17 @@ function sortStatisticsCustomerArrayByRevenue(statisticsCustomerArray){
     });
 }
 
+
+/** TÍNH NĂNG statistics: lọc Product và Customer theo ngày được nhập */
+export function filterStatisticsBetweenTwoDate(stDate, ndDate, statisticsArray){
+    const filterDateArray = [];
+    orderArray.forEach((order) => {
+        if(true === isBetweenTwoDate(order.date, stDate, ndDate)){
+            filterDateArray.push(order);
+        }
+    });
+    return filterDateArray;
+}
 
 
 

@@ -477,20 +477,24 @@
                     <nav>
                         <img id="hidden-sidebar-btn" src="./img/menu-color-24.png" alt="Menu">
                         <div id="site-name">Thống kê</div>
-                        <div id="logout">
+                        <!-- <div id="logout">
                             <img src="./img/log-out-color-24.png" alt="Logout">
                             <div id="user-mode">User</div>
-                        </div>
+                        </div> -->
                     </nav>
                     <!-- Thống kê theo khoảng thời gian (ngày -> ngày) -->
                     <div class="period">
                         <div class="from-time">
                             <span>Từ ngày:</span>
-                            <input type="date" name="" id="">
+                            <input type="date" name="" id="statistics__date-start" >
                         </div>
                         <div class="to-time">
                             <span>Đến ngày:</span>
-                            <input type="date" name="" id="">
+                            <input type="date" name="" id="statistics__date-end" >
+                        </div>
+                        <div id="statistics__date-filter">
+                            <button type="button" id="statistics__date-btn">Lọc theo ngày</button>
+                            <button type="button" type="reset" class="reset-btn" id="statistics__date-reset-btn">Reset</button>
                         </div>
                     </div>
 
