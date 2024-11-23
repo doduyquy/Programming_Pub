@@ -441,7 +441,8 @@ body {
 }
 
 /*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
-#container #leftsection #table_list .table-content .edit-btn, .detail-btn{
+#container #leftsection #table_list .table-content .edit-btn, .detail-btn, 
+#statistics-product__show-bill-btn, #statistics-customer__show-bill-btn{
     background-color: var(--blue);
     color: #fff;
     border: none;

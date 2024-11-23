@@ -1145,7 +1145,7 @@ function displayStatisticsProduct(page = 1) {
                 <td>${product.quantity}</td>
                 <td>${formatPrice(product.quantity * product.price)}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-product__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1238,7 +1238,7 @@ function displayStatisticsCustomer(page = 1) {
                 <td>${customer.phone}</td>
                 <td>${formatPrice(customer.totalRevenue)}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1291,7 +1291,7 @@ function displayTopCustomer() {
                 <td>${statisticsCustomerArray[i].phone}</td>
                 <td>${statisticsCustomerArray[i].totalRevenue}</td>
                 <td>
-                    <button type="button">Hóa đơn</button>
+                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
