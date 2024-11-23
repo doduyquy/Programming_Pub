@@ -224,7 +224,7 @@ function displayProductPage(page) {
     updatePagination('product'); // Cập nhật nút phân trang
 
     // Thêm event listeners cho các nút xem chi tiết
-    document.querySelectorAll('.detail-btn').forEach(button => {
+    document.querySelectorAll('#main__products .detail-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productIndex = parseInt(this.getAttribute('data-index'));
             showProductDetails(productIndex);
@@ -1006,9 +1006,17 @@ function displayOrdersTable(orders){
         `;
     });
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
-
+    
+    // Thêm sự kiện cho nút chi tiết
+    document.querySelectorAll('#main__orders .detail-btn').forEach((button, index) => {
+        button.addEventListener('click', () => {
+            console.log('Show detail order');
+            showOrderDetails(index);
+        });
+    });
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
+
 }
 displayOrdersTable(orderArray);
 
@@ -1118,6 +1126,45 @@ function resetOrderFilter(){
 }
 resetOrderFilter();
 
+function showOrderDetails(orderIndex) {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+
+    // Lấy thông tin đơn hàng
+    const order = orderArray[orderIndex];
+
+    // Điền dữ liệu vào pop-up
+    document.getElementById('detail-order-customername').innerText = order.name;
+    document.getElementById('detail-order-phone').innerText = order.phone;
+    document.getElementById('detail-order-address').innerText = `${order.address.street}, ${order.address.district}, ${order.address.city}`;
+    document.getElementById('detail-date').innerText = order.date;
+    document.getElementById('detail-status').innerText = order.status;
+
+    // Hiển thị các sản phẩm trong đơn hàng
+    let checkoutCartHTML = '';
+    order.checkoutCart.forEach(product => {
+        checkoutCartHTML += `
+            <div class="product-item">
+                <span>${product.name}</span>
+                <span>${product.quantity}</span>
+                <span>${product.price}</span>
+            </div>
+        `;
+    });
+    document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
+
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
+}
+
+function closeDetailOrderBox() {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
 
 
 /** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
@@ -1437,6 +1484,9 @@ window.displayOrderByStatus = displayOrderByStatus;
 window.displayStatisticsProduct = displayStatisticsProduct;
 window.displaySpecialProduct = displaySpecialProduct;
 window.displayTopCustomer = displayTopCustomer;
+
+window.showOrderDetails = showOrderDetails;
+window.closeDetailOrderBox = closeDetailOrderBox;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;
