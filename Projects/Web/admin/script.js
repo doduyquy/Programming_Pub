@@ -1002,7 +1002,7 @@ function displayOrdersTable(orders){
                     <button class="detail-btn" onclick="">Chi tiết</button>
                 </td>
                 <td>
-                    <select id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
+                    <select class="order-status-select" id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
                         <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
                         <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
                         <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
@@ -1021,12 +1021,30 @@ function displayOrdersTable(orders){
             showOrderDetails(index);
         });
     });
+
+    // Cập nhật màu sắc cho các select
+    document.querySelectorAll('.order-status-select').forEach(select => {
+        updateSelectColor(select); // Gọi hàm cập nhật màu ngay sau khi tạo bảng
+    });
+
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
 
 }
 displayOrdersTable(orderArray);
 
+// Function to update the color of the select box
+function updateSelectColor(selectElement) {
+    const status = selectElement.value; // Get the current value of the select
+    selectElement.setAttribute('data-status', status); // Set the data-status attribute
+}
+
+// Apply initial colors to all select boxes on page load
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.order-status-select').forEach(select => {
+        updateSelectColor(select); // Initialize color for each select box
+    });
+});
 
 
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */

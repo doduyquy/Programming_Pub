@@ -441,7 +441,7 @@ body {
 }
 
 /*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
-#container #leftsection #table_list .table-content .edit-btn, .detail-btn, 
+#container #leftsection #table_list .table-content .edit-btn, .detail-btn,
 #statistics-product__show-bill-btn, #statistics-customer__show-bill-btn{
     background-color: var(--blue);
     color: #fff;
@@ -1438,5 +1438,33 @@ body {
     font-weight: bold;
     font-size: 21px; /* Tăng kích cỡ chữ (tùy chọn) */
 }
-
 /* // */
+
+/* Cho selection: tình trạng đơn hàng */
+/* Styling the select box */
+.order-status-select {
+    padding: 5px;
+    color: black; /* Default text color */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Specific colors for options */
+.order-status-select[data-status="UNPROCESSED"] {
+    background-color: yellow;
+}
+
+.order-status-select[data-status="CONFIRMED"] {
+    background-color: blue;
+    color: white; /* White text for better contrast */
+}
+
+.order-status-select[data-status="SUCCEEDED"] {
+    background-color: green;
+    color: white; /* White text for better contrast */
+}
+
+.order-status-select[data-status="FAILED"] {
+    background-color: red;
+    color: white; /* White text for better contrast */
+}
