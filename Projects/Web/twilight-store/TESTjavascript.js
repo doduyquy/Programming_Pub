@@ -280,7 +280,24 @@ function Dangky()
             alert('Mật khẩu nhập lại không khớp!');  
             return;  
         }  
-    
+    // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
+    function containsUppercaseOrSpecialChar(str) 
+    {  
+        // Biểu thức chính quy để kiểm tra ký tự in hoa và ký tự đặc biệt  
+        const inhoa = /[A-Z]/;
+        const dacbiet = /[!@#$%^&*(),.?":{}|<>]/;  
+        return (inhoa.test(str) && dacbiet.test(str) && str.length>8);  
+    }  
+    if(username.includes(' ')) 
+        {
+            alert("Tên đăng nhập không có khoảng trống!");
+            return;
+        }
+    if(!containsUppercaseOrSpecialChar(password))
+        {
+            alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+            return;
+        }
     // Change: kiểm tra sự tồn tại của username trong customerArray  
     if(checkExistedUsername(username) == true){
         alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
@@ -300,24 +317,6 @@ function Dangky()
         console.log('Create Cart with username: ' + username);
         //-----------------
     }
-    // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
-    function containsUppercaseOrSpecialChar(str) 
-    {  
-        // Biểu thức chính quy để kiểm tra ký tự in hoa và ký tự đặc biệt  
-        const inhoa = /[A-Z]/;
-        const dacbiet = /[!@#$%^&*(),.?":{}|<>]/;  
-        return (inhoa.test(str) && dacbiet.test(str) && str.length>8);  
-    }  
-    if(username.includes(' ')) 
-        {
-            alert("Tên đăng nhập không có khoảng trống!");
-            return;
-        }
-    if(!containsUppercaseOrSpecialChar(password))
-        {
-            alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
-            return;
-        }
 }
 //===== HÀM ĐĂNG XUẤT =====//
 document.getElementById('log-out').addEventListener('click', function(event) 
