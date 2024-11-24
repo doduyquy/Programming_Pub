@@ -3,7 +3,6 @@ import { customerArray } from '../common/data/customerArray.js'; // Import class
 import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray, createStatisticsCustomerArray } from '../common/data/orderArray.js'; 
 
 localStorage.removeItem('productArray');
-// localStorage.removeItem('customerArray')
 
 // LOGIN
 document.addEventListener('DOMContentLoaded', function() {
@@ -25,6 +24,7 @@ function login() {
         document.getElementById('error-message').style.display = 'block';
     }
 }
+
 
 // SIDEBAR 
 function updateContentWidth() {
@@ -455,14 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
         addProductForm.addEventListener('submit', addProduct); 
     }
 
-    // Kiểm tra nếu customerArray rỗng thì tải từ localStorage
-    if (customerArray.length === 0) {
-        alert('Không có khách hàng nào trong customerArray. Vui lòng kiểm tra lại.');
-    } else {
-        totalCustomerPages = Math.ceil(customerArray.length / itemsPerPageCustomer);
-        createPagination(totalCustomerPages, 'customer'); // Tạo nút phân trang cho khách hàng
-        displayCustomerPage(currentCustomerPage);
-    }
+    totalCustomerPages = Math.ceil(customerArray.length / itemsPerPageCustomer);
+    createPagination(totalCustomerPages, 'customer'); // Tạo nút phân trang cho khách hàng
+    displayCustomerPage(currentCustomerPage);
     // Thêm sự kiện submit cho form thêm khách hàng
     const addCustomerForm = document.getElementById('add-customer-form'); 
     if (addCustomerForm) { 
@@ -725,7 +720,6 @@ function addPasswordToggleListeners() {
     });
 }
 
-
 // ---CUSTOMER---
 // Hiển thị trang khách hàng
 function displayCustomerPage(page) {
@@ -967,17 +961,11 @@ function closeChangeCustomerBox() {
     }
 }
 
-
 /* MAIN_ORDERS */
-
-// Add test order to order array:
-// addTestOrderToArray();
-
 /** Tìm khách hàng theo username */
 function findCustomerByUsername(username) {
     return customerArray.find((customer) => customer.username === username);
 }
-
 
 function getOrdersByPage(page) {
     const start = (page - 1) * itemsPerPageOrder;
@@ -1005,8 +993,6 @@ function displayOrdersTable(orders){
 
     let tableHTML = ``;
     currentPageOrders.forEach((order, index) => {
-        // console.log(order);
-        // const matchingCustomer = findCustomerByUsername(order.customerId);
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
         const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
         tableHTML += `
@@ -1230,7 +1216,7 @@ function displayStatisticsProduct(page = 1) {
                 <td>${product.quantity}</td>
                 <td>${formatPrice(product.quantity * product.price)}</td>
                 <td>
-                    <button type="button" id="statistics-product__show-bill-btn">Hóa đơn</button>
+                    <button type="button" class="statistics-product__show-bill-btn" data-name="${product.name}">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1242,6 +1228,15 @@ function displayStatisticsProduct(page = 1) {
 
     // Tạo phân trang cho statistics-product
     createPagination(totalStatisticsProductPages, 'statistics-product');
+
+    // Gắn sự kiện cho các nút sau khi chúng được tạo
+    document.querySelectorAll('.statistics-product__show-bill-btn').forEach((btn) => {
+        btn.addEventListener('click', function(){
+            const productName = this.getAttribute('data-name');
+            showStatisticsProductBill(productName);
+            console.log('Statistics product show bill of ' + productName);
+        });
+    });
 }
 
 // Gọi hàm để hiển thị trang đầu tiên
@@ -1308,6 +1303,80 @@ function displaySpecialProduct(){
 }
 displaySpecialProduct();
 
+// Show chi tiết hóa đơn của sản phẩm được thống kê:
+function showStatisticsProductBill(productName){
+    const orderProductArray = [];
+    orderArray.forEach((order) => {
+        order.checkoutCart.forEach((product) => {
+            if(product.name === productName){
+                orderProductArray.push(order);
+            }
+        });
+    });
+    // Gọi hàm hiện popup toàn bộ bill:
+    showStatisticsProductBillPopup(orderProductArray);
+    console.log(orderProductArray);
+
+}
+function showStatisticsProductBillPopup(orderProductArray) {
+    console.log('Show popup statistics product bill');
+    const modalOrderDetails = document.getElementById('modal-detailStatistic');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+
+    let billHTML = `
+                    <button class="close-popStatistics" id="close-detailStatistic">+</button>
+    `;
+    orderProductArray.forEach((order) => {
+        // Hiển thị các sản phẩm trong đơn hàng
+        let checkoutCartHTML = '';
+        order.checkoutCart.forEach(product => {
+            checkoutCartHTML += `
+                <div class="detailStatistic-item">
+                    <span>${product.name}</span>
+                    <span>${product.quantity}</span>
+                    <span>${formatPrice(product.price)}</span>
+                </div>
+            `;
+        });
+        
+        billHTML += `
+                        <h2>Chi tiết đơn hàng</h2>
+                        <div class="detailStatistic-content">
+                            <div class="detailStatistic-info">
+                                <p>Tên khách hàng: <span id="detailStatistic-customername">${order.name}</span></p>
+                                <p>Số điện thoại: <span id="detailStatistic-phone">${order.phone}</span></p>
+                                <p>Địa chỉ: <span id="detailStatistic-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
+                                <p>Thời điểm đặt hàng: <span id="detailStatistic-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
+                                <p>Trạng thái: <span id="detailStatistic-status">${order.status}</span></p>                        
+                            </div>
+                            <div class="checkout-detailStatistic">
+                                <div class="checkout-detailStatistic">
+                                    <p>Sản phẩm đã đặt:</p>
+                                    <div id="detailStatistic-checkoutCart">${checkoutCartHTML}</div>
+                                </div>
+                                <div class="checkout-detailStatistic-total-payment">
+                                    <p>Tổng tiền: <span id="detailStatistic-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+        `;
+    });
+    // Chèn nội dung vào modal
+    modalOrderDetails.innerHTML = billHTML;
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailStatistic').addEventListener('click', closeDetailStatisticProductBox);
+}
+
+function closeDetailStatisticProductBox() {
+    const modalOrderDetails = document.getElementById('modal-detailStatistic');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
+
 /** FUNC: thống kê, tạo ra một array các customer đã mua hàng, trong đó:
  * 1. Username
  * 2. Họ và tên 
@@ -1334,7 +1403,7 @@ function displayStatisticsCustomer(page = 1) {
                 <td>${customer.phone}</td>
                 <td>${formatPrice(customer.totalRevenue)}</td>
                 <td>
-                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
+                    <button type="button" class="statistics-customer__show-bill-btn" data-username="${customer.customerId}">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1347,10 +1416,80 @@ function displayStatisticsCustomer(page = 1) {
 
     // Tạo phân trang cho statistics-customer
     createPagination(totalStatisticsCustomerPages, 'statistics-customer');
+    // Gắn sự kiện cho các nút sau khi chúng được tạo
+    document.querySelectorAll('.statistics-customer__show-bill-btn').forEach((btn) => {
+        btn.addEventListener('click', function(){
+            const customerId = this.getAttribute('data-username');
+            showStatisticsCustomerBill(customerId);
+            console.log('Statistics customer show bill of ' + customerId);
+        });
+    });
 }
-
 // Gọi hàm để hiển thị trang đầu tiên
 displayStatisticsCustomer(currentStatisticsCustomerPage);
+
+function showStatisticsCustomerBill(customerId){
+    const orderCustomerArray = [];
+    orderArray.forEach((order) => {
+        if(order.customerId === customerId){
+            orderCustomerArray.push(order);
+        }
+    });
+    showStatisticsCustomerBillPopup(orderCustomerArray);
+    console.log(orderCustomerArray);
+}
+function showStatisticsCustomerBillPopup(orderCustomerArray){
+    console.log('Show popup statistics customer bill');
+    const modalOrderDetails = document.getElementById('modal-detailStatistic');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+
+    let billHTML = `
+                    <button class="close-popStatistics" id="close-detailStatistic">+</button>
+    `;
+    orderCustomerArray.forEach((order) => {
+        // Hiển thị các sản phẩm trong đơn hàng
+        let checkoutCartHTML = '';
+        order.checkoutCart.forEach(product => {
+            checkoutCartHTML += `
+                <div class="detailStatistic-item">
+                    <span>${product.name}</span>
+                    <span>${product.quantity}</span>
+                    <span>${formatPrice(product.price)}</span>
+                </div>
+            `;
+        });
+        
+        billHTML += `
+                        <h2>Chi tiết đơn hàng</h2>
+                        <div class="detailStatistic-content">
+                            <div class="detailStatistic-info">
+                                <p>Tên khách hàng: <span id="detailStatistic-customername">${order.name}</span></p>
+                                <p>Số điện thoại: <span id="detailStatistic-phone">${order.phone}</span></p>
+                                <p>Địa chỉ: <span id="detailStatistic-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
+                                <p>Thời điểm đặt hàng: <span id="detailStatistic-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
+                                <p>Trạng thái: <span id="detailStatistic-status">${order.status}</span></p>                        
+                            </div>
+                            <div class="checkout-detailStatistic">
+                                <div class="checkout-detailStatistic">
+                                    <p>Sản phẩm đã đặt:</p>
+                                    <div id="detailStatistic-checkoutCart">${checkoutCartHTML}</div>
+                                </div>
+                                <div class="checkout-detailStatistic-total-payment">
+                                    <p>Tổng tiền: <span id="detailStatistic-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+        `;
+    });
+    // Chèn nội dung vào modal
+    modalOrderDetails.innerHTML = billHTML;
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailStatistic').addEventListener('click', closeDetailStatisticProductBox);
+}
+
 
 /** Tổng doanh thu theo khách hàng */
 function calcTotalCustomerRevenue(){
@@ -1363,7 +1502,6 @@ function calcTotalCustomerRevenue(){
 }
 calcTotalCustomerRevenue();
 
-/** FUNC: hiển thị top khách hàng có doanh thu cao nhất */
 /** FUNC: hiển thị top khách hàng có doanh thu cao nhất */
 function displayTopCustomer() {
     // Nhận giá trị người dùng nhập vào input -> top
@@ -1503,7 +1641,7 @@ function isValidDateRange(start, end) {
 
 
 
-
+window.login = login;
 
 window.showDetailProductBox = showProductDetails;
 window.closeDetailProductBox = closeDetailProductBox;
@@ -1526,11 +1664,4 @@ window.showOrderDetails = showOrderDetails;
 window.closeDetailOrderBox = closeDetailOrderBox;
 window.updateSelectColor = updateSelectColor;
 
-window.login = login;
-// //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
-// window.changeActiveSideBar = changeActiveSideBar;
-// window.zoomInSideBar = zoomInSideBar;
-// window.hideAllMainItems = hideAllMainItems;
-// window.showMainItem = showMainItem;
-// window.showCorrespondingMain = showCorrespondingMain;
-// //--------------------------------
+window.showStatisticsProductBill = showStatisticsProductBill;

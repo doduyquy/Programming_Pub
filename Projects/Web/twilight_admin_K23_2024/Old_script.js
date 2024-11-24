@@ -26,7 +26,6 @@ function login() {
     }
 }
 
-
 // SIDEBAR 
 function updateContentWidth() {
     const sidebar = document.getElementById('sidebar');
@@ -1231,7 +1230,7 @@ function displayStatisticsProduct(page = 1) {
                 <td>${product.quantity}</td>
                 <td>${formatPrice(product.quantity * product.price)}</td>
                 <td>
-                    <button type="button" class="statistics-product__show-bill-btn" data-name="${product.name}">Hóa đơn</button>
+                    <button type="button" id="statistics-product__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1243,15 +1242,6 @@ function displayStatisticsProduct(page = 1) {
 
     // Tạo phân trang cho statistics-product
     createPagination(totalStatisticsProductPages, 'statistics-product');
-
-    // Gắn sự kiện cho các nút sau khi chúng được tạo
-    document.querySelectorAll('.statistics-product__show-bill-btn').forEach((btn) => {
-        btn.addEventListener('click', function(){
-            const productName = this.getAttribute('data-name');
-            showStatisticsProductBill(productName);
-            console.log('Statistics product show bill of ' + productName);
-        });
-    });
 }
 
 // Gọi hàm để hiển thị trang đầu tiên
@@ -1318,92 +1308,6 @@ function displaySpecialProduct(){
 }
 displaySpecialProduct();
 
-// Show chi tiết hóa đơn của sản phẩm được thống kê:
-function showStatisticsProductBill(productName){
-    const orderProductArray = [];
-    orderArray.forEach((order) => {
-        order.checkoutCart.forEach((product) => {
-            if(product.name === productName){
-                orderProductArray.push(order);
-            }
-        });
-    });
-    // Gọi hàm hiện popup toàn bộ bill:
-    showStatisticsProductBillPopup(orderProductArray);
-    console.log(orderProductArray);
-
-}
-function showStatisticsProductBillPopup(orderProductArray) {
-    console.log('Show popup statistics product bill');
-    const modalOrderDetails = document.getElementById('modal-detailStatisticProduct');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'flex';
-    }
-
-    let billHTML = `
-                    <button class="close-pop" id="close-detailStatisticProduct">+</button>
-    `;
-    orderProductArray.forEach((order) => {
-        // Hiển thị các sản phẩm trong đơn hàng
-        let checkoutCartHTML = '';
-        order.checkoutCart.forEach(product => {
-            checkoutCartHTML += `
-                <div class="detailStatisticProduct-item">
-                    <span>${product.name}</span>
-                    <span>${product.quantity}</span>
-                    <span>${formatPrice(product.price)}</span>
-                </div>
-            `;
-        });
-        
-        billHTML += `
-                        <h2>Chi tiết đơn hàng</h2>
-                        <div class="detailStatisticProduct-content">
-                            <div class="detailStatisticProduct-info">
-                                <p>Tên khách hàng: <span id="detailStatisticProduct-customername">${order.name}</span></p>
-                                <p>Số điện thoại: <span id="detailStatisticProduct-phone">${order.phone}</span></p>
-                                <p>Địa chỉ: <span id="detailStatisticProduct-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
-                                <p>Thời điểm đặt hàng: <span id="detailStatisticProduct-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
-                                <p>Trạng thái: <span id="detailStatisticProduct-status">${order.status}</span></p>                        
-                            </div>
-                            <div class="checkout-detailStatisticProduct">
-                                <div class="checkout-detailStatisticProduct">
-                                    <p>Sản phẩm đã đặt:</p>
-                                    <div id="detailStatisticProduct-checkoutCart">${checkoutCartHTML}</div>
-                                </div>
-                                <div class="checkout-detailStatisticProduct-total-payment">
-                                    <p>Tổng tiền: <span id="detailStatisticProduct-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-        `;
-        // document.getElementById('detailStatisticProduct-checkoutCart').innerHTML = checkoutCartHTML;
-        // document.getElementById('detail-total-payment').innerHTML = formatPrice(order.calculateTotalPayment());
-    });
-    // Chèn nội dung vào modal
-    modalOrderDetails.innerHTML = billHTML;
-    // Thêm sự kiện đóng pop-up
-    document.getElementById('close-detailStatisticProduct').addEventListener('click', closeDetailStatisticProductBox);
-}
-
-function closeDetailStatisticProductBox() {
-    const modalOrderDetails = document.getElementById('modal-detailStatisticProduct');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'none';
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
 /** FUNC: thống kê, tạo ra một array các customer đã mua hàng, trong đó:
  * 1. Username
  * 2. Họ và tên 
@@ -1430,7 +1334,7 @@ function displayStatisticsCustomer(page = 1) {
                 <td>${customer.phone}</td>
                 <td>${formatPrice(customer.totalRevenue)}</td>
                 <td>
-                    <button type="button" class="statistics-customer__show-bill-btn">Hóa đơn</button>
+                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
                 </td>
             </tr>
         `;
@@ -1599,7 +1503,7 @@ function isValidDateRange(start, end) {
 
 
 
-window.login = login;
+
 
 window.showDetailProductBox = showProductDetails;
 window.closeDetailProductBox = closeDetailProductBox;
@@ -1622,8 +1526,7 @@ window.showOrderDetails = showOrderDetails;
 window.closeDetailOrderBox = closeDetailOrderBox;
 window.updateSelectColor = updateSelectColor;
 
-window.showStatisticsProductBill = showStatisticsProductBill;
-
+window.login = login;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;
