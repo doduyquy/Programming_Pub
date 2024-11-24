@@ -1386,14 +1386,19 @@ function closeDetailStatisticProductBox() {
  */
 let statisticsCustomerArray = createStatisticsCustomerArray();
 /**  FUNC: hiển thị mảng thống kê theo khách hàng đã mua. */
-function displayStatisticsCustomer(page = 1) {
+function displayStatisticsCustomer(page = 1, array = null) {
     currentStatisticsCustomerPage = page;
     const itemsPerPage = itemsPerPageStatisticsCustomer;
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     // statisticsCustomerArray = createStatisticsCustomerArray();
     
-    const paginatedDataCustomer = statisticsCustomerArray.slice(start, end);
+    let paginatedDataCustomer;
+    if(array == null){
+        paginatedDataCustomer = statisticsCustomerArray.slice(start, end);
+    } else {
+        paginatedDataCustomer = array;
+    }
 
     let tableHTML = ``;
     paginatedDataCustomer.forEach((customer) => {
@@ -1409,7 +1414,7 @@ function displayStatisticsCustomer(page = 1) {
         `;
     });
     document.getElementById('statistics-customer-table__body').innerHTML = tableHTML;
-    console.log(statisticsCustomerArray);
+    // console.log(statisticsCustomerArray);
 
     // Tính toán tổng số trang cho Statistics Customer
     totalStatisticsCustomerPages = Math.ceil(statisticsCustomerArray.length / itemsPerPage);
@@ -1517,22 +1522,12 @@ function displayTopCustomer() {
     }
 
     // Hiển thị bảng cho top khách hàng được nhập
-    let tableHTML = '';
-    for (let i = 0; i < top && i < statisticsCustomerArray.length; i++) {
-        tableHTML += `
-            <tr>
-                <td>${statisticsCustomerArray[i].customerId}</td>
-                <td>${statisticsCustomerArray[i].phone}</td>
-                <td>${statisticsCustomerArray[i].totalRevenue}</td>
-                <td>
-                    <button type="button" id="statistics-customer__show-bill-btn">Hóa đơn</button>
-                </td>
-            </tr>
-        `;
+    const topArray = [];
+    for(let i = 0; i < top && i < statisticsCustomerArray.length; i++){
+        topArray.push(statisticsCustomerArray[i]);
     }
-
-    // Cập nhật nội dung bảng
-    tableBody.innerHTML = tableHTML;
+    displayStatisticsCustomer(1, topArray);
+    
 }
 // Lắng nghe sự kiện khi nhập vào ô input
 document.getElementById('statistics-customer__top-input').addEventListener('input', displayTopCustomer);
