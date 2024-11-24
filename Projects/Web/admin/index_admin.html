@@ -9,6 +9,15 @@
     <link rel="icon" href="./img/twilight-logo-icon.png">
 </head>
 <body>
+    <div id="overlay"></div>
+    <div id="login-popup">
+        <h2>Đăng nhập quản trị hệ thống</h2>
+        <p>Vui lòng đăng nhập để vào trang quản trị</p>
+        <input type="text" id="username" placeholder="Vui lòng nhập tài khoản..." required>
+        <input type="password" id="password" placeholder="Vui lòng nhập mật khẩu..." required>
+        <button onclick="login()">Đăng nhập</button>
+        <p id="error-message" style="color: red; display: none;">Sai tài khoản hoặc mật khẩu</p>
+    </div>
     <div id="wrap">
         <section id="sidebar">
             <!-- <a href="#" class="brand">
@@ -628,7 +637,7 @@
             </main>
         </section>
     </div>
-    <!-- <script src="./script.js"></script>  -->
+    <!-- <script type="module" src="./oke_script.js"></script>  -->
     <script type="module" src="./script.js"></script> 
 </body>
 </html>
