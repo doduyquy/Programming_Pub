@@ -68,14 +68,12 @@ body {
 
 #sidebar .brand img{
     width: 100%;
-    height: 50px;
-    /* height: 86.81px; */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 5px 50px;
+    background-image: linear-gradient(0, #2166DE, #3F85E8);
     margin-top: 5px;
-    background: var(--blue);
     border-radius: 10px;
 }
 
@@ -197,8 +195,8 @@ body {
     /* margin-left: 24px; */
     color: var(--grey);
     border-radius: 10px;
-    background: var(--blue);
-
+    background-image: linear-gradient(0, #2166DE, #3F85E8);
+    font-weight: bold;
     display: flex;
     flex-grow: 1;
     justify-content: center;
@@ -526,7 +524,7 @@ body {
 
 #container #rightsection h2 {
     text-align: center;
-    background-color: var(--blue);
+    background-image: linear-gradient(0, #2166DE, #3F85E8);
     color: white;
     padding: 12px;
     border-radius: 8px;
