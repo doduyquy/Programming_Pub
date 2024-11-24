@@ -1328,9 +1328,71 @@ function showStatisticsProductBill(productName){
             }
         });
     });
+    // Gọi hàm hiện popup toàn bộ bill:
+    showStatisticsProductBillPopup(orderProductArray);
     console.log(orderProductArray);
+
 }
-// showStatisticsProductBill();
+function showStatisticsProductBillPopup(orderProductArray) {
+    console.log('Show popup statistics product bill');
+    const modalOrderDetails = document.getElementById('modal-detailStatisticProduct');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+
+    let billHTML = `
+                    <button class="close-pop" id="close-detailStatisticProduct">+</button>
+    `;
+    orderProductArray.forEach((order) => {
+        // Hiển thị các sản phẩm trong đơn hàng
+        let checkoutCartHTML = '';
+        order.checkoutCart.forEach(product => {
+            checkoutCartHTML += `
+                <div class="detailStatisticProduct-item">
+                    <span>${product.name}</span>
+                    <span>${product.quantity}</span>
+                    <span>${formatPrice(product.price)}</span>
+                </div>
+            `;
+        });
+        
+        billHTML += `
+                        <h2>Chi tiết đơn hàng</h2>
+                        <div class="detailStatisticProduct-content">
+                            <div class="detailStatisticProduct-info">
+                                <p>Tên khách hàng: <span id="detailStatisticProduct-customername">${order.name}</span></p>
+                                <p>Số điện thoại: <span id="detailStatisticProduct-phone">${order.phone}</span></p>
+                                <p>Địa chỉ: <span id="detailStatisticProduct-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
+                                <p>Thời điểm đặt hàng: <span id="detailStatisticProduct-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
+                                <p>Trạng thái: <span id="detailStatisticProduct-status">${order.status}</span></p>                        
+                            </div>
+                            <div class="checkout-detailStatisticProduct">
+                                <div class="checkout-detailStatisticProduct">
+                                    <p>Sản phẩm đã đặt:</p>
+                                    <div id="detailStatisticProduct-checkoutCart">${checkoutCartHTML}</div>
+                                </div>
+                                <div class="checkout-detailStatisticProduct-total-payment">
+                                    <p>Tổng tiền: <span id="detailStatisticProduct-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+        `;
+        // document.getElementById('detailStatisticProduct-checkoutCart').innerHTML = checkoutCartHTML;
+        // document.getElementById('detail-total-payment').innerHTML = formatPrice(order.calculateTotalPayment());
+    });
+    // Chèn nội dung vào modal
+    modalOrderDetails.innerHTML = billHTML;
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailStatisticProduct').addEventListener('click', closeDetailStatisticProductBox);
+}
+
+function closeDetailStatisticProductBox() {
+    const modalOrderDetails = document.getElementById('modal-detailStatisticProduct');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
 
 
 
