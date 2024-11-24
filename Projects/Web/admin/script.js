@@ -142,12 +142,12 @@ const itemsPerPageProduct = 8;
 // Phân trang cho Customers với 10 khách hàng mỗi trang
 let currentCustomerPage = 1;
 let totalCustomerPages = 1;
-const itemsPerPageCustomer = 5;
+const itemsPerPageCustomer = 10;
 
 // Phân trang cho Orders với 5 đơn hàng mỗi trang
 let currentOrderPage = 1;
 let totalOrderPages = 1;
-const itemsPerPageOrder = 10;
+const itemsPerPageOrder = 5;
 
 // Phân trang cho Statistics với 10 thống kê mỗi trang
 let currentStatisticsProductPage = 1;
@@ -1001,7 +1001,7 @@ function displayOrdersTable(orders){
                     <button class="detail-btn" onclick="">Chi tiết</button>
                 </td>
                 <td>
-                    <select class="order-status-select" id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value)">
+                    <select class="order-status-select" id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value); updateSelectColor(this);">
                         <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
                         <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
                         <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
@@ -1034,17 +1034,11 @@ displayOrdersTable(orderArray);
 
 // Function to update the color of the select box
 function updateSelectColor(selectElement) {
-    const status = selectElement.value; // Get the current value of the select
-    selectElement.setAttribute('data-status', status); // Set the data-status attribute
+    const status = selectElement.value; // Lấy giá trị hiện tại
+    selectElement.setAttribute('data-status', status); // Cập nhật thuộc tính data-status
+    console.log(`Updated select color for status: ${status}`); // Kiểm tra xem hàm có được gọi hay không
+
 }
-
-// Apply initial colors to all select boxes on page load
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.order-status-select').forEach(select => {
-        updateSelectColor(select); // Initialize color for each select box
-    });
-});
-
 
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */
 // Lọc sản phẩm theo Date
@@ -1511,6 +1505,7 @@ window.displayTopCustomer = displayTopCustomer;
 
 window.showOrderDetails = showOrderDetails;
 window.closeDetailOrderBox = closeDetailOrderBox;
+window.updateSelectColor = updateSelectColor;
 // //--------------KHÔNG CẦN CODE NÀY: WINDOW... CHỈ ÁP DỤNG CHO DOM KHI LOAD HTML------------------
 // window.changeActiveSideBar = changeActiveSideBar;
 // window.zoomInSideBar = zoomInSideBar;
