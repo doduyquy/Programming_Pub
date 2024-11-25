@@ -111,12 +111,15 @@ export function addOrderToArray(customerId, checkoutCart, date, name, phone, add
 
 // True: stDate <= checkDate <= ndDate
 function isBetweenTwoDate(checkDate, stDate, ndDate){
-    const firstDate = new Date(stDate); // Giữ nguyên thời gian của stDate
-    const secondDate = new Date(ndDate); // Giữ nguyên thời gian của ndDate
-    const currentDate = new Date(checkDate); // Giữ nguyên thời gian của checkDate
+    // Chuẩn hóa: chỉ lấy ngày tháng năm để so sánh
+    const normalizeDate = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 
+    const firstDate = normalizeDate(new Date(stDate));
+    const secondDate = normalizeDate(new Date(ndDate));
+    const currentDate = normalizeDate(new Date(checkDate));
 
-    return (firstDate <= currentDate && currentDate <= secondDate);
+    return firstDate <= currentDate && currentDate <= secondDate;
+
 }
 
 /* FUNC: Trả vê một order array với date nằm trong khoảng [stDate, ndDate] */
@@ -124,6 +127,7 @@ export function filterOrdersBetweenTwoDate(stDate, ndDate){
     const filterDateArray = [];
     orderArray.forEach((order) => {
         if(true === isBetweenTwoDate(order.date, stDate, ndDate)){
+            console.log('Include: ', order.date);
             filterDateArray.push(order);
         }
     });

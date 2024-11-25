@@ -5,13 +5,13 @@ import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTw
 localStorage.removeItem('productArray');
 
 // LOGIN
-document.addEventListener('DOMContentLoaded', function() {
-    const loginPopup = document.getElementById('login-popup');
-    const overlay = document.getElementById('overlay');
-    loginPopup.style.display = 'block';
-    overlay.style.display = 'block';
+// document.addEventListener('DOMContentLoaded', function() {
+//     const loginPopup = document.getElementById('login-popup');
+//     const overlay = document.getElementById('overlay');
+//     loginPopup.style.display = 'block';
+//     overlay.style.display = 'block';
 
-});
+// });
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
