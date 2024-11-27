@@ -1074,12 +1074,12 @@ html, body {
 
 }
 .paradox{
-    margin: 10px 0 0 0;
+    margin: 10px 0 ;
 
 }
 .options{
     margin: 10px 0 ;
-    display: ruby;
+    display: flex;
 
 }
 .option{
@@ -1088,7 +1088,6 @@ html, body {
     margin-left: 5px;
     padding: 10px;
     cursor: pointer;
-    margin-bottom: 10px;
 }
 .optionse{
     display: block

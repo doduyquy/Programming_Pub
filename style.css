@@ -1666,7 +1666,7 @@ body {
     border-radius: 8px;
     padding: 20px;
     width: 90%;
-    max-width: 678px;
+    max-width: 800px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px; /* Khoảng cách giữa các đơn hàng */
 }
@@ -1740,8 +1740,5 @@ body {
     margin-top: 10px;
     color: red; /* Màu đỏ cho số tiền */
     font-weight: bold;
-}
-#detailStatistic-total-payment{
-    font-size: 25px;
 }
 
