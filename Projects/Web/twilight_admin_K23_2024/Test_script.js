@@ -527,7 +527,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kiểm tra nếu allProducts rỗng thì tải từ localStorage
     if (allProducts.length === 0) {
-        alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
+        // alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.',
+            type: 'warning'
+        });
     } else {
         filteredProducts = allProducts.slice(); // Sao chép mảng sản phẩm
         totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
@@ -946,9 +951,20 @@ function toggleCustomerLock(customerIndex) {
     localStorage.setItem('customerArray', JSON.stringify(customerArray));
 
     if (customer.locked) {
-        alert('Khách hàng đã bị khóa');
+        // alert('Khách hàng đã bị khóa');
+        customAlert({
+            title: 'Thành công!',
+            message: 'Khách hàng đã bị khóa',
+            type: 'success'
+        });
+        
     } else {
-        alert('Khách hàng đã được mở khóa');
+        // alert('Khách hàng đã được mở khóa');
+        customAlert({
+            title: 'Thành công!',
+            message: 'Khách hàng đã được mở khóa.',
+            type: 'success'
+        });
     }
 
     // Cập nhật lại bảng khách hàng
@@ -1133,7 +1149,12 @@ function saveCustomerChanges(customerIndex) {
     closeChangeCustomerBox();
 
     // Hiển thị thông báo thành công
-    alert('Khách hàng đã được chỉnh sửa thành công!');
+    // alert('Khách hàng đã được chỉnh sửa thành công!');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Khách hàng đã được chỉnh sửa thành công!',
+        type: 'success'
+    });
 }
 
 // Đóng modal

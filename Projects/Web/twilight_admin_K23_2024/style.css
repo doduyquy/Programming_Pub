@@ -1055,6 +1055,7 @@ body {
 
 #modal-detailproduct #detailproduct {
     width: 800px;
+    max-height: 100%;
     padding: 20px;
     border-radius: 8px;
     position: relative;
@@ -1064,6 +1065,8 @@ body {
     gap: 20px;
     background-color: #fff;
     animation: topdown 0.5s;
+    
+    overflow-y: auto;
 }
 
 #modal-detailproduct #detailproduct img {
