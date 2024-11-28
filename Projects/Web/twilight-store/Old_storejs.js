@@ -476,12 +476,8 @@ provinceSelect.addEventListener('change', function() {
         });
     }
 });
-//===== CÁC BIỂU THỨC REGEX KIỂM TRA THÔNG TIN ====//
-const phoneRegex = /^0\d{9}$/;
-const cardNumberRegex = /^\d{4} \d{4} \d{4} \d{4}$/;
-const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-const cvvRegex = /^\d{3}$/;
-const zipCodeRegex = /^\d{5}$/;  
+   
+
 //===== LƯU THÔNG TIN NGƯỜI DÙNG =====// 
 function saveCustomerDetails() 
 {  
@@ -496,11 +492,11 @@ function saveCustomerDetails()
         alert('Vui lòng điền tất cả thông tin khách hàng.');  
         return;  
     }  
-    if(!phoneRegex.test(phone)) 
-    {
-        alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
-        return;
-    }
+    if(phone[0]!=0 || phone.length !== 10) 
+        {
+            alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
+            return;
+        }
     if (currentCustomer) {  
         currentCustomer.phone = phone;  
         currentCustomer.name = fullname;  
@@ -528,27 +524,26 @@ function saveCardDetails() {
         alert('Vui lòng điền tất cả thông tin thẻ!');  
         return false;  
     }
-    if(!cardNumberRegex.test(cardNumber)) 
+    if(cardNumber.length !== 19 || cardNumber[4] !== ' '|| cardNumber[9] !== ' '|| cardNumber[14] !== ' ') 
     {
         alert('Số thẻ không đúng định dạng!');  
         return false;
     }
-    if(!expiryDateRegex.test(expiryDate))
-        {
-            alert('Ngày hết hạn không đúng định dạng!');  
-            return false;
-        }
-    if(!cvvRegex.test(cvv))
-    {
-        alert('Mã CVV gồm 3 chữ số!');  
-        return false;
-    }
-    if(!zipCodeRegex.test(zipCode))
+    if(zipCode.length !==5)
     {
         alert('Mã bưu chính không đúng định dạng!');  
         return false;
     }
-    
+    if(cvv.length !==3)
+    {
+        alert('Mã CVV gồm 3 chữ số!');  
+        return false;
+    }
+    if(expiryDate[2]!=='/' || expiryDate.length!==5)
+    {
+        alert('Ngày hết hạn không đúng định dạng!');  
+        return false;
+    }
     if (currentCustomer) {  
         currentCustomer.infoCard = new InfoCard(cardNumber, expiryDate, cvv, cardholderName, billingAddress, zipCode); 
         saveCustomerArrayToStorage();  
@@ -765,27 +760,26 @@ function checkNewCard()
         alert('Vui lòng điền tất cả thông tin thẻ!');  
         return false;  
     }
-    if(!cardNumberRegex.test(cardNumber)) 
+    if(cardNumber.length !== 19 || cardNumber[4] !== ' '|| cardNumber[9] !== ' '|| cardNumber[14] !== ' ') 
     {
         alert('Số thẻ không đúng định dạng!');  
         return false;
     }
-    if(!expiryDateRegex.test(expiryDate))
+    if(zipCode.length !==5)
     {
-        alert('Ngày hết hạn không đúng định dạng!');  
+        alert('Mã bưu chính không đúng định dạng!');  
         return false;
     }
-    if(!cvvRegex.test(cvv))
+    if(cvv.length !==3)
     {
         alert('Mã CVV gồm 3 chữ số!');  
         return false;
     }
-    if(!zipCodeRegex.test(zipCode))
+    if(expiryDate[2]!=='/' || expiryDate.length!==5)
     {
-        alert('Mã bưu chính không đúng định dạng!');  
+        alert('Ngày hết hạn không đúng định dạng!');  
         return false;
     } 
-    
     if (!currentCustomer.infoCard.value) {  
         currentCustomer.infoCard = new InfoCard(cardNumber, expiryDate, cvv, cardholderName, billingAddress, zipCode);
         saveCustomerArrayToStorage();
@@ -882,10 +876,10 @@ function checkNewCustomerDetails()
         alert('Vui lòng điền tất cả thông tin khách hàng.');  
         return false;  
     }  
-    if(!phoneRegex.test(phone)) 
+    if(phone[0]!=0 || phone.length !== 10) 
     {
         alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
-        return;
+        return false;
     }
     if (!currentCustomer.address.city) {  
         // //------------------------------

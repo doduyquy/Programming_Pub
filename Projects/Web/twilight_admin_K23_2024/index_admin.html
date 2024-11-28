@@ -115,13 +115,13 @@
                                         <p>BPhone</p>
                                     </span>
                                 </li>
-                                <!-- <li class="vivo">
+                                <li class="vivo">
                                     <img class="product__icon icon" src="./img/vivologo.png" alt="BPhone">
                                     <span class="product__text text"> 
                                         <h2>15</h2>
                                         <p>Vivo</p>
                                     </span>
-                                </li> -->
+                                </li>
                             </ul>
                         </div>
                         <div class="order">
@@ -490,7 +490,7 @@
                     </div>
                     <!-- POP-UP XEM CHI TIẾT ORDER -->
                     <div id="modal-detailorder" class="modal">
-                        <div id="detailorder">
+                        <!-- <div id="detailorder">
                             <button class="close-pop" id="close-detailorder">+</button>
                             <h2>Chi tiết đơn hàng</h2>
                             <div class="order-content">
@@ -509,9 +509,21 @@
                                     <div class="checkout-total-payment">
                                         <p>Tổng tiền: <span id="detail-total-payment"></span></p>
                                     </div>
+                                    <div class="order-status-select">
+                                        <p>Tình trạng đơn hàng: 
+                                            <span>
+                                                <select class="order-status-select" id="order-status__selection-${index}" onchange=" updateSelectColor(this);">
+                                                    <option value="UNPROCESSED">Chưa xử lý</option>
+                                                    <option value="CONFIRMED">Đã xác nhận</option>
+                                                    <option value="SUCCEEDED">Thành công</option>
+                                                    <option value="FAILED">Thất bại</option>
+                                                </select>
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -636,7 +648,8 @@
             </main>
         </section>
     </div>
-    <script type="module" src="./script.js"></script> 
+    <!-- <script type="module" src="./script.js"></script>  -->
+    <script type="module" src="./Test_script.js"></script> 
 </body>
 </html>
 

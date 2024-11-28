@@ -4,6 +4,7 @@ import {allProducts} from '../common/data/productArray.js';
 import { orderArray } from '../common/data/orderArray.js';
 //-----
 let cart = undefined;
+let orderList = undefined;
 //-----
 
 var slideIndex = 0;
@@ -407,13 +408,14 @@ function showOrderDetails(order) {
     });
 }
 
+
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
 let currentProducts = allProducts;
 let allProductArray = allProducts;
 
-function oldPrice(a) {
-    return a / 0.9;
+function newPrice(a) {
+    return a * 0.9;
 }
 
 function formatPrice(price) {
@@ -439,8 +441,11 @@ document.querySelectorAll('.sub-nav-links-text a').forEach(link => {
         const brandId = link.getAttribute('href').substring(1); // Lấy brandId từ href
         currentPage = 1; // Reset trang hiện tại
 
-        currentProducts = shuffleArray(filterProductsByBrand(brandId));
-    
+        if (brandId === 'TRANG_CHU') {
+            currentProducts = shuffleArray(allProducts.slice()); // Xáo trộn mảng sản phẩm khi vào trang chủ
+        } else {
+            currentProducts = shuffleArray(filterProductsByBrand(brandId));
+        }
         allProductArray = currentProducts; // Update allProductArray
         renderProducts(currentProducts, currentPage);
     });
@@ -457,9 +462,9 @@ document.querySelectorAll('.select-input__link').forEach(link => {
 
         currentProducts.sort((a, b) => {
             if (sortType === 'asc') {
-                return a.price[0] - b.price[0];
+                return a.oldPrice - b.oldPrice;
             } else {
-                return b.price[0] - a.price[0];
+                return b.oldPrice - a.oldPrice;
             }
         });
 
@@ -548,7 +553,7 @@ function filterProducts()
     }
     // 2. Search theo thanh giá
     filteredProducts = filteredProducts.filter(product => {
-        const productPrice = parseInt(product.price[0]);
+        const productPrice = parseInt(newPrice(product.oldPrice));
         return productPrice >= minPrice && productPrice <= maxPrice;
     });
     // 3. Search term filter
@@ -566,105 +571,122 @@ document.querySelector('.btnprocess').addEventListener('click', filterProducts);
 //===== HIỂN THỊ THÔNG TIN CHI TIẾT SẢN PHẨM =====//
 const detailsContainer = document.getElementById('hienthi');
 let vs,gia;
-function showProductDetails(productName) {  
-    const product = allProducts.find(p => p.name === productName);  
-    if (!product) return;  
+function showProductDetails(productName)
+{
+    const product = allProducts.find(p => p.name === productName);
+    if(!product) return;
 
-    // Tạo HTML cho các phiên bản sản phẩm  
-    const optionsHTML = product.pb.map((version, index) => `  
-        <div class="option ${index === 0 ? 'active' : ''}" data-index="${index}">  
-            <label class="textspan">${version}<br></label>  
-        </div>  
-    `).join('');  
+    const chooseHTML = `
+        <div class="modal__body-item">
+                <div class="auto-form-item"> 
+                    <div class="left">
+                        <div class="img">
+                            <img src="${product.img}" alt="${product.name}">
+                        </div>
+                        <div class="description">
+                            <p class="title">${product.name}<br></p>
+                            <p class="price" id="updatePrice">
+                                <strong class="price quickOrderPrice">${formatPrice(newPrice(product.oldPrice))}</strong>
+                                <strike class="price quickOrderPriceLast">${formatPrice(product.oldPrice)}</strike>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <h3 class="ttsp">THÔNG TIN SẢN PHẨM</h3>
+                        <div class="grid-options">
+                            <div class="cms"><strong>Thông số kỹ thuật</strong></div>
+                            <div class="optionse">
 
-    const chooseHTML = `  
-        <div class="modal__body-item">  
-            <div class="auto-form-item">   
-                <div class="left">  
-                    <div class="img">  
-                        <img src="${product.img}" alt="${product.name}">  
-                    </div>  
-                    <div class="description">  
-                        <p class="title">${product.name}<br></p>  
-                        <p class="price" id="updatePrice">  
-                            <strong class="price quickOrderPrice">${formatPrice(product.price[0])}</strong>  
-                            <strike class="price quickOrderPriceLast">${formatPrice(oldPrice(product.price[0]))}</strike>  
-                        </p>  
-                    </div>  
-                </div>  
-                <div class="right">  
-                    <h3 class="ttsp">THÔNG TIN SẢN PHẨM</h3>  
-                    <div class="grid-options">  
-                        <div class="cms"><strong>Thông số kỹ thuật</strong></div>  
-                        <div class="optionse"></div>  
-                        <div class="paradox">  
-                            <div class="cms"><strong>Chọn phiên bản</strong></div>  
-                            <div class="options">  
-                                ${optionsHTML} <!-- Chèn HTML cho các phiên bản -->  
+                            </div>
+                            <div class="paradox">
+                                <div class="cms"><strong>Chọn phiên bản</strong></div>
+                                <div class="options">
+                                     <div class="option active">
+                                        <label class="textspan">${product.pb1}<br></label>
+                                    </div> 
+                                    <div class="option">
+                                        <label class="textspan"><span>${product.pb2}<br></span></label>
+                                    </div>     
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="number">
+                            <label class="soluong">Số lượng</label>
+                            <div class="control">
+                                <button class="btnMinutes">-</button>
+                                <input class="Number" type="text" value="1">
+                                <button class="btnPlus">+</button>
+                            </div>
+                        </div>
+        
+                        <div class="add-to-cart-form">  
+                            <div class="control-button">  
+                                <div class="quykhach">  
+                                    <p>Quý khách có thể lựa chọn hình thức thanh toán sau khi đặt hàng.</p>  
+                                </div>  
+                                <button class="submit-to-cart" onclick='giohang(${JSON.stringify(product)}); quayve();'>THÊM VÀO GIỎ HÀNG</button>  
                             </div>  
-                        </div>  
-                    </div>  
-    
-                    <div class="number">  
-                        <label class="soluong">Số lượng</label>  
-                        <div class="control">  
-                            <button class="btnMinutes">-</button>  
-                            <input class="Number" type="text" value="1">  
-                            <button class="btnPlus">+</button>  
-                        </div>  
-                    </div>  
-    
-                    <div class="add-to-cart-form">  
-                        <div class="control-button">  
-                            <div class="quykhach">  
-                                <p>Quý khách có thể lựa chọn hình thức thanh toán sau khi đặt hàng.</p>  
-                            </div>  
-                            <button class="submit-to-cart" onclick='giohang(${JSON.stringify(product)}); quayve();'>THÊM VÀO GIỎ HÀNG</button>  
-                        </div>  
-                    </div>   
+                        </div> 
+                    </div>
+                    <div class="exit-to-lobby" onclick = "quayve();">
+                        <i class="exit-icon fa-solid fa-xmark"></i>
+                    </div>
                 </div>  
-                <div class="exit-to-lobby" onclick="quayve();">  
-                    <i class="exit-icon fa-solid fa-xmark"></i>  
-                </div>  
-            </div>  
-        </div>  
-    `; 
+        </div>
+    `;
     detailsContainer.innerHTML = chooseHTML;  
     detailsContainer.style.display = 'flex';
-    displayProductDetails(product, 0); // Hiện thông tin mặc định pb1
+    displayProductDetails(product, 'pb1'); // Hiện thông tin mặc định pb1
 
-    // Nút thay đổi version   === CHỈNH LẠI
+    // Nút thay đổi version
     const switchVersions = document.querySelectorAll('.options .option');
     const price = document.getElementById('updatePrice');
 
-    switchVersions.forEach((option, index) => {  
-        option.addEventListener('click', function(event) {  
-            event.preventDefault();   
-            // Xóa class 'active' khỏi tất cả các tùy chọn  
-            document.querySelectorAll('.options .option').forEach(opt => {  
-                opt.classList.remove('active');  
-            });  
-            // Thêm class 'active' vào tùy chọn đang nhấp  
-            this.classList.add('active');   
-            // Hiển thị chi tiết sản phẩm  
-            displayProductDetails(product, index);  
-            // Cập nhật giá  
-            price.innerHTML =   
-                `<strong class="price quickOrderPrice">${formatPrice(product.price[index])}</strong>  
-                <strike class="price quickOrderPriceLast">${formatPrice(oldPrice(product.price[index]))}</strike>`;    
+    switchVersions[0].addEventListener('click', function(event) 
+    {  
+        event.preventDefault(); 
+        document.querySelectorAll('.options .option').forEach(opt => {  
+            opt.classList.remove('active');  
         });  
+        this.classList.add('active');   
+        displayProductDetails(product, 'pb1');
+        price.innerHTML = 
+            `<strong class="price quickOrderPrice">${formatPrice(newPrice(product.oldPrice))}</strong>
+            <strike class="price quickOrderPriceLast">${formatPrice(product.oldPrice)}</strike>`;    
+    });
+    switchVersions[1].addEventListener('click', function(event) 
+    {  
+        event.preventDefault();  
+        document.querySelectorAll('.options .option').forEach(opt => {  
+            opt.classList.remove('active');  
+        });  
+        this.classList.add('active');  
+        displayProductDetails(product, 'pb2');
+        price.innerHTML = 
+            `<strong class="price quickOrderPrice">${formatPrice(newPrice(product.oldPrice*1.1))}</strong>
+            <strike class="price quickOrderPriceLast">${formatPrice(product.oldPrice*1.1)}</strike>`;   
     });
     setupSL();
 }
 // Cập nhật thông tin chi tiết theo phiên bản được chọn  
-function displayProductDetails(product, index) 
+function displayProductDetails(product, version) 
 {    
     const optionsElements = document.querySelectorAll('.optionse');  
     let pbHTML; 
-    vs = product.pb[index];
-    gia = product.price[index];
-    
-    const selectedVersionData = vs.split('/');
+    let selectedVersionData;
+    if(version === 'pb1') 
+    {
+        selectedVersionData = product.pb1.split('/');
+        vs = product.pb1;
+        gia = newPrice(product.oldPrice);
+    }
+    else
+    {
+        selectedVersionData = product.pb2.split('/');
+        vs = product.pb2;
+        gia = newPrice(product.oldPrice*1.1);
+    }
     const ram = selectedVersionData[0];    
     const storage = selectedVersionData[1];   
 
@@ -737,8 +759,7 @@ function quayve()
 
 
 //===== HIỂN THỊ SẢN PHẨM VÀ PHÂN TRANG =====//
-function renderProducts(products, page) 
-{
+function renderProducts(products, page) {
     const container = document.getElementById('productContainer');
     container.innerHTML = '';
 
@@ -755,8 +776,8 @@ function renderProducts(products, page)
                     </div>
                     <h4 class="home-product-item__name" >${product.name}</h4>
                     <div class="home-product-item__price">
-                        <span class="home-product-item__price-old">${formatPrice(oldPrice(product.price[0]))}</span>
-                        <span class="home-product-item__price-current">${formatPrice(product.price[0])}</span>
+                        <span class="home-product-item__price-old">${formatPrice(product.oldPrice)}</span>
+                        <span class="home-product-item__price-current">${formatPrice(newPrice(product.oldPrice))}</span>
                     </div>
                     <div class="add-to-cart">  
                         <span class="add-to-cart-text">Xem sản phẩm</span>  
@@ -767,17 +788,10 @@ function renderProducts(products, page)
         `;
         container.insertAdjacentHTML('beforeend', productHTML);
     });
-    // Kiểm tra số lượng sản phẩm để quyết định có hiển thị phân trang hay không  
-    if (products.length > ITEMS_PER_PAGE) {  
-        renderPagination(products);  
-    } else {  
-        // Nếu không có phân trang, xóa nội dung của phân trang  
-        document.getElementById('pagination').innerHTML = '';  
-    }  
+    renderPagination(products);
 }
 
-function renderPagination(products) 
-{
+function renderPagination(products) {
     const paginationContainer = document.getElementById('pagination');
     const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
 
@@ -871,7 +885,7 @@ function giohang(product)
         img: product.img || 'default-image.jpg', 
         name: product.name || 'Unnamed Product',  
         pb: vs,  
-        price: gia
+        price: gia,
     };  
     console.log(product);
     console.log(addProduct);

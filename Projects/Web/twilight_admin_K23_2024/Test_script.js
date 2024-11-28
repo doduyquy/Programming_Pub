@@ -204,7 +204,7 @@ function filterProducts() {
     totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
 
     // Hiển thị trang đầu tiên của sản phẩm đã lọc
-    //currentProductPage = 1;
+    currentProductPage = 1;
     displayProductPage(currentProductPage);
 
     // Tạo lại nút phân trang cho Products
@@ -1005,13 +1005,8 @@ function displayOrdersTable(orders){
                 <td>
                     <button class="detail-btn" onclick="">Chi tiết</button>
                 </td>
-                <td>
-                    <select class="order-status-select" id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value); updateSelectColor(this);">
-                        <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
-                        <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
-                        <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
-                        <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
-                    </select>
+                <td class="order-status-table" id="order-status-inTable-${index}" data-status="${order.status}">
+                    ${formatOrderStatus(order.status)}
                 </td>
             </tr> 
         `;
@@ -1025,11 +1020,11 @@ function displayOrdersTable(orders){
             showOrderDetails(index);
         });
     });
-
-    // Cập nhật màu sắc cho các select
-    document.querySelectorAll('.order-status-select').forEach(select => {
-        updateSelectColor(select); // Gọi hàm cập nhật màu ngay sau khi tạo bảng
+    document.querySelectorAll('.order-status-table').forEach((elem) => {
+        const status = elem.textContent.trim(); // Lấy giá trị trạng thái từ nội dung
+        elem.setAttribute('data-status', status); // Gán giá trị vào data-status
     });
+    
 
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
@@ -1037,13 +1032,121 @@ function displayOrdersTable(orders){
 }
 displayOrdersTable(orderArray);
 
+function updateOrderColor(selectElement){
+    const status = selectElement.innerText; // Lấy giá trị trạng thái
+    console.log("Value: " + status);
+    selectElement.setAttribute('data-status', (status)); // Gắn data-status
+    console.log(`Updated table color for status: ${status}`);
+}
 // Function to update the color of the select box
 function updateSelectColor(selectElement) {
-    const status = selectElement.value; // Lấy giá trị hiện tại
-    selectElement.setAttribute('data-status', status); // Cập nhật thuộc tính data-status
-    console.log(`Updated select color for status: ${status}`); // Kiểm tra xem hàm có được gọi hay không
-
+    const status = selectElement.value; // Lấy giá trị trạng thái
+    selectElement.setAttribute('data-status', status); // Gắn data-status
+    console.log(`Updated select color for status: ${status}`);
 }
+
+
+
+/** FUNC: thay đổi status của từng order */
+function handleStatusChange(orderIndex, newStatus) {
+    console.log("New status: " + newStatus);
+    // Tính chỉ số thực trong currentOrdersArray
+    // Khi phân trang -> chỉ số phải được cập nhật mới
+    const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
+    const order = currentOrdersArray[realIndex];
+    if (order) {
+        const previousStatus = order.status;
+        const isChange = order.changeOrderStatus(newStatus);
+        // Nếu trạng thái mới hợp lệ
+        if (isChange) {
+            // Cập nhật trạng thái trong mảng và bảng
+            currentOrdersArray[realIndex].status = newStatus;
+            document.getElementById(`order-status-inTable-${orderIndex}`).textContent = formatOrderStatus(newStatus);
+            document.getElementById(`order-status-inTable-${orderIndex}`).setAttribute('data-status', newStatus); // Thêm data-status cho ô trong bảng
+            console.log(orderIndex + ' ' + newStatus);
+        } else {
+            // Khôi phục trạng thái cũ trong select box
+            document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
+        }
+    } else {
+        console.log("Error: không tìm thấy order(index) để thay đổi status");
+    }
+}
+function showOrderDetails(orderIndex) {
+    console.log('Show popup order detail');
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+    // Lấy thông tin đơn hàng
+    const order = orderArray[orderIndex];
+
+    // Hiển thị các sản phẩm trong đơn hàng
+    let checkoutCartHTML = '';
+    order.checkoutCart.forEach(product => {
+        checkoutCartHTML += `
+            <div class="product-item">
+                <span>${product.name}</span>
+                <span>${product.quantity}</span>
+                <span>${formatPrice(product.price)}</span>
+            </div>
+        `;
+    });
+    let detailOrderHTML = `
+        <div id="detailorder">
+            <button class="close-pop" id="close-detailorder">+</button>
+            <h2>Chi tiết đơn hàng</h2>
+            <div class="order-content">
+                <div class="info">
+                    <p>Tên khách hàng: <span id="detail-order-customername">${order.name}</span></p>
+                    <p>Số điện thoại: <span id="detail-order-phone">${order.phone}</span></p>
+                    <p>Địa chỉ: <span id="detail-order-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
+                    <p>Thời điểm đặt hàng: <span id="detail-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
+                </div>
+                <div class="checkout-section">
+                    <div class="checkout-info">
+                        <p>Sản phẩm đã đặt:</p>
+                        <div id="detail-checkoutCart">${checkoutCartHTML}</div>
+                    </div>
+                    <div class="checkout-total-payment">
+                        <p>Tổng tiền: <span id="detail-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
+                    </div>
+                    <div class="order-status-select">
+                        <p>Tình trạng đơn hàng: 
+                            <span>
+                                <select class="order-status-select" id="order-status__selection-${orderIndex}" onchange="handleStatusChange(${orderIndex}, this.value); updateSelectColor(this);">
+                                    <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
+                                    <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
+                                    <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
+                                    <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    // Chèn nội dung vào modal
+    modalOrderDetails.innerHTML = detailOrderHTML;
+
+    // Cập nhật màu nền cho select
+    const selectElement = document.getElementById(`order-status__selection-${orderIndex}`);
+    updateSelectColor(selectElement);
+    
+    // document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
+}
+
+function closeDetailOrderBox() {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
+
+
 
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */
 // Lọc sản phẩm theo Date
@@ -1072,32 +1175,7 @@ function displayOrdersByDate() {
         console.log(filterOrderArray);
     });
 }
-
-// Gọi hàm để khởi tạo sự kiện
 displayOrdersByDate();
-
-/** FUNC: thay đổi status của từng order */
-function handleStatusChange(orderIndex, newStatus){
-    console.log("New status: " + newStatus);
-    // Tính chỉ số thực trong currentOrdersArray
-    const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
-    const order = currentOrdersArray[realIndex];
-    if(order){
-        // Lưu trạng thái ban đầu của dropdown (select)
-        const previousStatus = order.status;
-        // Kiểm tra thay đổi có thành công?
-        const isChange = order.changeOrderStatus(newStatus);
-        if(false === isChange){      // Thay đổi status failed 
-            // Giữ nguyên status chữ cho dropdown (select)
-            document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
-        } else {
-            // Cập nhật trạng thái trong currentOrdersArray nếu cần
-            currentOrdersArray[realIndex].status = newStatus;
-        }
-    } else {    // Không tồn tại order tương ứng
-        console.log("Error: không tìm thấy order(index) để thay đổi status");
-    }
-}
 
 /** FUNC: hiển thị order table với status tương ứng.  */
 function displayOrderByStatus(){
@@ -1149,45 +1227,6 @@ function resetOrderFilter(){
 }
 resetOrderFilter();
 
-function showOrderDetails(orderIndex) {
-    const modalOrderDetails = document.getElementById('modal-detailorder');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'flex';
-    }
-
-    // Lấy thông tin đơn hàng
-    const order = orderArray[orderIndex];
-
-    // Điền dữ liệu vào pop-up
-    document.getElementById('detail-order-customername').innerText = order.name;
-    document.getElementById('detail-order-phone').innerText = order.phone;
-    document.getElementById('detail-order-address').innerText = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
-    document.getElementById('detail-date').innerText = (order.date).toLocaleDateString('vi-VN');;
-    document.getElementById('detail-status').innerText = order.status;
-
-    // Hiển thị các sản phẩm trong đơn hàng
-    let checkoutCartHTML = '';
-    order.checkoutCart.forEach(product => {
-        checkoutCartHTML += `
-            <div class="product-item">
-                <span>${product.name}</span>
-                <span>${product.quantity}</span>
-                <span>${formatPrice(product.price)}</span>
-            </div>
-        `;
-    });
-    document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
-    document.getElementById('detail-total-payment').innerHTML = formatPrice(order.calculateTotalPayment());
-    // Thêm sự kiện đóng pop-up
-    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
-}
-
-function closeDetailOrderBox() {
-    const modalOrderDetails = document.getElementById('modal-detailorder');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'none';
-    }
-}
 
 
 /** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
@@ -1617,6 +1656,25 @@ function formatPrice(price) {
         currency: 'VND'
     }).format(price);
 }
+function formatOrderStatus(status) {
+    switch (status) {
+        case 'UNPROCESSED': return 'Chưa xử lý';
+        case 'CONFIRMED': return 'Đã xác nhận';
+        case 'SUCCEEDED': return 'Thành công';
+        case 'FAILED': return 'Thất bại';
+        default: return 'Không xác định';
+    }
+}
+function convertOrderStatusToForm(vnStatus){
+    switch(vnStatus){
+        case 'Chưa xử lý': return 'UNPROCESSED';
+        case 'Đã xác nhận': return 'CONFIRMED' ;
+        case 'Thành công': return 'SUCCEEDED';
+        case 'Thất bại': return 'FAILED' ;
+        default: return 'Không xác định';
+    }
+}
+
 /** Hàm kiểm tra 2 ngày được nhập có lệ hay không:
     1. Cả 2 ngày phải nhập đủ
     2. Ngày start phải trước hoặc bằng ngày end 

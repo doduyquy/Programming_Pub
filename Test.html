@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Download</title>
+</head>
+<body>
+    <h1>Upload and Download File</h1>
+    <input type="file" id="fileInput">
+    <br><br>
+    <button id="downloadFile">Download File</button>
+
+    <!-- MS -->
+    <div>
+        <input id="fileupload" type="file" onchange="FileUploadChange(this);" />
+        <hr />
+        <b>Live Thumbnail</b>
+        <br />
+        <div id="dvThumbnail" style="width:80px; height:80px;">
+            Thumbnail
+        </div>
+        <br /> 
+        <b>Live Preview</b>
+        <div id="dvPreview">
+        </div> 
+    </div>
+    
+
+    <script>
+        function FileUploadChange(obj){
+                document.getElementById("dvPreview").innerHTML = "";
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+                if (regex.test(obj.value.toLowerCase())) {
+                    if (typeof (FileReader) != "undefined") {
+    
+                        var reader = new FileReader();
+                        reader.onload = function (e) { 
+                            //set the Thumbnail
+                            var thumbnailElement = document.getElementById("dvThumbnail"); 
+                            thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+    
+    
+                            //add a img element to preview the image.
+                            document.getElementById("dvPreview").innerHTML += "<img id='image1'/>";
+    
+                            //set the preview
+                            var previewElement = document.getElementById("image1"); 
+                            previewElement.src =  e.target.result;
+    
+                            //$("#dvThumbnail").css("background-image", `url('${reader.result}')`); //set the Thumbnail
+                            //$("#dvPreview img").attr("src", e.target.result);     //set the preview
+                        };
+                        reader.readAsDataURL(obj.files[0]);
+                    } else {
+                        alert("This browser does not support FileReader.");
+                    }
+                } else {
+                    alert("Please upload a valid image file.");
+                }
+        };
+
+        let uploadedFile;
+
+        document.getElementById('fileInput').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFile = file; // Store the file for downloading
+                alert(`File "${file.name}" is ready for download.`);
+            }
+        });
+
+        document.getElementById('downloadFile').addEventListener('click', () => {
+            if (uploadedFile) {
+                const url = URL.createObjectURL(uploadedFile);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = uploadedFile.name; // Suggested filename
+                link.click();
+                URL.revokeObjectURL(url); // Clean up memory
+            } else {
+                alert('No file uploaded yet!');
+            }
+        });
+    </script>
+</body>
+</html>
