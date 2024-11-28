@@ -297,16 +297,22 @@ body {
     display: flex;
     flex-direction: column;
 }
-#content main .box-product,
-#content main .box-order{
+#content main .box-product{
     height: 30%;
-    /* height: auto; */
-    margin: 24px;
+    margin: 12px ;
     display: grid;
     /* grid-template-columns: repeat(auto-fit, min-max(200px, 1fr)); */
     grid-template-columns: 2fr repeat(5, 1fr);
     grid-gap: 12px;
-}   
+} 
+#content main .box-order{
+    height: 30%;
+    margin: 12px;
+    display: grid;
+    /* grid-template-columns: repeat(auto-fit, min-max(200px, 1fr)); */
+    grid-template-columns: 2fr repeat(4, 1fr);
+    grid-gap: 12px;
+}  
 
 #content main .products-orders li{
     padding: 24px;
@@ -326,6 +332,9 @@ body {
     text-overflow: ellipsis;
     word-wrap: break-word;
 }
+#content main .box-order li .text {
+    white-space: nowrap;
+}
 #content main .products-orders li .text h2 {
     text-align: center;
     color: var(--blue)
@@ -333,8 +342,8 @@ body {
 #content main .products-orders li .icon ,
 #content main .customers li .icon{
     padding: 12px;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
     background: var(--grey);
     align-items: center;
@@ -351,7 +360,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     gap: 24px;
 }
 
@@ -365,11 +374,16 @@ body {
     align-items: center;    
     grid-gap: 12px; 
 }
-#content main .customers .customer__note  {
+/* #content main .customers .customer__note  {
     flex: 1;
     display: flex;
     flex-direction: column;
-    
+} */
+#content main .customers .customer__note  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 24px;
 }
 #content main .customers .customer__note li {
     display: flex;
@@ -389,11 +403,12 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: center; 
+    /* max-width: 80%; */
     background: var(--light);
     border-radius: 12px;
     padding: 12px;
     gap: 12px;
-    padding-top:70px;
+    padding-top: 70px;
 } 
 #content main .customer__chart .item {
     width: 72px;
@@ -416,6 +431,11 @@ body {
 }
 
 /* Responsive Design: Khi màn hình nhỏ hơn 768px */
+@media (min-width: 768px){
+    #content main .customer__chart {
+        max-width: 80%;
+    } 
+}
 @media (max-width: 888px) {
     #content main .box-product,
     #content main .box-order {
@@ -424,6 +444,7 @@ body {
 
     #content main .products-orders li {
         justify-content: center; 
+        flex-direction: column;
     }
 
     #content main .products-orders li .icon {
@@ -431,6 +452,7 @@ body {
     }
     #content main .customers {
         flex-direction: column;
+        flex-wrap: wrap;
     }
 
     #content main .customer__chart {
