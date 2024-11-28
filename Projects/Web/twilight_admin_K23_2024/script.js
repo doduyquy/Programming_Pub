@@ -204,7 +204,7 @@ function filterProducts() {
     totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
 
     // Hiển thị trang đầu tiên của sản phẩm đã lọc
-    currentProductPage = 1;
+    //currentProductPage = 1;
     displayProductPage(currentProductPage);
 
     // Tạo lại nút phân trang cho Products
