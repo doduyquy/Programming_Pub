@@ -231,7 +231,6 @@
                             <div class="subsection">
                                 <h2>THÊM SẢN PHẨM</h2>
                                 <form id="add-product-form">
-                                    <br>
                                     <label for="new-product-name">Tên sản phẩm</label>
                                     <input type="text" id="new-product-name" placeholder="Nhập tên sản phẩm...">
                                     <label for="new-brand">Thương hiệu</label>
@@ -242,21 +241,13 @@
                                         <option value="Bphone">BPHONE</option>
                                         <option value="VIVO">VIVO</option>
                                     </select>
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-price">Giá</label>
-                                        <input type="text" id="new-price" class="short-input" placeholder="Nhập giá sản phẩm...">
+                                     <div class="short_info">
+                                        <label class="short-label" for="new-number-of-versions">Số phiên bản</label>
+                                        <input type="number" class="short-input" id="new-number-of-versions" placeholder="Nhập số lượng phiên bản..." min="1" max="5" required>
                                     </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-pb1">Phiên bản 1</label>
-                                        <input type="text" id="new-pb1" class="short-input" placeholder="Nhập phiên bản 1...">
-                                    </div>
-                                    
-                                    <div class="short_info">
-                                        <label class="short-label" for="new-pb2">Phiên bản 2</label>
-                                        <input type="text" id="new-pb2" class="short-input" placeholder="Nhập phiên bản 2...">
-                                    </div>
-                                    
+                                    <div id="versions-container"></div>
+                                    <h3>Thông số kỹ thuật</h3>
+
                                     <div class="short_info">
                                         <label class="short-label" for="new-chip">Vi xử lý</label>
                                         <input type="text" id="new-chip" class="short-input" placeholder="Nhập vi xử lý...">
@@ -335,12 +326,10 @@
                             <div class="product-details">
                                 <img id="detail-img" alt="Hình ảnh sản phẩm">
                                 <div>
-                                    <h2>Thông số điện thoại</h2>
+                                    <h1>Thông số điện thoại</h1>
                                     <p>Tên sản phẩm: <span id="detail-name"></span></p>
                                     <p>Thương hiệu: <span id="detail-brand"></span></p>
-                                    <p>Giá bán: <span id="detail-price"></span></p>
-                                    <p>Phiên bản 1: <span id="detail-pb1"></span></p>
-                                    <p>Phiên bản 2: <span id="detail-pb2"></span></p>
+                                    <div id="detail-versions"></div>
                                     <p>Vi xử lý: <span id="detail-chip"></span></p>
                                     <p>Dung lượng pin: <span id="detail-pin"></span></p>
                                     <p>Kích thước màn hình: <span id="detail-size"></span></p>

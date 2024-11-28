@@ -47,7 +47,7 @@ body {
     text-align: center;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 3000;
+    z-index: 10000;
 }
 #login-popup h2 {
     font-size: 24px;
@@ -91,7 +91,7 @@ body {
     width: 100%;
     height: 100%;
     background: var(--grey);
-    z-index: 2000;
+    z-index: 9999;
 }
 /* // */
 /* SIDEBAR */
@@ -521,7 +521,7 @@ body {
     padding: 20px 10px;
     border-radius: 5px;
     color: white;
-    z-index: 1000;
+    z-index: 5000;
     box-shadow: 0 5px 8px rgba(0,0,0, 0.08);
     display: flex;
     min-width: 400px;
@@ -611,6 +611,15 @@ body {
 #container #leftsection #table_list .table-content {
     width: 100%;
     border-collapse: collapse;
+}
+
+#container #leftsection #table_list #version-index{
+    width: 30px;
+    background-color: #ff7f50;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
 }
 
 #container #leftsection #table_list .table-content th {
@@ -705,7 +714,6 @@ body {
     cursor: pointer;
 }
 
-
 #container #rightsection {
     width: 34%;
     display: flex;
@@ -733,6 +741,17 @@ body {
     border-radius: 8px;
     font-size: 18px;
     margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+#container #rightsection h3 {
+    text-align: center;
+    background: var(--light-blue);
+
+    padding: 5px;
+    border-radius: 8px;
+    font-size: 18px;
+    margin: 5px 100px;
     letter-spacing: 1px;
 }
 
@@ -779,7 +798,7 @@ body {
     flex-shrink: 0;
     margin-right: 15px;
     white-space: nowrap;
-    width: 120px;
+    width: 160px;
 }
 
 #container #rightsection .subsection .short-input {
@@ -1040,12 +1059,18 @@ body {
     justify-content: space-evenly;
     align-items: center;
 }
-#modal-detailproduct #detailproduct .product-details h2 {
+#modal-detailproduct #detailproduct .product-details h1 {
     margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
 }
 
+
+#modal-detailproduct #detailproduct .product-details h3 {
+    margin: 5px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
 #modal-detailproduct #detailproduct .product-details p {
     margin-bottom: 10px;
     font-size: 16px;
@@ -1059,6 +1084,7 @@ body {
     border-radius: 4px;
     background-color: #f9f9f9;
     font-weight: bold;
+    flex: 1;
 }
 
 /* END POP-UP SỬA SẢN PHẨM */

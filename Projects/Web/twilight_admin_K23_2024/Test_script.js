@@ -285,50 +285,52 @@ function filterProducts() {
     // Tạo lại nút phân trang cho Products
     createPagination(totalProductPages, 'product');
 }
+let currentVersionIndex = 0; // Biến toàn cục để lưu trữ phiên bản hiện tại
 
 // Sau khi tạo bảng sản phẩm
 function displayProductPage(page) {
-    var s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá</th><th>Thông tin</th><th>Hành động</th></tr>';
-    var dem = 0;
-    var start = (page - 1) * itemsPerPageProduct;
-    var end = start + itemsPerPageProduct;
-    for (var i = start; i < filteredProducts.length && i < end; i++) {
+    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Thông tin</th><th>Hành động</th></tr>';
+    let dem = 0;
+    const start = (page - 1) * itemsPerPageProduct;
+    const end = start + itemsPerPageProduct;
+    for (let i = start; i < filteredProducts.length && i < end; i++) {
+        const product = filteredProducts[i];
         s += '<tr>' +
-            '<td>' + filteredProducts[i].productId + '</td>' +
+            '<td>' + product.productId + '</td>' +
             '<td>' +
                 '<div class="product-image-container">' +
-                '<img src="' + filteredProducts[i].img + '" alt="Sản phẩm"></div></td>' +
-            '<td>' + filteredProducts[i].name + '</td>' +
-            '<td>' + filteredProducts[i].brandId.toUpperCase() + '</td>' +
-            '<td>' + formatPrice(filteredProducts[i].oldPrice) + '</td>' +
+                '<img src="' + product.img + '" alt="Sản phẩm"></div></td>' +
+            '<td>' + product.name + '</td>' +
+            '<td>' + product.brandId.toUpperCase() + '</td>' +
+            '<td>' + (product.price[currentVersionIndex] !== undefined ? formatPrice(product.price[currentVersionIndex]) : '-') + '</td>' +
             '<td>' +
                 '<button class="detail-btn" data-index="' + i + '">Chi tiết</button>' +
             '</td>' +
             '<td>' +
                 '<button class="delete-btn" data-index="' + i + '">Xóa</button>' +
-                '<button id="edit-product-btn" class="edit-btn" data-index="' + i + '">Sửa</button>' +
+                '<button class="edit-btn" data-index="' + i + '">Sửa</button>' +
             '</td>' +
         '</tr>';
         dem++;
-        if (dem == itemsPerPageProduct) {
+        if (dem === itemsPerPageProduct) {
             break; // Nếu đã đủ số sản phẩm trên một trang thì dừng
         }
     }
-    document.getElementById('product-table-content__body').innerHTML = s; // Hiển th
+    document.getElementById('product-table-content__body').innerHTML = s; // Hiển thị nội dung bảng
     updatePagination('product'); // Cập nhật nút phân trang
 
     // Thêm event listeners cho các nút xem chi tiết
     document.querySelectorAll('#main__products .detail-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
-            showProductDetails(productIndex);
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
+            showDetailsProductBox(productIndex);
         });
     });
 
     // Thêm event listeners cho các nút sửa
     document.querySelectorAll('#main__products .edit-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
             showChangeProductBox(productIndex);
         });
     });
@@ -336,10 +338,19 @@ function displayProductPage(page) {
     // Thêm event listeners cho các nút xóa
     document.querySelectorAll('#table_list .delete-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
             deleteProduct(productIndex);
         });
     });
+}
+
+function getMaxVersions() {
+    return Math.max(...filteredProducts.map(product => product.price.length));
+}
+
+function updateVersionIndex(index) {
+    currentVersionIndex = index;
+    displayProductPage(currentProductPage);
 }
 
 // Tạo nút phân trang
@@ -554,71 +565,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+document.getElementById('new-number-of-versions').addEventListener('input', function() {
+    const container = document.getElementById('versions-container');
+    container.innerHTML = ''; // Clear previous inputs
+    const num = parseInt(this.value, 10);
+    if (isNaN(num) || num < 1) return;
+    for (let i = 1; i <= num; i++) {
+        const versionDiv = document.createElement('div');
+        versionDiv.innerHTML = `
+            <h3>Phiên bản ${i}</h3>
+            <div class="short_info">
+                <label class="short-label" for="version-price-${i}">Giá:</label>
+                <input type="number" class="short-input" id="version-price-${i}" placeholder="Nhập giá phiên bản ${i}..." min="0" step="1" required>
+            </div>
+            <div class="short_info">
+                <label class="short-label" for="version-pb-${i}">Chi tiết phiên bản:</label>
+                <input type="text" class="short-input" id="version-pb-${i}" placeholder="Nhập chi tiết phiên bản ${i}..." required>
+            </div>
+        `;
+        container.appendChild(versionDiv);
+    }
+});
+// Test_script.js
+
 function addProduct(event) {
-    event.preventDefault(); // Ngăn form tự submit
+    event.preventDefault();
 
-    // Tạo productId mới
-    const productId = allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1";
-
-    // Lấy giá trị từ các trường nhập liệu
-    const productname = document.getElementById('new-product-name').value.trim();
+    const productName = document.getElementById('new-product-name').value.trim();
     const brand = document.getElementById('new-brand').value.trim();
-    const price = document.getElementById('new-price').value.trim();
-    const pb1 = document.getElementById('new-pb1').value.trim();
-    const pb2 = document.getElementById('new-pb2').value.trim();
+    const numberOfVersions = parseInt(document.getElementById('new-number-of-versions').value.trim(), 10);
+
+    if (!productName || !brand || isNaN(numberOfVersions) || numberOfVersions < 1) {
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng nhập tên sản phẩm, thương hiệu và số phiên bản hợp lệ.',
+            type: 'warning'
+        });
+        return false;
+    }
+
+    let prices = [];
+    let pbs = [];
+    for (let i = 1; i <= numberOfVersions; i++) {
+        const versionPrice = document.getElementById(`version-price-${i}`).value.trim();
+        const versionDetails = document.getElementById(`version-pb-${i}`).value.trim();
+
+        if (!versionPrice || !versionDetails) {
+            customAlert({
+                title: 'Thất bại!',
+                message: `Vui lòng nhập đầy đủ thông tin cho phiên bản ${i}.`,
+                type: 'warning'
+            });
+            return false;
+        }
+
+        prices.push(parseFloat(versionPrice));
+        pbs.push(versionDetails);
+    }
+
     const chip = document.getElementById('new-chip').value.trim();
     const pin = document.getElementById('new-pin').value.trim();
     const size = document.getElementById('new-size').value.trim();
     const f = document.getElementById('new-f').value.trim();
     const imgInput = document.getElementById('new-image-upload');
-    let img = 'img-prd/img-add2.png'; // Ảnh mặc định
+    let img = 'img-prd/img-add2.png';
     if (imgInput.files && imgInput.files[0]) {
-        img = URL.createObjectURL(imgInput.files[0]); // Lấy đường dẫn ảnh
+        img = URL.createObjectURL(imgInput.files[0]);
     }
 
-    // Kiểm tra thông tin nhập vào
-    if (!brand || !productname || !price || !pb1 || !chip || !pin || !size || !f) {
+    if (!chip || !pin || !size || !f) {
         customAlert({
             title: 'Thất bại!',
-            message: 'Bạn chưa nhập đủ thông tin sản phẩm.',
+            message: 'Vui lòng nhập đầy đủ thông số kỹ thuật sản phẩm.',
             type: 'warning'
         });
         return false;
     }
 
-    // Kiểm tra giá nhập vào có phải là số không
-    if (isNaN(Number(price))) {
-        customAlert({
-            title: 'Thất bại!',
-            message: 'Giá không hợp lệ.',
-            type: 'warning'
-        });
-        return false;
-    }
-
-    // Tạo đối tượng sản phẩm mới
     const newProduct = {
-        productId: productId,
+        productId: allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1",
         brandId: brand,
-        img: img,
-        name: productname,
-        oldPrice: price,
-        pb1: pb1,
-        pb2: pb2,
+        name: productName,
+        price: prices,
+        pb: pbs,
         chip: chip,
         pin: pin,
         size: size,
-        f: f
+        f: f,
+        img: img
     };
 
-    // Thêm sản phẩm vào mảng và lưu vào localStorage
     allProducts.push(newProduct);
-    // localStorage.setItem('allProducts', JSON.stringify(allProducts));
     localStorage.setItem('productArray', JSON.stringify(allProducts));
-    console.log(allProducts);
-    console.log(JSON.parse(localStorage.getItem('productArray')));
 
-    // Cập nhật danh sách sản phẩm và thông báo thành công
     filterProducts();
     customAlert({
         title: 'Thành công!',
@@ -626,7 +665,6 @@ function addProduct(event) {
         type: 'success'
     });
 
-    // Reset form
     document.querySelector('.subsection form').reset();
 }
 // Xóa sản phẩm
@@ -666,7 +704,14 @@ function showChangeProductBox(productIndex) {
 
     // Điền thông tin vào modal
     document.getElementById('edit-name').value = product.name;
-    document.getElementById('edit-price').value = product.oldPrice;
+    const editPriceInput = document.getElementById('edit-price');
+    if (product.price[currentVersionIndex] !== undefined) {
+        editPriceInput.value = product.price[currentVersionIndex];
+        editPriceInput.disabled = false;
+    } else {
+        editPriceInput.value = 'Không có phiên bản này';
+        editPriceInput.disabled = true;
+    }
     document.getElementById('imgbefore').src = product.img;
     document.getElementById('imgafter').src = 'img-prd/add-img-phone.webp';
 
@@ -676,13 +721,13 @@ function showChangeProductBox(productIndex) {
 
     // Thêm sự kiện đóng pop-up
     document.getElementById('close-changeproduct').addEventListener('click', closeChangeProductBox);
-
 }
 
 // Lưu thay đổi sản phẩm
 function saveProductChanges(productIndex) {
     const updatedName = document.getElementById('edit-name').value.trim();
-    const updatedPrice = parseFloat(document.getElementById('edit-price').value.trim()) || 0;
+    const editPriceInput = document.getElementById('edit-price');
+    const updatedPrice = parseFloat(editPriceInput.value.trim()) || 0;
     const updatedImageInput = document.getElementById('edit-image-upload');
     let updatedImage = document.getElementById('imgafter').src;
 
@@ -692,15 +737,18 @@ function saveProductChanges(productIndex) {
 
     // Cập nhật thông tin sản phẩm trong mảng
     allProducts[productIndex].name = updatedName;
-    allProducts[productIndex].oldPrice = updatedPrice;
+    if (!editPriceInput.disabled) {
+        allProducts[productIndex].price[currentVersionIndex] = updatedPrice;
+    }
     if (updatedImageInput.files && updatedImageInput.files[0]) {
         allProducts[productIndex].img = updatedImage;
     }
+
     // Kiểm tra thông tin cập nhật
     if (
         !allProducts[productIndex].brandId ||
         !allProducts[productIndex].name ||
-        !allProducts[productIndex].oldPrice 
+        (!editPriceInput.disabled && !allProducts[productIndex].price[currentVersionIndex])
     ) {
         customAlert({
             title: 'Thất bại!',
@@ -710,7 +758,7 @@ function saveProductChanges(productIndex) {
         return false;
     }
 
-    if (isNaN(allProducts[productIndex].oldPrice)) {
+    if (!editPriceInput.disabled && isNaN(allProducts[productIndex].price[currentVersionIndex])) {
         customAlert({
             title: 'Thất bại!',
             message: 'Giá không hợp lệ.',
@@ -729,7 +777,11 @@ function saveProductChanges(productIndex) {
     closeChangeProductBox();
 
     // Hiển thị thông báo thành công
-    alert('Sản phẩm đã được chỉnh sửa thành công!');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Sản phẩm đã được chỉnh sửa thành công.',
+        type: 'success'
+    });
 }
 
 // Đóng modal
@@ -767,7 +819,7 @@ function previewImage(event) {
     });
 }
 // Hàm hiển thị chi tiết sản phẩm
-function showProductDetails(productIndex) {
+function showDetailsProductBox(productIndex) {
     const modalProductDetails = document.getElementById('modal-detailproduct');
     if (modalProductDetails) {
         modalProductDetails.style.display = 'flex';
@@ -780,17 +832,27 @@ function showProductDetails(productIndex) {
     document.getElementById('detail-img').src = product.img;
     document.getElementById('detail-name').innerText = product.name;
     document.getElementById('detail-brand').innerText = product.brandId;
-    document.getElementById('detail-price').innerText = product.oldPrice;
-    document.getElementById('detail-pb1').innerText = product.pb1 || "";
-    document.getElementById('detail-pb2').innerText = product.pb2 || "";
     document.getElementById('detail-chip').innerText = product.chip || "";
     document.getElementById('detail-pin').innerText = product.pin || "";
     document.getElementById('detail-size').innerText = product.size || "";
     document.getElementById('detail-f').innerText = product.f || "";
 
+    // Hiển thị các phiên bản
+    const versionsContainer = document.getElementById('detail-versions');
+    versionsContainer.innerHTML = ''; // Xóa nội dung cũ
+
+    for (let i = 0; i < product.pb.length; i++) {
+        const versionDiv = document.createElement('div');
+        versionDiv.innerHTML = `
+            <h3>Phiên bản ${i + 1}</h3>
+            <p>Giá: <span>${formatPrice(product.price[i])}</span></p>
+            <p>Chi tiết: <span>${product.pb[i]}</span></p>
+        `;
+        versionsContainer.appendChild(versionDiv);
+    }
+
     // Thêm sự kiện đóng pop-up
     document.getElementById('close-detailproduct').addEventListener('click', closeDetailProductBox);
-
 }
 
 // Hàm đóng pop-up
@@ -824,13 +886,13 @@ function addPasswordToggleListeners() {
 // ---CUSTOMER---
 // Hiển thị trang khách hàng
 function displayCustomerPage(page) {
-    // var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
-    var s = '';
-    var dem = 0;
-    var start = (page - 1) * itemsPerPageCustomer;
-    var end = start + itemsPerPageCustomer;
-    for (var i = start; i < customerArray.length && i < end; i++) {
-        var customer = customerArray[i];
+    // let s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
+    let s = '';
+    let dem = 0;
+    const start = (page - 1) * itemsPerPageCustomer;
+    const end = start + itemsPerPageCustomer;
+    for (let i = start; i < customerArray.length && i < end; i++) {
+        const customer = customerArray[i];
         s += '<tr data-id="' + i + '"' + (customer.locked ? ' class="locked"' : '') + '>' +  // Thêm class "locked" nếu khách hàng bị khóa
             '<td>' + (i + 1) + '</td>' +
             '<td>' + customer.username + '</td>' +
@@ -1817,7 +1879,7 @@ function isValidDateRange(start, end) {
 
 window.login = login;
 
-window.showDetailProductBox = showProductDetails;
+window.showDetailsProductBox = showDetailsProductBox;
 window.closeDetailProductBox = closeDetailProductBox;
 window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
@@ -1839,3 +1901,5 @@ window.closeDetailOrderBox = closeDetailOrderBox;
 window.updateSelectColor = updateSelectColor;
 
 window.showStatisticsProductBill = showStatisticsProductBill;
+
+window.updateVersionIndex = updateVersionIndex;
