@@ -1804,9 +1804,14 @@ body {
     border-radius: 8px;
     padding: 20px;
     width: 90%;
-    max-width: 678px;
+    max-width: 700px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px; /* Khoảng cách giữa các đơn hàng */
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* gap: 50px; */
 }
 /* Tiêu đề */
 #modal-detailStatistic h2 {
