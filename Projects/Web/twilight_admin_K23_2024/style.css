@@ -450,7 +450,6 @@ body {
     
 }
 
-
 @media (max-width: 1200px) {
     #content main .customer__chart {
         gap: 6px; 
@@ -488,34 +487,92 @@ body {
     }
 }
 
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(100% + 32px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
 
 /* END CHART */
 /* END CUSTOMER */
 /* END MAIN__DASHBOARD */
 
-.custom-alert {
+#custom-alert{
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
+    top: 32px;
+    right: 32px;
+}
+.custom-alert {
+    display: flex;
+    align-items: center;
+    padding: 20px 10px;
     border-radius: 5px;
     color: white;
     z-index: 1000;
-    opacity: 0.9;
+    box-shadow: 0 5px 8px rgba(0,0,0, 0.08);
+    display: flex;
+    min-width: 400px;
+    max-width: 450px;
     animation: slideInLeft ease 0.3s, fadeOut linear 1s 3s forwards;
 }
 
-.custom-alert-success {
-    background-color: #4caf50; /* Màu xanh lá cây cho thông báo thành công */
+.custom-alert--success {
+    background-color: #4caf50;
 }
 
-.custom-alert-warning {
-    background-color: #ff9800; /* Màu cam cho thông báo cảnh báo */
+.custom-alert--warning {
+    background-color: #ff9800;
 }
 
-.custom-alert-error {
-    background-color: #f44336; /* Màu đỏ cho thông báo lỗi */
+.custom-alert + .custom-alert{
+    margin-top: 10px;
 }
+
+
+.custom-alert__icon {
+    font-size: 24px;
+    color: white;
+    padding: 0 16px;
+}
+
+.custom-alert__body{
+    flex-grow: 1;
+}
+.custom-alert__title {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.custom-alert__msg {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: white;
+
+}
+
+.custom-alert__close{
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+    padding: 0 16px;
+}
+
+
 
 /* MAIN__PRODUCTS*/
 #container {
@@ -837,6 +894,48 @@ body {
     z-index: 1000;
 }
 
+.modal-confirm {
+    background-color: #fff;
+    padding: 30px 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    position: relative;
+}
+  
+  .modal-confirm p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+  
+  .modal-confirm .button-container {
+    display: flex;
+    justify-content: center;
+}
+  
+  .modal-confirm button {
+    padding: 10px 20px;
+    margin: 0 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 80px;
+}
+  
+  .modal-confirm button#confirmYes {
+    background-color: var(--red);
+    color: #fff;
+}
+  
+  .modal-confirm button#confirmNo {
+    background-color: var(--blue);
+    color: #fff;
+}
+  
+  .modal-confirm button:hover {
+    opacity: 0.9;
+}
 #modal-changeproduct #changeproduct {
     width: 600px;
     height: auto;
@@ -1061,25 +1160,12 @@ body {
 /* END MAIN */
 /* END CONTENT */
 
-@keyframes fadeOut {
-    to{
-        opacity: 0;
-    }
-}
+
 @keyframes topdown{
 	0% {transform: translateY(-800px)}
 	100% {transform: translateY(0)}
 }
-@keyframes slideInLeft{
-    from{
-        opacity: 0;
-        transform: translateX(calc(100% + 32px));
-    }
-    to{
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
+
 /* Thêm transition cho các phần tử cần thay đổi kích thước */
 @media only screen and (min-width: 901px) and (max-width: 1060px) {
     #container #leftsection{

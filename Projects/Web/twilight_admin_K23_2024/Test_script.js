@@ -134,21 +134,96 @@ showCorrespondingMain();
 showMainItem('main__dashboard');
 
 // Hàm thông báo tự thiết kế
-function customAlert(message, type) {
-    // Tạo phần tử div cho thông báo
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `custom-alert custom-alert-${type}`;
-    alertDiv.innerText = message;
-
-    // Thêm thông báo vào body
-    document.body.appendChild(alertDiv);
-
-    // Tự động ẩn thông báo sau 3 giây
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
+function customAlert({
+    title = '', 
+    message = '', 
+    type = '', 
+    duration = 3000
+}) {
+    const main = document.getElementById('custom-alert');
+    if (main) {
+        const alert = document.createElement('div');
+        // Tự động xóa thông báo sau thời gian xác định
+        const autoRemoveId = setTimeout(function() {
+            main.removeChild(alert);
+        }, duration + 1000);
+        // Xóa thông báo khi người dùng nhấp vào
+        alert.onclick = function(e) {
+            if (e.target.closest('.custom-alert__close')) {
+                main.removeChild(alert);
+                clearTimeout(autoRemoveId);
+            }
+        };
+        const icons ={
+            success: 'fa-solid fa-circle-check',
+            warning: 'fa-solid fa-circle-exclamation',
+        };
+        const icon = icons[type];
+        const delay = (duration / 1000).toFixed(2);
+        alert.classList.add('custom-alert', `custom-alert--${type}`);
+        alert.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+        alert.innerHTML = `
+            <div class="custom-alert__icon">
+                <i class="${icon}"></i>
+            </div>
+            <div class="custom-alert__body">
+                <h3 class="custom-alert__title">${title}</h3>
+                <p class="custom-alert__msg">${message}</p>
+            </div>
+            <div class="custom-alert__close">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        `;
+        main.appendChild(alert);
+    }
 }
 
+function customConfirm(message, callback) {
+    // Tạo phần tử modal
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+  
+    // Nội dung của modal
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-confirm');
+  
+    // Thông điệp
+    const msg = document.createElement('p');
+    msg.textContent = message;
+  
+    // Container cho nút
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('button-container');
+  
+    // Nút "Có"
+    const yesButton = document.createElement('button');
+    yesButton.textContent = 'Có';
+    yesButton.id = 'confirmYes';
+    yesButton.onclick = function() {
+      document.body.removeChild(modal);
+      callback(true);
+    };
+  
+    // Nút "Không"
+    const noButton = document.createElement('button');
+    noButton.textContent = 'Không';
+    noButton.id = 'confirmNo';
+    noButton.onclick = function() {
+      document.body.removeChild(modal);
+      callback(false);
+    };
+  
+    // Lắp ráp các phần tử
+    buttonContainer.appendChild(yesButton);
+    buttonContainer.appendChild(noButton);
+    modalContent.appendChild(msg);
+    modalContent.appendChild(buttonContainer);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+  
+    // Hiển thị modal
+    modal.style.display = 'flex';
+  }
 /* MAIN__PRODUCTS */
 let filteredProducts = []; // Lấy productArray từ localStorage đã được import từ productArray.js
 let currentOrdersArray = [];
@@ -503,13 +578,21 @@ function addProduct(event) {
 
     // Kiểm tra thông tin nhập vào
     if (!brand || !productname || !price || !pb1 || !chip || !pin || !size || !f) {
-        customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin sản phẩm.',
+            type: 'warning'
+        });
         return false;
     }
 
     // Kiểm tra giá nhập vào có phải là số không
     if (isNaN(Number(price))) {
-        customAlert('Giá không hợp lệ', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Giá không hợp lệ.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -537,7 +620,11 @@ function addProduct(event) {
 
     // Cập nhật danh sách sản phẩm và thông báo thành công
     filterProducts();
-    customAlert('Thêm sản phẩm thành công', 'success');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Sản phẩm đã được thêm thành công.',
+        type: 'success'
+    });
 
     // Reset form
     document.querySelector('.subsection form').reset();
@@ -545,20 +632,26 @@ function addProduct(event) {
 // Xóa sản phẩm
 function deleteProduct(productIndex) {
     if (productIndex !== -1) {
-        if (confirm('Bạn có muốn xóa sản phẩm này không?')) {
+        customConfirm('Bạn có muốn xóa sản phẩm này không?', function(result) {
+            if (result) {
             // Xóa sản phẩm khỏi dữ liệu
             allProducts.splice(productIndex, 1);
-
+  
             // Cập nhật localStorage
             localStorage.setItem('productArray', JSON.stringify(allProducts));
-
+  
             // Cập nhật lại danh sách sản phẩm
             filterProducts();
-
-            alert('Sản phẩm đã được xóa thành công!');
+  
+            customAlert({
+                title: 'Thành công!',
+                message: 'Sản phẩm đã được xóa thành công.',
+                type: 'success'
+            });
         }
+      });
     }
-}
+  }
 
 // Hiển thị modal chỉnh sửa sản phẩm
 function showChangeProductBox(productIndex) {
@@ -609,12 +702,20 @@ function saveProductChanges(productIndex) {
         !allProducts[productIndex].name ||
         !allProducts[productIndex].oldPrice 
     ) {
-        customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin sản phẩm.',
+            type: 'warning'
+        });
         return false;
     }
 
     if (isNaN(allProducts[productIndex].oldPrice)) {
-        customAlert('Giá không hợp lệ', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Giá không hợp lệ.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -816,13 +917,21 @@ function addCustomer(event) {
 
     // Kiểm tra thông tin nhập vào
     if (!username || !password || !phone || !addressInput) {
-        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin khách hàng.',
+            type: 'warning'
+        });
         return false;
     }
 
     // Kiểm tra xem username đã tồn tại chưa
     if (checkExistedUsername(username)) {
-        customAlert('Tên tài khoản đã tồn tại', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Tên tài khoản đã tồn tại.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -842,7 +951,11 @@ function addCustomer(event) {
     //Kiểm tra địa chỉ có dạng hợp lệ không
     if (!numberAndRoad || !district || !city) {
         // if (!numberAndRoad || !ward || !district || !city) {
-        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường + Phường, Quận, Thành phố', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: "Địa chỉ không hợp lệ.<br>Vui lòng nhập đầy đủ các phần: <br>Số nhà và đường + Phường, Quận, Thành phố.",
+            type: 'warning'
+        });
         return false;
     }
 
@@ -866,7 +979,11 @@ function addCustomer(event) {
 
     // Cập nhật danh sách khách hàng và thông báo thành công
     displayCustomerPage(currentCustomerPage);
-    customAlert('Thêm khách hàng thành công', 'success');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Thêm khách hàng thành công.',
+        type: 'success'
+    });
 
     // Reset form
     document.querySelector('#add-customer-form').reset();
@@ -936,7 +1053,11 @@ function saveCustomerChanges(customerIndex) {
         // !customerArray[customerIndex].address.district ||
         // !customerArray[customerIndex].address.city
     ) {
-        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin khách hàng.',
+            type: 'warning'
+        });
         return false;
     }
 
