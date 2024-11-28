@@ -289,7 +289,7 @@ let currentVersionIndex = 0; // Biến toàn cục để lưu trữ phiên bản
 
 // Sau khi tạo bảng sản phẩm
 function displayProductPage(page) {
-    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Thông tin</th><th>Hành động</th></tr>';
+    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá<br> Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Thông tin</th><th>Hành động</th></tr>';
     let dem = 0;
     const start = (page - 1) * itemsPerPageProduct;
     const end = start + itemsPerPageProduct;
@@ -1315,7 +1315,7 @@ function showOrderDetails(orderIndex) {
                     <div class="checkout-total-payment">
                         <p>Tổng tiền: <span id="detail-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
                     </div>
-                    <div class="order-status-select">
+                    <div class="checkout-status-select">
                         <p>Tình trạng đơn hàng: 
                             <span>
                                 <select class="order-status-select" id="order-status__selection-${orderIndex}" onchange="handleStatusChange(${orderIndex}, this.value); updateSelectColor(this);">

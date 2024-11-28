@@ -636,12 +636,19 @@ body {
 }
 
 #container #leftsection #table_list #version-index{
-    width: 30px;
-    background-color: #ff7f50;
+    width: 40px;
+    height: 20px;
+    /* background-color: #ff7f50; */
+    background-color: #ff9900;
+
+    /* background: var(--blue); */
+    border-radius: 4px; /* Bo góc input */
     color: #fff;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
+    font-size: 14px; /* Kích thước chữ */
+    padding: 2px 5px; /* Thêm khoảng cách trong input */
 }
 
 #container #leftsection #table_list .table-content th {
@@ -1628,7 +1635,7 @@ body {
 /* POP-UP xem chi tiết đơn hàng */
 
 #modal-detailorder #detailorder {
-    width: 850px;
+    width: 800px;
     padding: 20px;
     border-radius: 8px;
     position: relative;
@@ -1649,7 +1656,7 @@ body {
 
 #modal-detailorder #detailorder .order-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: flex-start;
     gap: 20px;
 }
@@ -1663,13 +1670,14 @@ body {
     line-height: 1.6;
 }
 
-#modal-detailorder #detailorder .order-content span {
+#modal-detailorder #detailorder .order-content .info span {
     display: inline-block;
     text-align: left;
     padding: 5px 10px;
-    border: 1px solid #ddd;
+    margin-left: 12px;
+    /* border: 1px solid #ddd; */
     border-radius: 4px;
-    background-color: #f9f9f9;
+    background-color: var(--border);
     font-weight: bold;
 }
 
@@ -1684,12 +1692,26 @@ body {
     margin-bottom: 10px;
 }
   
-#modal-detailorder #detailorder #detail-checkoutCart {
-    border: 1px solid #ccc;
+/* #modal-detailorder #detailorder #detail-checkoutCart {
     border-radius: 4px;
     padding: 10px;
-    min-height: 100px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
-    overflow-y: auto; /* Cuộn nếu nội dung vượt quá */
+    min-height: 100px; 
+    overflow-y: auto; 
+} */
+#modal-detailorder #detailorder #detail-checkoutCart  {
+    display: inline-block;
+    text-align: left;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--border);
+    font-size: 17px;
+    font-weight: bold;
+    min-height: 115px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
+}
+#modal-detailorder #detailorder #detail-checkoutCart span {
+    margin: 0px 15px 5px 15px;
 }
 
 /* // */
@@ -1716,19 +1738,19 @@ body {
 }
 
 #modal-detailorder #detailorder #detail-total-payment {
+    margin-left: 60px;
     color: red; /* Màu chữ đỏ cho tổng tiền */
     font-weight: bold;
-    font-size: 21px; /* Tăng kích cỡ chữ (tùy chọn) */
+    font-size: 24px; /* Tăng kích cỡ chữ (tùy chọn) */
 }
 /* // */
 
 /* Cho selection: tình trạng đơn hàng */
 /* Styling the select box */
 .order-status-select {
-    padding: 5px;
-    color: black; /* Default text color */
-    border: 1px solid #ccc;
     border-radius: 4px;
+    padding: 5px;
+    font-size: 14px;
 }
 
 /* Specific colors for options */
@@ -1796,15 +1818,16 @@ body {
     overflow-y: auto; /* Cuộn nếu có nhiều đơn hàng */
     z-index: 1000; /* Hiển thị trên cùng */
     box-sizing: border-box; /* Đảm bảo padding được tính đúng */
+
 }
 
 /* Nội dung mỗi đơn hàng */
 .detailStatistic-content {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 700px;
+    width: 65%;
+    background-color: var(--light);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 800px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px; /* Khoảng cách giữa các đơn hàng */
 
@@ -1822,7 +1845,7 @@ body {
 }
 #modal-detailStatistic p {
     font-size: 17px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 } 
 #modal-detailStatistic p span {
     margin-left: 15px;
@@ -1862,7 +1885,9 @@ body {
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: var(--border);
+    font-size: 17px;
+    min-height: 115px; /* Chiều cao tối thiểu cho danh sách sản phẩm */
 }
 
 .detailStatistic-item {
@@ -1870,6 +1895,11 @@ body {
     justify-content: space-between;
     padding: 5px 0;
     border-bottom: 1px solid #ddd;
+}
+.detailStatistic-item span {
+    margin: 0px 15px 5px 15px;
+    font-weight: bold;
+    /* margin-right: 30px; */
 }
 
 .detailStatistic-item:last-child {
