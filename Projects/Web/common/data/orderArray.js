@@ -1,5 +1,5 @@
 import {customerArray, Address} from './customerArray.js';
-
+import {customAlert, customConfirm} from './utilities.js'
 
 /** ORDER CLASS: đối tượng hóa đơn, sau khi user chọn product trong cart và thanh toán. */
 class Order {
@@ -41,7 +41,12 @@ class Order {
                 // Nếu chưa xử lí -> CONFIRMED | FAILED
                 if(newStatus === 'SUCCEEDED'){
                     //...
-                    alert('Failed: Đơn hàng chưa được xác nhận');
+                    // alert('Failed: Đơn hàng chưa được xác nhận');
+                    customAlert({
+                        title: 'Thất bại!',
+                        message: 'Đơn hàng chưa được xác nhận!',
+                        type: 'warning'
+                    });
                     console.log('Failed: Đơn hàng chưa được xác nhận');
                 } else {
                     this.status = newStatus;
@@ -51,7 +56,12 @@ class Order {
             case 'CONFIRMED':
                 // Nếu đã xác nhận -> SUCCEEDED | FAILED
                 if(newStatus === 'UNPROCESSED'){
-                    alert('Failed: Đơn hàng đã được xác nhận');
+                    // alert('Failed: Đơn hàng đã được xác nhận');
+                    customAlert({
+                        title: 'Thất bại!',
+                        message: 'Đơn hàng chưa được xác nhận!',
+                        type: 'warning'
+                    });
                     console.log('Failed: Trạng thái không hợp lệ (Đơn hàng đã được xác nhận)');
                 } else {
                     this.status = newStatus;
@@ -60,11 +70,21 @@ class Order {
                 break;
             /** Khi đã ở trạng thái SUCCEEDED | FAILED: trạng thái bị vô hiệu hóa. */
             case 'SUCCEEDED':
-                alert('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                // alert('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa!',
+                    type: 'warning'
+                });
                 console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             case 'FAILED':
-                alert('Failed: Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa');
+                // alert('Failed: Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa');
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa!',
+                    type: 'warning'
+                });
                 console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             default:

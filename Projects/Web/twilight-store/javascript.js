@@ -2,6 +2,7 @@ import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArr
 import {Cart } from '../common/data/cart.js';
 import {allProducts} from '../common/data/productArray.js';
 import { orderArray } from '../common/data/orderArray.js';
+import {customAlert, customConfirm} from '../common/data/utilities.js';
 //-----
 let cart = undefined;
 //-----
@@ -197,7 +198,12 @@ function Dangnhap()
     const password = document.querySelector('.auto-form__input[type="password"]').value;
     if (!username || !password) 
     {  
-        alert("Vui lòng điền đầy đủ thông tin!");  
+        // alert("Vui lòng điền đầy đủ thông tin!"); 
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng điền đầy đủ thông tin!',
+            type: 'warning'
+        }); 
         return;  
     }  
     
@@ -210,20 +216,40 @@ function Dangnhap()
         current_user = username;
         localStorage.setItem('currentUser',JSON.stringify(current_user));       
         //-----------
-        alert("Đã đăng nhập thành công với tài khoản: " + username);  
+        // alert("Đã đăng nhập thành công với tài khoản: " + username);  
+        customAlert({
+            title: 'Thành công',
+            message: `Đã đăng nhập thành công với tài khoản ${username}`,
+            type: 'success'
+        });
         modal.style.display = 'none'; // Đóng modal khi đăng nhập thành công  
         TAIKHOAN(username);
     } else if(0 == checkValidAccount(username, password)){
         // Tài khoản đã bị khóa
-        alert("Tài khoản không còn hoạt động");
+        // alert("Tài khoản không còn hoạt động");
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Tài khoản không còn hoạt động!',
+            type: 'warning'
+        });
     }
     else if(checkExistedUsername(username) == true) 
     {
-        alert("Sai mật khẩu!\nVui lòng nhập lại!");
+        // alert("Sai mật khẩu!\nVui lòng nhập lại!");
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Sai mật khẩu.<br>Vui lòng nhập lại!',
+            type: 'warning',
+        });
     }
     else
     {  
-        alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");  
+        // alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Tài khoản chưa được đăng ký!<br>Vui lòng đăng ký tài khoản mới!',
+            type: 'warning'
+        });
         b.style.display = "none"; // Ẩn phần thông tin đăng nhập  
         a.style.display = "block"; // Hiển thị phần đăng ký  
     }  
@@ -238,13 +264,23 @@ function Dangky()
     // Kiểm tra xem các trường đã được điền chưa  
     if (!username || !password || !confirmPassword)   
         {  
-            alert("Vui lòng điền đầy đủ thông tin!");  
+            // alert("Vui lòng điền đầy đủ thông tin!");  
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Vui lòng điền đầy đủ thông tin!',
+                type: 'warning'
+            });
             return;  
         }
     // Kiểm tra mật khẩu có khớp hay không  
     if (password !== confirmPassword)   
         {  
-            alert('Mật khẩu nhập lại không khớp!');  
+            // alert('Mật khẩu nhập lại không khớp!');  
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Mật khẩu nhập lại không khớp!',
+                type: 'warning'
+            });
             return;  
         }  
     // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
@@ -257,21 +293,41 @@ function Dangky()
     }  
     if(username.includes(' ')) 
         {
-            alert("Tên đăng nhập không có khoảng trống!");
+            // alert("Tên đăng nhập không có khoảng trống!");
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Tên đăng nhập không có khoảng trống!',
+                type: 'warning'
+            });
             return;
         }
     if(!containsUppercaseOrSpecialChar(password))
         {
-            alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+            // alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!',
+                type: 'warning'
+            });
             return;
         }
     // Change: kiểm tra sự tồn tại của username trong customerArray  
     if(checkExistedUsername(username) == true){
-        alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
+        // alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
+        customAlert({
+            title: 'Thất bại!',
+            message: `Tên tài khoản ${username} đã được đăng ký!<br>Vui lòng đăng nhập hoặc đổi tên tài khoản khác`,
+            type: 'warning'
+        });
         return;
     } else 
     {
-        alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
+        // alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
+        customAlert({
+            title: 'Thành công!',
+            message: `Đã đăng ký thành công với tai khoản: ${username}!<br>Vui lòng đăng nhập lại!`,
+            type: 'success'
+        });
         b.style.display = "block"; // Hiển thị phần thông tin  
         a.style.display = "none";  // Ẩn phần đăng ký  
 

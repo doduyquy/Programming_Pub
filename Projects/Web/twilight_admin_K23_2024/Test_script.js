@@ -1,6 +1,7 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
 import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray, createStatisticsCustomerArray } from '../common/data/orderArray.js'; 
+import {customAlert, customConfirm} from '../common/data/utilities.js';
 
 localStorage.removeItem('productArray');
 
@@ -133,97 +134,97 @@ showCorrespondingMain();
 // Hiển thị main__dashboard mặc định khi tải trang
 showMainItem('main__dashboard');
 
-// Hàm thông báo tự thiết kế
-function customAlert({
-    title = '', 
-    message = '', 
-    type = '', 
-    duration = 3000
-}) {
-    const main = document.getElementById('custom-alert');
-    if (main) {
-        const alert = document.createElement('div');
-        // Tự động xóa thông báo sau thời gian xác định
-        const autoRemoveId = setTimeout(function() {
-            main.removeChild(alert);
-        }, duration + 1000);
-        // Xóa thông báo khi người dùng nhấp vào
-        alert.onclick = function(e) {
-            if (e.target.closest('.custom-alert__close')) {
-                main.removeChild(alert);
-                clearTimeout(autoRemoveId);
-            }
-        };
-        const icons ={
-            success: 'fa-solid fa-circle-check',
-            warning: 'fa-solid fa-circle-exclamation',
-        };
-        const icon = icons[type];
-        const delay = (duration / 1000).toFixed(2);
-        alert.classList.add('custom-alert', `custom-alert--${type}`);
-        alert.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
-        alert.innerHTML = `
-            <div class="custom-alert__icon">
-                <i class="${icon}"></i>
-            </div>
-            <div class="custom-alert__body">
-                <h3 class="custom-alert__title">${title}</h3>
-                <p class="custom-alert__msg">${message}</p>
-            </div>
-            <div class="custom-alert__close">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-        `;
-        main.appendChild(alert);
-    }
-}
+// // Hàm thông báo tự thiết kế
+// function customAlert({
+//     title = '', 
+//     message = '', 
+//     type = '', 
+//     duration = 3000
+// }) {
+//     const main = document.getElementById('custom-alert');
+//     if (main) {
+//         const alert = document.createElement('div');
+//         // Tự động xóa thông báo sau thời gian xác định
+//         const autoRemoveId = setTimeout(function() {
+//             main.removeChild(alert);
+//         }, duration + 1000);
+//         // Xóa thông báo khi người dùng nhấp vào
+//         alert.onclick = function(e) {
+//             if (e.target.closest('.custom-alert__close')) {
+//                 main.removeChild(alert);
+//                 clearTimeout(autoRemoveId);
+//             }
+//         };
+//         const icons ={
+//             success: 'fa-solid fa-circle-check',
+//             warning: 'fa-solid fa-circle-exclamation',
+//         };
+//         const icon = icons[type];
+//         const delay = (duration / 1000).toFixed(2);
+//         alert.classList.add('custom-alert', `custom-alert--${type}`);
+//         alert.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+//         alert.innerHTML = `
+//             <div class="custom-alert__icon">
+//                 <i class="${icon}"></i>
+//             </div>
+//             <div class="custom-alert__body">
+//                 <h3 class="custom-alert__title">${title}</h3>
+//                 <p class="custom-alert__msg">${message}</p>
+//             </div>
+//             <div class="custom-alert__close">
+//                 <i class="fa-solid fa-xmark"></i>
+//             </div>
+//         `;
+//         main.appendChild(alert);
+//     }
+// }
 
-function customConfirm(message, callback) {
-    // Tạo phần tử modal
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
+// function customConfirm(message, callback) {
+//     // Tạo phần tử modal
+//     const modal = document.createElement('div');
+//     modal.classList.add('modal');
   
-    // Nội dung của modal
-    const modalContent = document.createElement('div');
-    modalContent.classList.add('modal-confirm');
+//     // Nội dung của modal
+//     const modalContent = document.createElement('div');
+//     modalContent.classList.add('modal-confirm');
   
-    // Thông điệp
-    const msg = document.createElement('p');
-    msg.textContent = message;
+//     // Thông điệp
+//     const msg = document.createElement('p');
+//     msg.textContent = message;
   
-    // Container cho nút
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('button-container');
+//     // Container cho nút
+//     const buttonContainer = document.createElement('div');
+//     buttonContainer.classList.add('button-container');
   
-    // Nút "Có"
-    const yesButton = document.createElement('button');
-    yesButton.textContent = 'Có';
-    yesButton.id = 'confirmYes';
-    yesButton.onclick = function() {
-      document.body.removeChild(modal);
-      callback(true);
-    };
+//     // Nút "Có"
+//     const yesButton = document.createElement('button');
+//     yesButton.textContent = 'Có';
+//     yesButton.id = 'confirmYes';
+//     yesButton.onclick = function() {
+//       document.body.removeChild(modal);
+//       callback(true);
+//     };
   
-    // Nút "Không"
-    const noButton = document.createElement('button');
-    noButton.textContent = 'Không';
-    noButton.id = 'confirmNo';
-    noButton.onclick = function() {
-      document.body.removeChild(modal);
-      callback(false);
-    };
+//     // Nút "Không"
+//     const noButton = document.createElement('button');
+//     noButton.textContent = 'Không';
+//     noButton.id = 'confirmNo';
+//     noButton.onclick = function() {
+//       document.body.removeChild(modal);
+//       callback(false);
+//     };
   
-    // Lắp ráp các phần tử
-    buttonContainer.appendChild(yesButton);
-    buttonContainer.appendChild(noButton);
-    modalContent.appendChild(msg);
-    modalContent.appendChild(buttonContainer);
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
+//     // Lắp ráp các phần tử
+//     buttonContainer.appendChild(yesButton);
+//     buttonContainer.appendChild(noButton);
+//     modalContent.appendChild(msg);
+//     modalContent.appendChild(buttonContainer);
+//     modal.appendChild(modalContent);
+//     document.body.appendChild(modal);
   
-    // Hiển thị modal
-    modal.style.display = 'flex';
-  }
+//     // Hiển thị modal
+//     modal.style.display = 'flex';
+// }
 /* MAIN__PRODUCTS */
 let filteredProducts = []; // Lấy productArray từ localStorage đã được import từ productArray.js
 let currentOrdersArray = [];
@@ -1177,7 +1178,7 @@ function getOrdersByPage(page) {
     return currentOrdersArray.slice(start, end);
 }
 
-function displayOrdersTable(orders){
+function displayOrdersTable(orders) {
     // Cập nhật mảng đơn hàng hiện tại
     currentOrdersArray = orders;
 
@@ -1197,6 +1198,7 @@ function displayOrdersTable(orders){
 
     let tableHTML = ``;
     currentPageOrders.forEach((order, index) => {
+        const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + index; // Tính chỉ số thực
         const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
         const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
         tableHTML += `
@@ -1207,9 +1209,9 @@ function displayOrdersTable(orders){
                 <td>${formattedDate}</td>
                 <td>${formattedAddress}</td>    
                 <td>
-                    <button class="detail-btn" onclick="">Chi tiết</button>
+                    <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
                 </td>
-                <td class="order-status-table" id="order-status-inTable-${index}" data-status="${order.status}">
+                <td class="order-status-table" id="order-status-inTable-${realIndex}" data-status="${order.status}">
                     ${formatOrderStatus(order.status)}
                 </td>
             </tr> 
@@ -1218,22 +1220,23 @@ function displayOrdersTable(orders){
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
     
     // Thêm sự kiện cho nút chi tiết
-    document.querySelectorAll('#main__orders .detail-btn').forEach((button, index) => {
+    document.querySelectorAll('#main__orders .detail-btn').forEach((button) => {
+        const realIndex = button.getAttribute('data-index'); // Lấy chỉ số thực từ thuộc tính data-index
         button.addEventListener('click', () => {
-            console.log('Show detail order');
-            showOrderDetails(index);
+            console.log(`Show detail order for index: ${realIndex}`);
+            showOrderDetails(realIndex);
         });
     });
+
     document.querySelectorAll('.order-status-table').forEach((elem) => {
         const status = elem.textContent.trim(); // Lấy giá trị trạng thái từ nội dung
         elem.setAttribute('data-status', status); // Gán giá trị vào data-status
     });
-    
 
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
-
 }
+
 displayOrdersTable(orderArray);
 
 function updateOrderColor(selectElement){
@@ -1790,7 +1793,12 @@ function filterStatisticsByDate(){
 
         // Kiểm tra nếu cả hai ngày đều đã được nhập
         if (!dateStartValue || !dateEndValue) {
-            alert("Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc.");
+            // alert("Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc.");
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc!',
+                type: 'warning'
+            });
             return;
         }
 
@@ -1800,7 +1808,12 @@ function filterStatisticsByDate(){
 
         // Kiểm tra ngày bắt đầu có trước hoặc bằng ngày kết thúc
         if (dateStart > dateEnd) {
-            alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.");
+            // alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.");
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.!',
+                type: 'warning'
+            });
             return;
         }
 
