@@ -397,7 +397,11 @@ function donhang() {
                         <strong>Số lượng:</strong> ${orderDetails.quantity}<br>
                         <strong>Giá:</strong> ${orderDetails.price.toLocaleString('vi-VN')}đ
                     </div>
-                    <button class="btn-detail-o" data-order-index="${index}">Chi tiết</button>
+                    <div class="button-bottom">
+                       <button class="btn-detail-o" data-order-index="${index}">Chi tiết</button>
+                       <button class="btn-detail-cancel">Hủy đơn</button>
+                    </div>
+
                 </div>
             `;
             
