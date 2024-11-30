@@ -426,18 +426,28 @@ function donhang() {
     modalHistory.addEventListener('click', (event) => {  
         if (event.target.classList.contains('btn-detail-cancel')) {  
             const orderIndex = event.target.closest('.order-o').dataset.orderIndex;  
-            
-            // Update tình trạng thành "FAILED"  
-            orderList[orderIndex].status = 'FAILED';  
-
-            // Update thông tin trong mảng orderArray  
-            const originalOrderIndex = orderArray.findIndex(order => order.customerId === current_user && order.id === orderList[orderIndex].id);  
-            if (originalOrderIndex !== -1) {  
-                orderArray[originalOrderIndex].status = 'FAILED'; // Assuming each order has a unique ID  
-                saveOrderArrayToStorage();
-            }  
-            // Cập nhật lại bảng lịch sử đơn hàng
-            donhang();  
+            customConfirm('Bạn có muốn hủy đơn hàng này không?', function(result) {
+                if (result) 
+                {
+                    // Update tình trạng thành "FAILED"  
+                    orderList[orderIndex].status = 'FAILED';
+      
+                    // Update thông tin trong mảng orderArray  
+                    const originalOrderIndex = orderArray.findIndex(order => order.customerId === current_user && order.id === orderList[orderIndex].id);  
+                    if (originalOrderIndex !== -1) {  
+                        orderArray[originalOrderIndex].status = 'FAILED'; // Assuming each order has a unique ID  
+                        saveOrderArrayToStorage();
+                    }  
+                    // Cập nhật lại bảng lịch sử đơn hàng
+                    donhang();
+      
+                    customAlert({
+                        title: 'Thành công!',
+                        message: 'Đơn hàng này đã được hủy thành công.',
+                        type: 'success'
+                    });
+                }
+            });
         }  
     });  
 }
