@@ -1,7 +1,7 @@
 import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray} from '../common/data/customerArray.js';
 import {Cart } from '../common/data/cart.js';
 import {allProducts} from '../common/data/productArray.js';
-import { orderArray } from '../common/data/orderArray.js';
+import { orderArray, saveOrderArrayToStorage } from '../common/data/orderArray.js';
 import {customAlert, customConfirm} from '../common/data/utilities.js';
 //-----
 let cart = undefined;
@@ -363,61 +363,83 @@ document.getElementById('log-out').addEventListener('click', function(event)
 });
  
 //===== HÀM LỊCH SỬ ĐƠN HÀNG =====//
-function donhang() {
-    const orderList = orderArray.filter(order => order.customerId === current_user);
-    document.querySelector('.modal-overlay-o').style.display = 'flex';
-    const modalHistory = document.querySelector('.modal-history-o');
-    modalHistory.style.display = 'flow';
-
-    modalHistory.innerHTML = `
-        <div class="modal-header-o">
-            <h2>Lịch Sử Đơn Hàng</h2>
-            <button class="modal-close-o" onclick="close_ls()">&times;</button>
-        </div>
-    `;
-
-    console.log(orderList);
+function donhang() {  
+    // Lọc đơn hàng của current customer  
+    const orderList = orderArray.filter(order => order.customerId === current_user);  
     
-    orderList.forEach((order, index) => {
-        const formattedDate = order.date.toLocaleDateString('vi-VN');
-        const statusClass = order.status.toLowerCase();
-        const statusText = order.status === 'UNPROCESSED' ? 'Chưa xử lý' : order.status;
+    // Hiện bảng lịch sử đơn hàng  
+    document.querySelector('.modal-overlay-o').style.display = 'flex';  
+    const modalHistory = document.querySelector('.modal-history-o');  
+    modalHistory.style.display = 'block';   
+  
+    modalHistory.innerHTML = `  
+        <div class="modal-header-o">  
+            <h2>Lịch Sử Đơn Hàng</h2>  
+            <button class="modal-close-o" onclick="close_ls()">&times;</button>  
+        </div>  
+    `;  
+
+    console.log(orderList);  
+    
+    // Hiện thông tin các đơn hàng  
+    orderList.forEach((order, index) => {  
+        const formattedDate = order.date.toLocaleDateString('vi-VN');  
+        const statusClass = order.status.toLowerCase();  
+        const statusText = order.status === 'UNPROCESSED' ? 'Chưa xử lý' : order.status;  
         
-        if (order.checkoutCart && order.checkoutCart.length > 0) {
-            const orderDetails = order.checkoutCart[0];
+        if (order.checkoutCart && order.checkoutCart.length > 0) {  
+            const orderDetails = order.checkoutCart[0];  
             
-            const orderHTML = `
-                <div class="order-o highlight">
-                    <div class="order-header-o">
-                        <span>Ngày: ${formattedDate}</span>
-                        <span class="status-o ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="order-details-o">
-                        <strong>Tên sản phẩm:</strong> ${orderDetails.name}<br>
-                        <strong>Số lượng:</strong> ${orderDetails.quantity}<br>
-                        <strong>Giá:</strong> ${orderDetails.price.toLocaleString('vi-VN')}đ
-                    </div>
-                    <div class="button-bottom">
-                       <button class="btn-detail-o" data-order-index="${index}">Chi tiết</button>
-                       <button class="btn-detail-cancel">Hủy đơn</button>
-                    </div>
-
-                </div>
-            `;
+            const orderHTML = `  
+                <div class="order-o highlight" data-order-index="${index}">  
+                    <div class="order-header-o">  
+                        <span>Ngày: ${formattedDate}</span>  
+                        <span class="status-o ${statusClass}">${statusText}</span>  
+                    </div>  
+                    <div class="order-details-o">  
+                        <strong>Tên sản phẩm:</strong> ${orderDetails.name}<br>  
+                        <strong>Số lượng:</strong> ${orderDetails.quantity}<br>  
+                        <strong>Giá:</strong> ${orderDetails.price.toLocaleString('vi-VN')}đ  
+                    </div>  
+                    <div class="button-bottom">  
+                        <button class="btn-detail-o" data-order-index="${index}">Chi tiết</button>  
+                        ${order.status === 'UNPROCESSED' ? '<button class="btn-detail-cancel">Hủy đơn</button>' : ''}  
+                    </div>  
+                </div>  
+            `;  
             
-            modalHistory.innerHTML += orderHTML;
-        }
-    });
+            modalHistory.innerHTML += orderHTML; 
+        }  
+    });  
 
-    // Thêm event listener cho tất cả các nút chi tiết
-    const detailButtons = modalHistory.querySelectorAll('.btn-detail-o');
-    detailButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const orderIndex = this.getAttribute('data-order-index');
-            const order = orderList[orderIndex];
-            showOrderDetails(order);
-        });
-    });
+    // Thêm event cho nút chi tiết  
+    const detailButtons = modalHistory.querySelectorAll('.btn-detail-o');  
+    detailButtons.forEach(button => {  
+        button.addEventListener('click', function() {  
+            const orderIndex = this.getAttribute('data-order-index');  
+            const order = orderList[orderIndex];  
+            showOrderDetails(order);  
+        });  
+    });  
+
+    // Thêm event cho nút hủy đơn  
+    modalHistory.addEventListener('click', (event) => {  
+        if (event.target.classList.contains('btn-detail-cancel')) {  
+            const orderIndex = event.target.closest('.order-o').dataset.orderIndex;  
+            
+            // Update tình trạng thành "FAILED"  
+            orderList[orderIndex].status = 'FAILED';  
+
+            // Update thông tin trong mảng orderArray  
+            const originalOrderIndex = orderArray.findIndex(order => order.customerId === current_user && order.id === orderList[orderIndex].id);  
+            if (originalOrderIndex !== -1) {  
+                orderArray[originalOrderIndex].status = 'FAILED'; // Assuming each order has a unique ID  
+                saveOrderArrayToStorage();
+            }  
+            // Cập nhật lại bảng lịch sử đơn hàng
+            donhang();  
+        }  
+    });  
 }
 
 function close_ls() {
@@ -425,6 +447,7 @@ function close_ls() {
     document.querySelector('.modal-history-o').style.display = 'none';
     document.querySelector('.modal-overlay-m').style.display = 'none';
 }
+
 
 
 function showOrderDetails(order) {

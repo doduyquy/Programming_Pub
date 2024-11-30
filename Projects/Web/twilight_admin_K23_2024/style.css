@@ -6,12 +6,12 @@
 }
 :root {
     --light: #f9f9f9;
-    --blue: #3c91e6;
+    --blue: #007BFF;
     --light-blue: #cfe8ff;
     --grey: #eee;
     --dark-grey: #aaaaaa;
     --dark: #342e37;
-    --red: #db504a;
+    --red: #dc3545;
     --border: #e0e0e0;
     --text: #333;
     --accent: #007bff;
@@ -19,6 +19,7 @@
     --hover: #f8f9fa;
     --green: #28a745;
     --gray: #6c757d;
+    --yellow: #ffc107;
 }
 a {
     text-decoration: none;
@@ -626,6 +627,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     margin-left: 5px;
+    white-space: nowrap;
 }
 
 /*pagination web*/
@@ -818,7 +820,7 @@ body {
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background-color: var(--red);
     color: white;
 }
 
@@ -828,7 +830,7 @@ body {
 }
 
 .delete-btn:hover {
-    background-color: #c82333;
+    background-color: var(--red);
 }
 
 .add-btn:hover {
@@ -1692,50 +1694,54 @@ body {
 
 /* Specific colors for options */
 .order-status-select[data-status="UNPROCESSED"] {
-    background-color: yellow;
+    background-color: var(--yellow);
 }
 
 .order-status-select[data-status="CONFIRMED"]{
-    background-color: blue;
+    background-color: var(--blue);
     color: white; /* White text for better contrast */
 }
 
 .order-status-select[data-status="SUCCEEDED"]{
-    background-color: green;
+    background-color: var(--green);
     color: white; /* White text for better contrast */
 }
 
 .order-status-select[data-status="FAILED"]{
-    background-color: red;
+    background-color: var(--red);
     color: white; /* White text for better contrast */
 }
 /* // */
 /* Styling trạng thái trong bảng */
+
+.order-status-table[data-table-status="UNPROCESSED"] {
+    background-color: var(--yellow) !important;
+}
+
+.order-status-table[data-table-status="CONFIRMED"] {
+    background-color: var(--blue) !important;
+    color: white; /* White text for better contrast */
+}
+
+.order-status-table[data-table-status="SUCCEEDED"] {
+    background-color: var(--green) !important;
+    color: white; /* White text for better contrast */
+}
+
+.order-status-table[data-table-status="FAILED"] {
+    background-color: var(--red) !important;
+    color: white; /* White text for better contrast */
+}
 .order-status-table{
+    width: 85px;
+    height: 30px;
     padding: 5px;
-    color: black; /* Default text color */
+    color: white; /* Default text color */
     border: 1px solid #ccc;
     border-radius: 4px;
+    
+    white-space: nowrap;
 }
-.order-status-table[data-status="UNPROCESSED"] {
-    background-color: yellow;
-}
-
-.order-status-table[data-status="CONFIRMED"] {
-    background-color: blue;
-    color: white; /* White text for better contrast */
-}
-
-.order-status-table[data-status="SUCCEEDED"] {
-    background-color: green;
-    color: white; /* White text for better contrast */
-}
-
-.order-status-table[data-status="FAILED"] {
-    background-color: red;
-    color: white; /* White text for better contrast */
-}
-
 
 /* DETAIL STATISTICS PRODUCT */
 /* Đặt chung cho modal */
@@ -1848,7 +1854,7 @@ body {
     text-align: right;
     font-size: 24px;
     margin-top: 10px;
-    color: red; /* Màu đỏ cho số tiền */
+    color: var(--red); /* Màu đỏ cho số tiền */
     font-weight: bold;
 }
 #detailStatistic-total-payment{

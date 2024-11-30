@@ -1211,11 +1211,14 @@ function displayOrdersTable(orders) {
                 <td>
                     <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
                 </td>
-                <td class="order-status-table" id="order-status-inTable-${realIndex}" data-status="${order.status}">
+                <td> 
+                    <button class="order-status-table" id="order-status-inTable-${realIndex}" data-table-status="${order.status}">
                     ${convertOrderStatusToVN(order.status)}
+                    </button>
                 </td>
             </tr> 
         `;
+        console.log("Status in table: " + order.status);
     });
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
     
@@ -1259,15 +1262,15 @@ function handleStatusChange(orderIndex, newStatus) {
     console.log("New status: " + newStatus);
     // Tính chỉ số thực trong currentOrdersArray
     // Khi phân trang -> chỉ số phải được cập nhật mới
-    const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
-    const order = currentOrdersArray[realIndex];
+    // const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
+    const order = currentOrdersArray[orderIndex];
     if (order) {
         const previousStatus = order.status;
         const isChange = order.changeOrderStatus(newStatus);
         // Nếu trạng thái mới hợp lệ
         if (isChange) {
             // Cập nhật trạng thái trong mảng và bảng
-            currentOrdersArray[realIndex].status = newStatus;
+            currentOrdersArray[orderIndex].status = newStatus;
             document.getElementById(`order-status-inTable-${orderIndex}`).textContent = convertOrderStatusToVN(newStatus);
             document.getElementById(`order-status-inTable-${orderIndex}`).setAttribute('data-status', newStatus); // Thêm data-status cho ô trong bảng
             console.log(orderIndex + ' ' + newStatus);
