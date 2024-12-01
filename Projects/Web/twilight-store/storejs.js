@@ -1,6 +1,7 @@
 import {customerArray, checkExistedUsername, checkValidAccount, addCustomerToArray, saveCustomerArrayToStorage, Address, InfoCard} from '../common/data/customerArray.js';
 import {Cart } from '../common/data/cart.js';
 import {orderArray, saveOrderArrayToStorage, addOrderToArray} from '../common/data/orderArray.js'
+import {customAlert, customConfirm} from '../common/data/utilities.js';
 /////
 let currentCart = undefined;
 let currentUsername;
@@ -65,7 +66,12 @@ document.addEventListener('DOMContentLoaded', () =>
             if(currentUsername !== '') filea.style.display = 'flex';
             else 
             {
-                alert("Vui lòng đăng nhập để điền thông tin!");  
+                // alert("Vui lòng đăng nhập để điền thông tin!"); 
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Vui lòng đăng nhập để điền thông tin!',
+                    type: 'warning'
+                }); 
                 b.style.display = "block";
                 modal.style.display = "flex";     
             }
@@ -76,7 +82,12 @@ document.addEventListener('DOMContentLoaded', () =>
             if(currentUsername !== '') fileb.style.display = 'flex';
             else 
             {
-                alert("Vui lòng đăng nhập để điền thông tin!");  
+                // alert("Vui lòng đăng nhập để điền thông tin!");  
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Vui lòng đăng nhập để điền thông tin!',
+                    type: 'warning'
+                });
                 b.style.display = "block";  
                 modal.style.display = "flex";
             }
@@ -138,7 +149,12 @@ function Dangnhap()
     const password = document.querySelector('.auto-form__input[type="password"]').value;
     if (!username || !password) 
     {  
-        alert("Vui lòng điền đầy đủ thông tin!");  
+        // alert("Vui lòng điền đầy đủ thông tin!"); 
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng đăng nhập để điền thông tin!',
+            type: 'warning'
+        }); 
         return;  
     }  
     
@@ -159,7 +175,12 @@ function Dangnhap()
         currentCustomer = customerArray.find(p => p.username === currentUsername);
         localStorage.setItem('currentUser',JSON.stringify(currentUsername));       
         //-----------
-        alert("Đã đăng nhập thành công với tài khoản: " + username);
+        // alert("Đã đăng nhập thành công với tài khoản: " + username);
+        customAlert({
+            title: 'Thành công!',
+            message: `Đã đăng nhập thành công với tài khoản: ${username}`,
+            type: 'success'
+        });
         document.querySelector('.username').innerText = currentUsername;
         a.style.display = 'none';
         b.style.display = 'none';
@@ -167,12 +188,23 @@ function Dangnhap()
     } 
     else if(checkExistedUsername(username) == true) 
     {
-        alert("Sai mật khẩu!\nVui lòng nhập lại!");
+        // alert("Sai mật khẩu!\nVui lòng nhập lại!");
+        customAlert({
+            title: 'Thất bại',
+            message: `Sai mật khẩu.<br>Vui lòng nhập lại`,
+            type: 'warning'
+        });
+        
         return; 
     }
     else
     {  
-        alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");  
+        // alert("Tài khoản chưa được đăng ký!\nVui lòng đăng ký tài khoản mới!");
+        customAlert({
+            title: 'Thất bại',
+            message: `Tài khoản chưa được đăng ký!<br>Vui lòng đăng ký tài khoản mới!`,
+            type: 'warning'
+        });  
         b.style.display = "none"; // Ẩn phần thông tin đăng nhập  
         a.style.display = "block"; // Hiển thị phần đăng ký  
     }  
@@ -187,13 +219,23 @@ function Dangky()
     // Kiểm tra xem các trường đã được điền chưa  
     if (!username || !password || !confirmPassword)   
         {  
-            alert("Vui lòng điền đầy đủ thông tin!");  
+            // alert("Vui lòng điền đầy đủ thông tin!");  
+            customAlert({
+                title: 'Thất bại',
+                message: 'Vui lòng điền đầy đủ thông tin!',
+                type: 'warning'
+            });
             return;  
         }
     // Kiểm tra mật khẩu có khớp hay không  
     if (password !== confirmPassword)   
         {  
-            alert('Mật khẩu nhập lại không khớp!');  
+            // alert('Mật khẩu nhập lại không khớp!');  
+            customAlert({
+                title: 'Thất bại',
+                message: 'Mật khẩu nhập lại không khớp!',
+                type: 'warning'
+            });
             return;  
         }  
     // Hàm kiểm tra có ký tự in hoa và ký tự đặc biệt
@@ -206,22 +248,42 @@ function Dangky()
     }  
     if(username.includes(' ')) 
         {
-            alert("Tên đăng nhập không có khoảng trống!");
+            // alert("Tên đăng nhập không có khoảng trống!");
+            customAlert({
+                title: 'Thất bại',
+                message: 'Tên đăng nhập không có khoảng trống!',
+                type: 'warning'
+            });
             return;
         }
     if(!containsUppercaseOrSpecialChar(password))
         {
-            alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+            // alert("Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!")
+            customAlert({
+                title: 'Thất bại',
+                message: 'Mật khẩu phải dài hơn 8 ký tự, chứa ký tự IN HOA và ký tự ĐẶC BIỆT!',
+                type: 'warning'
+            });
             return;
         }
     
     // Kiểm tra sự tồn tại của username trong customerArray  
     if(checkExistedUsername(username) == true){
-        alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
+        // alert("Tên tài khoản " + username +" đã được đăng ký!\nVui lòng đăng nhập hoặc đổi tên tài khoản khác!");   
+        customAlert({
+            title: 'Thất bại',
+            message: `Tên tài khoản ${username} đã được đăng ký.<br>Vui lòng đăng nhập lại hoặc đổi tên tài khoản khác!`,
+            type: 'warning'
+        });
         return;
     } else 
     {
-        alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
+        // alert("Đã đăng ký thành công với tài khoản: " + username + "\nVui lòng đăng nhập lại!");   
+        customAlert({
+            title: 'Thành công',
+            message: `Đã đăng ký thành công với tài khoản ${username}.<br>Vui lòng đăng nhập lại!`,
+            type: 'success'
+        });
         b.style.display = "block"; // Hiển thị phần thông tin  
         a.style.display = "none";  // Ẩn phần đăng ký  
 
@@ -493,12 +555,22 @@ function saveCustomerDetails()
     const ward = document.getElementById('ward').value;  
         
     if (!fullname || !phone || !province || !district || !ward) {  
-        alert('Vui lòng điền tất cả thông tin khách hàng.');  
+        // alert('Vui lòng điền tất cả thông tin khách hàng.');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Vui lòng điền tất của thông tin khách hàng!',
+            type: 'warning'
+        });
         return;  
     }  
     if(!phoneRegex.test(phone)) 
     {
-        alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
+        // alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Số điện thoại bắt đầu bằng 0 và có 10 số!',
+            type: 'warning'
+        });
         return;
     }
     if (currentCustomer) {  
@@ -506,7 +578,12 @@ function saveCustomerDetails()
         currentCustomer.name = fullname;  
         currentCustomer.address = new Address(province, district, ward);
         saveCustomerArrayToStorage();  
-        alert('Thông tin khách hàng đã được lưu.'); 
+        // alert('Thông tin khách hàng đã được lưu.'); 
+        customAlert({
+            title: 'Thành công!',
+            message: 'Thông tin khách hàng đã được lưu!',
+            type: 'success'
+        });
         document.querySelector('.modal-profile-a').style.display='none'; // Sau khi lưu thì tắt form
         document.querySelector('.modal-profile-b').style.display='none'; 
     } else {  
@@ -525,34 +602,65 @@ function saveCardDetails() {
     const zipCode = document.getElementById('zip-code').value;  
 
     if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress || !zipCode) {  
-        alert('Vui lòng điền tất cả thông tin thẻ!');  
+        // alert('Vui lòng điền tất cả thông tin thẻ!');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Vui lòng điền tất cả thông tin thẻ!',
+            type: 'warning'
+        });
         return false;  
     }
     if(!cardNumberRegex.test(cardNumber)) 
     {
-        alert('Số thẻ không đúng định dạng!');  
+        // alert('Số thẻ không đúng định dạng!');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Số thẻ không đúng định dạng!',
+            type: 'warning'
+        });
+        
         return false;
     }
     if(!expiryDateRegex.test(expiryDate))
         {
-            alert('Ngày hết hạn không đúng định dạng!');  
+            // alert('Ngày hết hạn không đúng định dạng!');  
+            customAlert({
+                title: 'Thất bại',
+                message: 'Ngày hết hạn không đúng định dạng!',
+                type: 'warning'
+            });
             return false;
         }
     if(!cvvRegex.test(cvv))
     {
-        alert('Mã CVV gồm 3 chữ số!');  
+        // alert('Mã CVV gồm 3 chữ số!');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Mã CVV gồm 3 chữ số!',
+            type: 'warning'
+        });
         return false;
     }
     if(!zipCodeRegex.test(zipCode))
     {
-        alert('Mã bưu chính không đúng định dạng!');  
+        // alert('Mã bưu chính không đúng định dạng!');  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Mã bưu chính không đúng định dạng!',
+            type: 'warning'
+        });
         return false;
     }
     
     if (currentCustomer) {  
         currentCustomer.infoCard = new InfoCard(cardNumber, expiryDate, cvv, cardholderName, billingAddress, zipCode); 
         saveCustomerArrayToStorage();  
-        alert('Thông tin thẻ đã được lưu!');
+        // alert('Thông tin thẻ đã được lưu!');
+        customAlert({
+            title: 'Thành công!',
+            message: 'Thông tin thẻ đã được lưu!',
+            type: 'success'
+        });
         document.querySelector('.modal-profile-a').style.display='none'; // Sau khi lưu thì tắt form
         document.querySelector('.modal-profile-b').style.display='none';
     } else {  
@@ -625,12 +733,25 @@ function thanhtoan()
     // Khi người dùng ẩn danh, chưa đăng nhập -> return để đăng nhập
     if(currentUsername === '') 
     {
-        alert("Vui lòng đăng nhập để thanh toán!");  
+        // alert("Vui lòng đăng nhập để thanh toán!");  
+        customAlert({
+            title: 'Thất bại',
+            message: 'Vui lòng đăng nhập để thanh toán!',
+            type: 'warning'
+        });
         b.style.display = "block";  
         modal.style.display = "flex";
         return;
     }
-    else if(pickedProducts.length === 0) { alert('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!'); return; }
+    else if(pickedProducts.length === 0) { 
+        // alert('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!'); 
+        customAlert({
+            title: 'Thất bại',
+            message: 'Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!',
+            type: 'warning'
+        });
+        return; 
+    }
     else
     {
         // Hiện hóa đơn xác nhận thanh toán
@@ -733,7 +854,12 @@ creditCardPaymentOption.addEventListener('change', () => {
 accountCardPaymentOption.addEventListener('change', () => {  
     // Kiểm tra người dùng đã nhập thông tin thẻ trước đó chưa  
     if (!currentCustomer.infoCard.cardNumber) {  
-        alert('Thông tin thẻ của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
+        // alert('Thông tin thẻ của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
+        customAlert({
+            title: 'Thành công!',
+            message: 'Thông tin thẻ của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!',
+            type: 'success'
+        });
         creditCardPaymentOption.checked = true;   // Chuyển qua phương thức nhập thẻ mới
         newCreditCard = true;
         cardPaymentForm.style.display = 'block'; 
@@ -762,27 +888,52 @@ function checkNewCard()
     const zipCode = document.getElementById('new-zip-code').value;  
 
     if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress || !zipCode) {  
-        alert('Vui lòng điền tất cả thông tin thẻ!');  
+        // alert('Vui lòng điền tất cả thông tin thẻ!');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng điền tất cả thông tin thẻ!',
+            type: 'warning'
+        });
         return false;  
     }
     if(!cardNumberRegex.test(cardNumber)) 
     {
-        alert('Số thẻ không đúng định dạng!');  
+        // alert('Số thẻ không đúng định dạng!'); 
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Số thẻ không đúng định dạng!',
+            type: 'warning'
+        }); 
         return false;
     }
     if(!expiryDateRegex.test(expiryDate))
     {
-        alert('Ngày hết hạn không đúng định dạng!');  
+        // alert('Ngày hết hạn không đúng định dạng!');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Ngày hết hạn không đúng định dạng!',
+            type: 'warning'
+        });
         return false;
     }
     if(!cvvRegex.test(cvv))
     {
-        alert('Mã CVV gồm 3 chữ số!');  
+        // alert('Mã CVV gồm 3 chữ số!');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Mã CVV gồm 3 chữ số!',
+            type: 'warning'
+        });
         return false;
     }
     if(!zipCodeRegex.test(zipCode))
     {
-        alert('Mã bưu chính không đúng định dạng!');  
+        // alert('Mã bưu chính không đúng định dạng!');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Mã bưu chính không đúng định dạng!',
+            type: 'warning'
+        });
         return false;
     } 
     
@@ -853,7 +1004,12 @@ addressOptions.forEach(option => {
         } else if (option.id === 'default-address') {  
             // Kiểm tra người dùng đã nhập thông tin địa chỉ trước đó chưa  
             if (!currentCustomer.address.city) {  
-                alert('Thông tin khách hàng của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
+                // alert('Thông tin khách hàng của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!');  
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Thông tin khách hàng của bạn chưa được lưu, vui lòng lưu lại hoặc nhập thông tin mới!',
+                    type: 'warning'
+                });
                 document.getElementById('new-address-option').checked = true; // Chuyển qua lựa chọn nhập địa chỉ mới  
                 newAddress = true;
                 newAddressForm.style.display = 'block'; 
@@ -879,12 +1035,22 @@ function checkNewCustomerDetails()
     const ward = document.getElementById('ward2').value;  
         
     if (!fullname || !phone || !province || !district || !ward) {  
-        alert('Vui lòng điền tất cả thông tin khách hàng.');  
+        // alert('Vui lòng điền tất cả thông tin khách hàng.');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng điền tất cả thông tin khách hàng!',
+            type: 'warning'
+        });
         return false;  
     }  
     if(!phoneRegex.test(phone)) 
     {
-        alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
+        // alert('Số điện thoại bắt đầu bằng 0 và có 10 số!');  
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Số điện thoại bắt đầu bằng 0 và có 10 số!',
+            type: 'warning'
+        });
         return;
     }
     if (!currentCustomer.address.city) {  
@@ -963,7 +1129,13 @@ function completeUserPurchase()
     {
         createOrder();                  // Tạo order
         deleteAllProductIsPicked();     // Xóa các sản phẩm được pick, đã mua
-        alert("Đặt hàng thành công!");
+        // alert("Đặt hàng thành công!");
+        customAlert({
+            title: 'Thành công!',
+            message: 'Đặt hàng thành công!',
+            type: 'success'
+        });
+        
         document.getElementById('cash').checked = true;
         cardPaymentForm.style.display = 'none';
         document.getElementById('default-address').checked = true;

@@ -1,6 +1,7 @@
 import { allProducts } from '../common/data/productArray.js'; // Import mảng sản phẩm từ file productArray.js
 import { customerArray } from '../common/data/customerArray.js'; // Import class Customer và Address từ file customerArray.js
 import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray, createStatisticsCustomerArray } from '../common/data/orderArray.js'; 
+import {customAlert, customConfirm} from '../common/data/utilities.js';
 
 localStorage.removeItem('productArray');
 
@@ -133,22 +134,97 @@ showCorrespondingMain();
 // Hiển thị main__dashboard mặc định khi tải trang
 showMainItem('main__dashboard');
 
-// Hàm thông báo tự thiết kế
-function customAlert(message, type) {
-    // Tạo phần tử div cho thông báo
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `custom-alert custom-alert-${type}`;
-    alertDiv.innerText = message;
+// // Hàm thông báo tự thiết kế
+// function customAlert({
+//     title = '', 
+//     message = '', 
+//     type = '', 
+//     duration = 3000
+// }) {
+//     const main = document.getElementById('custom-alert');
+//     if (main) {
+//         const alert = document.createElement('div');
+//         // Tự động xóa thông báo sau thời gian xác định
+//         const autoRemoveId = setTimeout(function() {
+//             main.removeChild(alert);
+//         }, duration + 1000);
+//         // Xóa thông báo khi người dùng nhấp vào
+//         alert.onclick = function(e) {
+//             if (e.target.closest('.custom-alert__close')) {
+//                 main.removeChild(alert);
+//                 clearTimeout(autoRemoveId);
+//             }
+//         };
+//         const icons ={
+//             success: 'fa-solid fa-circle-check',
+//             warning: 'fa-solid fa-circle-exclamation',
+//         };
+//         const icon = icons[type];
+//         const delay = (duration / 1000).toFixed(2);
+//         alert.classList.add('custom-alert', `custom-alert--${type}`);
+//         alert.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+//         alert.innerHTML = `
+//             <div class="custom-alert__icon">
+//                 <i class="${icon}"></i>
+//             </div>
+//             <div class="custom-alert__body">
+//                 <h3 class="custom-alert__title">${title}</h3>
+//                 <p class="custom-alert__msg">${message}</p>
+//             </div>
+//             <div class="custom-alert__close">
+//                 <i class="fa-solid fa-xmark"></i>
+//             </div>
+//         `;
+//         main.appendChild(alert);
+//     }
+// }
 
-    // Thêm thông báo vào body
-    document.body.appendChild(alertDiv);
-
-    // Tự động ẩn thông báo sau 3 giây
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
-}
-
+// function customConfirm(message, callback) {
+//     // Tạo phần tử modal
+//     const modal = document.createElement('div');
+//     modal.classList.add('modal');
+  
+//     // Nội dung của modal
+//     const modalContent = document.createElement('div');
+//     modalContent.classList.add('modal-confirm');
+  
+//     // Thông điệp
+//     const msg = document.createElement('p');
+//     msg.textContent = message;
+  
+//     // Container cho nút
+//     const buttonContainer = document.createElement('div');
+//     buttonContainer.classList.add('button-container');
+  
+//     // Nút "Có"
+//     const yesButton = document.createElement('button');
+//     yesButton.textContent = 'Có';
+//     yesButton.id = 'confirmYes';
+//     yesButton.onclick = function() {
+//       document.body.removeChild(modal);
+//       callback(true);
+//     };
+  
+//     // Nút "Không"
+//     const noButton = document.createElement('button');
+//     noButton.textContent = 'Không';
+//     noButton.id = 'confirmNo';
+//     noButton.onclick = function() {
+//       document.body.removeChild(modal);
+//       callback(false);
+//     };
+  
+//     // Lắp ráp các phần tử
+//     buttonContainer.appendChild(yesButton);
+//     buttonContainer.appendChild(noButton);
+//     modalContent.appendChild(msg);
+//     modalContent.appendChild(buttonContainer);
+//     modal.appendChild(modalContent);
+//     document.body.appendChild(modal);
+  
+//     // Hiển thị modal
+//     modal.style.display = 'flex';
+// }
 /* MAIN__PRODUCTS */
 let filteredProducts = []; // Lấy productArray từ localStorage đã được import từ productArray.js
 let currentOrdersArray = [];
@@ -204,56 +280,58 @@ function filterProducts() {
     totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
 
     // Hiển thị trang đầu tiên của sản phẩm đã lọc
-    //currentProductPage = 1;
+    currentProductPage = 1;
     displayProductPage(currentProductPage);
 
     // Tạo lại nút phân trang cho Products
     createPagination(totalProductPages, 'product');
 }
+let currentVersionIndex = 0; // Biến toàn cục để lưu trữ phiên bản hiện tại
 
 // Sau khi tạo bảng sản phẩm
 function displayProductPage(page) {
-    var s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá</th><th>Thông tin</th><th>Hành động</th></tr>';
-    var dem = 0;
-    var start = (page - 1) * itemsPerPageProduct;
-    var end = start + itemsPerPageProduct;
-    for (var i = start; i < filteredProducts.length && i < end; i++) {
+    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá<br> Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Thông tin</th><th>Hành động</th></tr>';
+    let dem = 0;
+    const start = (page - 1) * itemsPerPageProduct;
+    const end = start + itemsPerPageProduct;
+    for (let i = start; i < filteredProducts.length && i < end; i++) {
+        const product = filteredProducts[i];
         s += '<tr>' +
-            '<td>' + filteredProducts[i].productId + '</td>' +
+            '<td>' + product.productId + '</td>' +
             '<td>' +
                 '<div class="product-image-container">' +
-                '<img src="' + filteredProducts[i].img + '" alt="Sản phẩm"></div></td>' +
-            '<td>' + filteredProducts[i].name + '</td>' +
-            '<td>' + filteredProducts[i].brandId.toUpperCase() + '</td>' +
-            '<td>' + formatPrice(filteredProducts[i].oldPrice) + '</td>' +
+                '<img src="' + product.img + '" alt="Sản phẩm"></div></td>' +
+            '<td>' + product.name + '</td>' +
+            '<td>' + product.brandId.toUpperCase() + '</td>' +
+            '<td>' + (product.price[currentVersionIndex] !== undefined ? formatPrice(product.price[currentVersionIndex]) : '-') + '</td>' +
             '<td>' +
                 '<button class="detail-btn" data-index="' + i + '">Chi tiết</button>' +
             '</td>' +
             '<td>' +
                 '<button class="delete-btn" data-index="' + i + '">Xóa</button>' +
-                '<button id="edit-product-btn" class="edit-btn" data-index="' + i + '">Sửa</button>' +
+                '<button class="edit-btn" data-index="' + i + '">Sửa</button>' +
             '</td>' +
         '</tr>';
         dem++;
-        if (dem == itemsPerPageProduct) {
+        if (dem === itemsPerPageProduct) {
             break; // Nếu đã đủ số sản phẩm trên một trang thì dừng
         }
     }
-    document.getElementById('product-table-content__body').innerHTML = s; // Hiển th
+    document.getElementById('product-table-content__body').innerHTML = s; // Hiển thị nội dung bảng
     updatePagination('product'); // Cập nhật nút phân trang
 
     // Thêm event listeners cho các nút xem chi tiết
     document.querySelectorAll('#main__products .detail-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
-            showProductDetails(productIndex);
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
+            showDetailsProductBox(productIndex);
         });
     });
 
     // Thêm event listeners cho các nút sửa
     document.querySelectorAll('#main__products .edit-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
             showChangeProductBox(productIndex);
         });
     });
@@ -261,10 +339,19 @@ function displayProductPage(page) {
     // Thêm event listeners cho các nút xóa
     document.querySelectorAll('#table_list .delete-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productIndex = parseInt(this.getAttribute('data-index'));
+            const productIndex = parseInt(this.getAttribute('data-index'), 10);
             deleteProduct(productIndex);
         });
     });
+}
+
+function getMaxVersions() {
+    return Math.max(...filteredProducts.map(product => product.price.length));
+}
+
+function updateVersionIndex(index) {
+    currentVersionIndex = index;
+    displayProductPage(currentProductPage);
 }
 
 // Tạo nút phân trang
@@ -441,7 +528,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kiểm tra nếu allProducts rỗng thì tải từ localStorage
     if (allProducts.length === 0) {
-        alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
+        // alert('Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Không có sản phẩm nào trong productArray. Vui lòng kiểm tra lại.',
+            type: 'warning'
+        });
     } else {
         filteredProducts = allProducts.slice(); // Sao chép mảng sản phẩm
         totalProductPages = Math.ceil(filteredProducts.length / itemsPerPageProduct);
@@ -479,86 +571,131 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+document.getElementById('new-number-of-versions').addEventListener('input', function() {
+    const container = document.getElementById('versions-container');
+    container.innerHTML = ''; // Clear previous inputs
+    const num = parseInt(this.value, 10);
+    if (isNaN(num) || num < 1) return;
+    for (let i = 1; i <= num; i++) {
+        const versionDiv = document.createElement('div');
+        versionDiv.innerHTML = `
+            <h3>Phiên bản ${i}</h3>
+            <div class="short_info">
+                <label class="short-label" for="version-price-${i}">Giá:</label>
+                <input type="number" class="short-input" id="version-price-${i}" placeholder="Nhập giá phiên bản ${i}..." min="0" step="1" required>
+            </div>
+            <div class="short_info">
+                <label class="short-label" for="version-pb-${i}">Chi tiết phiên bản:</label>
+                <input type="text" class="short-input" id="version-pb-${i}" placeholder="Nhập chi tiết phiên bản ${i}..." required>
+            </div>
+        `;
+        container.appendChild(versionDiv);
+    }
+});
+// Test_script.js
+
 function addProduct(event) {
-    event.preventDefault(); // Ngăn form tự submit
+    event.preventDefault();
 
-    // Tạo productId mới
-    const productId = allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1";
-
-    // Lấy giá trị từ các trường nhập liệu
-    const productname = document.getElementById('new-product-name').value.trim();
+    const productName = document.getElementById('new-product-name').value.trim();
     const brand = document.getElementById('new-brand').value.trim();
-    const price = document.getElementById('new-price').value.trim();
-    const pb1 = document.getElementById('new-pb1').value.trim();
-    const pb2 = document.getElementById('new-pb2').value.trim();
+    const numberOfVersions = parseInt(document.getElementById('new-number-of-versions').value.trim(), 10);
+
+    if (!productName || !brand || isNaN(numberOfVersions) || numberOfVersions < 1) {
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng nhập tên sản phẩm, thương hiệu và số phiên bản hợp lệ.',
+            type: 'warning'
+        });
+        return false;
+    }
+
+    let prices = [];
+    let pbs = [];
+    for (let i = 1; i <= numberOfVersions; i++) {
+        const versionPrice = document.getElementById(`version-price-${i}`).value.trim();
+        const versionDetails = document.getElementById(`version-pb-${i}`).value.trim();
+
+        if (!versionPrice || !versionDetails) {
+            customAlert({
+                title: 'Thất bại!',
+                message: `Vui lòng nhập đầy đủ thông tin cho phiên bản ${i}.`,
+                type: 'warning'
+            });
+            return false;
+        }
+
+        prices.push(parseFloat(versionPrice));
+        pbs.push(versionDetails);
+    }
+
     const chip = document.getElementById('new-chip').value.trim();
     const pin = document.getElementById('new-pin').value.trim();
     const size = document.getElementById('new-size').value.trim();
     const f = document.getElementById('new-f').value.trim();
     const imgInput = document.getElementById('new-image-upload');
-    let img = 'img-prd/img-add2.png'; // Ảnh mặc định
+    let img = 'img-prd/img-add2.png';
     if (imgInput.files && imgInput.files[0]) {
-        img = URL.createObjectURL(imgInput.files[0]); // Lấy đường dẫn ảnh
+        img = URL.createObjectURL(imgInput.files[0]);
     }
 
-    // Kiểm tra thông tin nhập vào
-    if (!brand || !productname || !price || !pb1 || !chip || !pin || !size || !f) {
-        customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
+    if (!chip || !pin || !size || !f) {
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Vui lòng nhập đầy đủ thông số kỹ thuật sản phẩm.',
+            type: 'warning'
+        });
         return false;
     }
 
-    // Kiểm tra giá nhập vào có phải là số không
-    if (isNaN(Number(price))) {
-        customAlert('Giá không hợp lệ', 'warning');
-        return false;
-    }
-
-    // Tạo đối tượng sản phẩm mới
     const newProduct = {
-        productId: productId,
+        productId: allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1",
         brandId: brand,
-        img: img,
-        name: productname,
-        oldPrice: price,
-        pb1: pb1,
-        pb2: pb2,
+        name: productName,
+        price: prices,
+        pb: pbs,
         chip: chip,
         pin: pin,
         size: size,
-        f: f
+        f: f,
+        img: img
     };
 
-    // Thêm sản phẩm vào mảng và lưu vào localStorage
     allProducts.push(newProduct);
-    // localStorage.setItem('allProducts', JSON.stringify(allProducts));
     localStorage.setItem('productArray', JSON.stringify(allProducts));
-    console.log(allProducts);
-    console.log(JSON.parse(localStorage.getItem('productArray')));
 
-    // Cập nhật danh sách sản phẩm và thông báo thành công
     filterProducts();
-    customAlert('Thêm sản phẩm thành công', 'success');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Sản phẩm đã được thêm thành công.',
+        type: 'success'
+    });
 
-    // Reset form
     document.querySelector('.subsection form').reset();
 }
 // Xóa sản phẩm
 function deleteProduct(productIndex) {
     if (productIndex !== -1) {
-        if (confirm('Bạn có muốn xóa sản phẩm này không?')) {
+        customConfirm('Bạn có muốn xóa sản phẩm này không?', function(result) {
+            if (result) {
             // Xóa sản phẩm khỏi dữ liệu
             allProducts.splice(productIndex, 1);
-
+  
             // Cập nhật localStorage
             localStorage.setItem('productArray', JSON.stringify(allProducts));
-
+  
             // Cập nhật lại danh sách sản phẩm
             filterProducts();
-
-            alert('Sản phẩm đã được xóa thành công!');
+  
+            customAlert({
+                title: 'Thành công!',
+                message: 'Sản phẩm đã được xóa thành công.',
+                type: 'success'
+            });
         }
+      });
     }
-}
+  }
 
 // Hiển thị modal chỉnh sửa sản phẩm
 function showChangeProductBox(productIndex) {
@@ -573,7 +710,14 @@ function showChangeProductBox(productIndex) {
 
     // Điền thông tin vào modal
     document.getElementById('edit-name').value = product.name;
-    document.getElementById('edit-price').value = product.oldPrice;
+    const editPriceInput = document.getElementById('edit-price');
+    if (product.price[currentVersionIndex] !== undefined) {
+        editPriceInput.value = product.price[currentVersionIndex];
+        editPriceInput.disabled = false;
+    } else {
+        editPriceInput.value = 'Không có phiên bản này';
+        editPriceInput.disabled = true;
+    }
     document.getElementById('imgbefore').src = product.img;
     document.getElementById('imgafter').src = 'img-prd/add-img-phone.webp';
 
@@ -583,13 +727,13 @@ function showChangeProductBox(productIndex) {
 
     // Thêm sự kiện đóng pop-up
     document.getElementById('close-changeproduct').addEventListener('click', closeChangeProductBox);
-
 }
 
 // Lưu thay đổi sản phẩm
 function saveProductChanges(productIndex) {
     const updatedName = document.getElementById('edit-name').value.trim();
-    const updatedPrice = parseFloat(document.getElementById('edit-price').value.trim()) || 0;
+    const editPriceInput = document.getElementById('edit-price');
+    const updatedPrice = parseFloat(editPriceInput.value.trim()) || 0;
     const updatedImageInput = document.getElementById('edit-image-upload');
     let updatedImage = document.getElementById('imgafter').src;
 
@@ -599,22 +743,33 @@ function saveProductChanges(productIndex) {
 
     // Cập nhật thông tin sản phẩm trong mảng
     allProducts[productIndex].name = updatedName;
-    allProducts[productIndex].oldPrice = updatedPrice;
+    if (!editPriceInput.disabled) {
+        allProducts[productIndex].price[currentVersionIndex] = updatedPrice;
+    }
     if (updatedImageInput.files && updatedImageInput.files[0]) {
         allProducts[productIndex].img = updatedImage;
     }
+
     // Kiểm tra thông tin cập nhật
     if (
         !allProducts[productIndex].brandId ||
         !allProducts[productIndex].name ||
-        !allProducts[productIndex].oldPrice 
+        (!editPriceInput.disabled && !allProducts[productIndex].price[currentVersionIndex])
     ) {
-        customAlert('Bạn chưa nhập đủ thông tin sản phẩm', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin sản phẩm.',
+            type: 'warning'
+        });
         return false;
     }
 
-    if (isNaN(allProducts[productIndex].oldPrice)) {
-        customAlert('Giá không hợp lệ', 'warning');
+    if (!editPriceInput.disabled && isNaN(allProducts[productIndex].price[currentVersionIndex])) {
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Giá không hợp lệ.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -628,7 +783,11 @@ function saveProductChanges(productIndex) {
     closeChangeProductBox();
 
     // Hiển thị thông báo thành công
-    alert('Sản phẩm đã được chỉnh sửa thành công!');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Sản phẩm đã được chỉnh sửa thành công.',
+        type: 'success'
+    });
 }
 
 // Đóng modal
@@ -666,7 +825,7 @@ function previewImage(event) {
     });
 }
 // Hàm hiển thị chi tiết sản phẩm
-function showProductDetails(productIndex) {
+function showDetailsProductBox(productIndex) {
     const modalProductDetails = document.getElementById('modal-detailproduct');
     if (modalProductDetails) {
         modalProductDetails.style.display = 'flex';
@@ -679,17 +838,27 @@ function showProductDetails(productIndex) {
     document.getElementById('detail-img').src = product.img;
     document.getElementById('detail-name').innerText = product.name;
     document.getElementById('detail-brand').innerText = product.brandId;
-    document.getElementById('detail-price').innerText = product.oldPrice;
-    document.getElementById('detail-pb1').innerText = product.pb1 || "";
-    document.getElementById('detail-pb2').innerText = product.pb2 || "";
     document.getElementById('detail-chip').innerText = product.chip || "";
     document.getElementById('detail-pin').innerText = product.pin || "";
     document.getElementById('detail-size').innerText = product.size || "";
     document.getElementById('detail-f').innerText = product.f || "";
 
+    // Hiển thị các phiên bản
+    const versionsContainer = document.getElementById('detail-versions');
+    versionsContainer.innerHTML = ''; // Xóa nội dung cũ
+
+    for (let i = 0; i < product.pb.length; i++) {
+        const versionDiv = document.createElement('div');
+        versionDiv.innerHTML = `
+            <h3>Phiên bản ${i + 1}</h3>
+            <p>Giá: <span>${formatPrice(product.price[i])}</span></p>
+            <p>Chi tiết: <span>${product.pb[i]}</span></p>
+        `;
+        versionsContainer.appendChild(versionDiv);
+    }
+
     // Thêm sự kiện đóng pop-up
     document.getElementById('close-detailproduct').addEventListener('click', closeDetailProductBox);
-
 }
 
 // Hàm đóng pop-up
@@ -723,13 +892,13 @@ function addPasswordToggleListeners() {
 // ---CUSTOMER---
 // Hiển thị trang khách hàng
 function displayCustomerPage(page) {
-    // var s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
-    var s = '';
-    var dem = 0;
-    var start = (page - 1) * itemsPerPageCustomer;
-    var end = start + itemsPerPageCustomer;
-    for (var i = start; i < customerArray.length && i < end; i++) {
-        var customer = customerArray[i];
+    // let s = '<tr><th>NO.</th><th>Tên đăng nhập</th><th>Mật khẩu</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th><th>Trạng thái</th></tr>';
+    let s = '';
+    let dem = 0;
+    const start = (page - 1) * itemsPerPageCustomer;
+    const end = start + itemsPerPageCustomer;
+    for (let i = start; i < customerArray.length && i < end; i++) {
+        const customer = customerArray[i];
         s += '<tr data-id="' + i + '"' + (customer.locked ? ' class="locked"' : '') + '>' +  // Thêm class "locked" nếu khách hàng bị khóa
             '<td>' + (i + 1) + '</td>' +
             '<td>' + customer.username + '</td>' +
@@ -783,9 +952,20 @@ function toggleCustomerLock(customerIndex) {
     localStorage.setItem('customerArray', JSON.stringify(customerArray));
 
     if (customer.locked) {
-        alert('Khách hàng đã bị khóa');
+        // alert('Khách hàng đã bị khóa');
+        customAlert({
+            title: 'Thành công!',
+            message: 'Khách hàng đã bị khóa',
+            type: 'success'
+        });
+        
     } else {
-        alert('Khách hàng đã được mở khóa');
+        // alert('Khách hàng đã được mở khóa');
+        customAlert({
+            title: 'Thành công!',
+            message: 'Khách hàng đã được mở khóa.',
+            type: 'success'
+        });
     }
 
     // Cập nhật lại bảng khách hàng
@@ -816,13 +996,21 @@ function addCustomer(event) {
 
     // Kiểm tra thông tin nhập vào
     if (!username || !password || !phone || !addressInput) {
-        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin khách hàng.',
+            type: 'warning'
+        });
         return false;
     }
 
     // Kiểm tra xem username đã tồn tại chưa
     if (checkExistedUsername(username)) {
-        customAlert('Tên tài khoản đã tồn tại', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Tên tài khoản đã tồn tại.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -842,7 +1030,11 @@ function addCustomer(event) {
     //Kiểm tra địa chỉ có dạng hợp lệ không
     if (!numberAndRoad || !district || !city) {
         // if (!numberAndRoad || !ward || !district || !city) {
-        customAlert('Địa chỉ không hợp lệ. Vui lòng nhập đầy đủ các phần: Số nhà và đường + Phường, Quận, Thành phố', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: "Địa chỉ không hợp lệ.<br>Vui lòng nhập đầy đủ các phần: <br>Số nhà và đường + Phường, Quận, Thành phố.",
+            type: 'warning'
+        });
         return false;
     }
 
@@ -866,7 +1058,11 @@ function addCustomer(event) {
 
     // Cập nhật danh sách khách hàng và thông báo thành công
     displayCustomerPage(currentCustomerPage);
-    customAlert('Thêm khách hàng thành công', 'success');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Thêm khách hàng thành công.',
+        type: 'success'
+    });
 
     // Reset form
     document.querySelector('#add-customer-form').reset();
@@ -936,7 +1132,11 @@ function saveCustomerChanges(customerIndex) {
         // !customerArray[customerIndex].address.district ||
         // !customerArray[customerIndex].address.city
     ) {
-        customAlert('Bạn chưa nhập đủ thông tin khách hàng', 'warning');
+        customAlert({
+            title: 'Thất bại!',
+            message: 'Bạn chưa nhập đủ thông tin khách hàng.',
+            type: 'warning'
+        });
         return false;
     }
 
@@ -950,7 +1150,12 @@ function saveCustomerChanges(customerIndex) {
     closeChangeCustomerBox();
 
     // Hiển thị thông báo thành công
-    alert('Khách hàng đã được chỉnh sửa thành công!');
+    // alert('Khách hàng đã được chỉnh sửa thành công!');
+    customAlert({
+        title: 'Thành công!',
+        message: 'Khách hàng đã được chỉnh sửa thành công!',
+        type: 'success'
+    });
 }
 
 // Đóng modal
@@ -973,77 +1178,219 @@ function getOrdersByPage(page) {
     return currentOrdersArray.slice(start, end);
 }
 
-function displayOrdersTable(orders){
-    // Cập nhật mảng đơn hàng hiện tại
-    currentOrdersArray = orders;
-
-    // Tính toán tổng số trang dựa trên tổng số đơn hàng
-    totalOrderPages = Math.ceil(currentOrdersArray.length / itemsPerPageOrder);
-
-    // Điều chỉnh currentOrderPage nếu vượt quá tổng số trang
-    if (currentOrderPage > totalOrderPages) {
-        currentOrderPage = totalOrderPages;
-    }
-    if (currentOrderPage < 1) {
-        currentOrderPage = 1;
-    }
-
-    // Lấy ra các đơn hàng của trang hiện tại
-    const currentPageOrders = getOrdersByPage(currentOrderPage);
-
+function displayOrdersTable(orders, withCondition = false) {
     let tableHTML = ``;
-    currentPageOrders.forEach((order, index) => {
-        const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
-        const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
-        tableHTML += `
-            <tr>
-                <td>${order.customerId}</td>
-                <td>${order.name}</td>
-                <td>${order.phone}</td>
-                <td>${formattedDate}</td>
-                <td>${formattedAddress}</td>    
-                <td>
-                    <button class="detail-btn" onclick="">Chi tiết</button>
-                </td>
-                <td>
-                    <select class="order-status-select" id="order-status__selection-${index}" onchange="handleStatusChange(${index}, this.value); updateSelectColor(this);">
-                        <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
-                        <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
-                        <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
-                        <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Thất bại</option>
-                    </select>
-                </td>
-            </tr> 
-        `;
-    });
+    if(withCondition == false){
+        // Cập nhật mảng đơn hàng hiện tại
+        currentOrdersArray = orders;
+    
+        // Tính toán tổng số trang dựa trên tổng số đơn hàng
+        totalOrderPages = Math.ceil(currentOrdersArray.length / itemsPerPageOrder);
+    
+        // Điều chỉnh currentOrderPage nếu vượt quá tổng số trang
+        if (currentOrderPage > totalOrderPages) {
+            currentOrderPage = totalOrderPages;
+        }
+        if (currentOrderPage < 1) {
+            currentOrderPage = 1;
+        }
+    
+        // Lấy ra các đơn hàng của trang hiện tại
+        const currentPageOrders = getOrdersByPage(currentOrderPage);
+    
+        currentPageOrders.forEach((order, index) => {
+            const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + index; // Tính chỉ số thực
+            const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+            const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
+            tableHTML += `
+                <tr>
+                    <td>${order.customerId}</td>
+                    <td>${order.name}</td>
+                    <td>${order.phone}</td>
+                    <td>${formattedDate}</td>
+                    <td>${formattedAddress}</td>    
+                    <td>
+                        <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
+                    </td>
+                    <td> 
+                        <button class="order-status-table" id="order-status-inTable-${realIndex}" data-table-status="${order.status}">
+                        ${convertOrderStatusToVN(order.status)}
+                        </button>
+                    </td>
+                </tr> 
+            `;
+            console.log("Status in table: " + order.status);
+        });
+    } else {
+        // Mảng index (return của các tính năng)
+        orders.forEach((index) => {
+            const order = orderArray[index];
+            const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+            const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
+            tableHTML += `
+                <tr>
+                    <td>${order.customerId}</td>
+                    <td>${order.name}</td>
+                    <td>${order.phone}</td>
+                    <td>${formattedDate}</td>
+                    <td>${formattedAddress}</td>    
+                    <td>
+                        <button class="detail-btn" data-index="${index}">Chi tiết</button>
+                    </td>
+                    <td> 
+                        <button class="order-status-table" id="order-status-inTable-${index}" data-table-status="${order.status}">
+                        ${convertOrderStatusToVN(order.status)}
+                        </button>
+                    </td>
+                </tr> 
+            `;
+            console.log("Status in table: " + order.status);
+        });
+    }
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
     
     // Thêm sự kiện cho nút chi tiết
-    document.querySelectorAll('#main__orders .detail-btn').forEach((button, index) => {
+    document.querySelectorAll('#main__orders .detail-btn').forEach((button) => {
+        const realIndex = button.getAttribute('data-index'); // Lấy chỉ số thực từ thuộc tính data-index
         button.addEventListener('click', () => {
-            console.log('Show detail order');
-            showOrderDetails(index);
+            console.log(`Show detail order for index: ${realIndex}`);
+            showOrderDetails(realIndex);
         });
     });
 
-    // Cập nhật màu sắc cho các select
-    document.querySelectorAll('.order-status-select').forEach(select => {
-        updateSelectColor(select); // Gọi hàm cập nhật màu ngay sau khi tạo bảng
+    document.querySelectorAll('.order-status-table').forEach((elem) => {
+        const status = elem.textContent.trim(); // Lấy giá trị trạng thái từ nội dung
+        elem.setAttribute('data-status', status); // Gán giá trị vào data-status
     });
 
     // Tạo phân trang
     createPagination(totalOrderPages, 'order');
-
 }
+
 displayOrdersTable(orderArray);
+
+function updateOrderStatusTable(index, newStatus) {
+    // Cập nhật trạng thái trong mảng orderArray
+    orderArray[index].status = newStatus;
+
+    // Tìm phần tử trong bảng có chỉ số tương ứng
+    const statusButton = document.getElementById(`order-status-inTable-${index}`);
+    if (statusButton) {
+        // Cập nhật nội dung văn bản và thuộc tính data-table-status
+        statusButton.textContent = convertOrderStatusToVN(newStatus);
+        statusButton.setAttribute('data-table-status', newStatus);
+    }
+}
 
 // Function to update the color of the select box
 function updateSelectColor(selectElement) {
-    const status = selectElement.value; // Lấy giá trị hiện tại
-    selectElement.setAttribute('data-status', status); // Cập nhật thuộc tính data-status
-    console.log(`Updated select color for status: ${status}`); // Kiểm tra xem hàm có được gọi hay không
-
+    const status = selectElement.value; // Lấy giá trị trạng thái
+    selectElement.setAttribute('data-status', status); // Gắn data-status
+    console.log(`Updated select color for status: ${status}`);
 }
+
+/** FUNC: thay đổi status của từng order */
+function handleStatusChange(orderIndex, newStatus) {
+    console.log("New status: " + newStatus);
+    // Tính chỉ số thực trong currentOrdersArray
+    // Khi phân trang -> chỉ số phải được cập nhật mới
+    // const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
+    const order = currentOrdersArray[orderIndex];
+    if (order) {
+        const previousStatus = order.status;
+        const isChange = order.changeOrderStatus(newStatus);
+        // Nếu trạng thái mới hợp lệ
+        if (isChange) {
+            // Cập nhật trạng thái trong mảng và bảng
+            currentOrdersArray[orderIndex].status = newStatus;
+            document.getElementById(`order-status-inTable-${orderIndex}`).textContent = convertOrderStatusToVN(newStatus);
+            document.getElementById(`order-status-inTable-${orderIndex}`).setAttribute('data-status', newStatus); // Thêm data-status cho ô trong bảng
+            console.log(orderIndex + ' ' + newStatus);
+
+            updateOrderStatusTable(orderIndex, newStatus);
+        } else {
+            // Khôi phục trạng thái cũ trong select box
+            document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
+        }
+    } else {
+        console.log("Error: không tìm thấy order(index) để thay đổi status");
+    }
+}
+function showOrderDetails(orderIndex) {
+    console.log('Show popup order detail');
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'flex';
+    }
+    // Lấy thông tin đơn hàng
+    const order = orderArray[orderIndex];
+
+    // Hiển thị các sản phẩm trong đơn hàng
+    let checkoutCartHTML = '';
+    order.checkoutCart.forEach(product => {
+        checkoutCartHTML += `
+            <div class="product-item">
+                <span>${product.name}</span>
+                <span>${product.quantity}</span>
+                <span>${formatPrice(product.price)}</span>
+            </div>
+        `;
+    });
+    let detailOrderHTML = `
+        <div id="detailorder">
+            <button class="close-pop" id="close-detailorder">+</button>
+            <h2>Chi tiết đơn hàng</h2>
+            <div class="order-content">
+                <div class="info">
+                    <p>Tên khách hàng: <span id="detail-order-customername">${order.name}</span></p>
+                    <p>Số điện thoại: <span id="detail-order-phone">${order.phone}</span></p>
+                    <p>Địa chỉ: <span id="detail-order-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
+                    <p>Thời điểm đặt hàng: <span id="detail-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
+                </div>
+                <div class="checkout-section">
+                    <div class="checkout-info">
+                        <p>Sản phẩm đã đặt:</p>
+                        <div id="detail-checkoutCart">${checkoutCartHTML}</div>
+                    </div>
+                    <div class="checkout-total-payment">
+                        <p>Tổng tiền: <span id="detail-total-payment">${formatPrice(order.calculateTotalPayment())}</span></p>
+                    </div>
+                    <div class="checkout-status-select">
+                        <p>Tình trạng đơn hàng: 
+                            <span>
+                                <select class="order-status-select" id="order-status__selection-${orderIndex}" onchange="handleStatusChange(${orderIndex}, this.value); updateSelectColor(this);">
+                                    <option value="UNPROCESSED" ${order.status === 'UNPROCESSED' ? 'selected' : ''}>Chưa xử lý</option>
+                                    <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Đã xác nhận</option>
+                                    <option value="SUCCEEDED" ${order.status === 'SUCCEEDED' ? 'selected' : ''}>Thành công</option>
+                                    <option value="FAILED" ${order.status === 'FAILED' ? 'selected' : ''}>Đã hủy</option>
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    // Chèn nội dung vào modal
+    modalOrderDetails.innerHTML = detailOrderHTML;
+
+    // Cập nhật màu nền cho select
+    const selectElement = document.getElementById(`order-status__selection-${orderIndex}`);
+    updateSelectColor(selectElement);
+    
+    // document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
+    // Thêm sự kiện đóng pop-up
+    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
+}
+
+function closeDetailOrderBox() {
+    const modalOrderDetails = document.getElementById('modal-detailorder');
+    if (modalOrderDetails) {
+        modalOrderDetails.style.display = 'none';
+    }
+}
+
+
 
 /* CÁC TÍNH NĂNG Ở BỘ LỌC */
 // Lọc sản phẩm theo Date
@@ -1064,40 +1411,15 @@ function displayOrdersByDate() {
         dateEnd = new Date(dateEndElem.value);
         
         // Mảng các order trong 2 date đã chọn
-        const filterOrderArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+        const filterOrderArrayIndex = filterOrdersBetweenTwoDate(dateStart, dateEnd);
         // Hiển thị bảng:
-        displayOrdersTable(filterOrderArray);
+        displayOrdersTable(filterOrderArrayIndex, true);
 
         console.log("Filter table: ");
-        console.log(filterOrderArray);
+        console.log(filterOrderArrayIndex);
     });
 }
-
-// Gọi hàm để khởi tạo sự kiện
 displayOrdersByDate();
-
-/** FUNC: thay đổi status của từng order */
-function handleStatusChange(orderIndex, newStatus){
-    console.log("New status: " + newStatus);
-    // Tính chỉ số thực trong currentOrdersArray
-    const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + orderIndex;
-    const order = currentOrdersArray[realIndex];
-    if(order){
-        // Lưu trạng thái ban đầu của dropdown (select)
-        const previousStatus = order.status;
-        // Kiểm tra thay đổi có thành công?
-        const isChange = order.changeOrderStatus(newStatus);
-        if(false === isChange){      // Thay đổi status failed 
-            // Giữ nguyên status chữ cho dropdown (select)
-            document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
-        } else {
-            // Cập nhật trạng thái trong currentOrdersArray nếu cần
-            currentOrdersArray[realIndex].status = newStatus;
-        }
-    } else {    // Không tồn tại order tương ứng
-        console.log("Error: không tìm thấy order(index) để thay đổi status");
-    }
-}
 
 /** FUNC: hiển thị order table với status tương ứng.  */
 function displayOrderByStatus(){
@@ -1108,9 +1430,9 @@ function displayOrderByStatus(){
         displayOrdersTable(orderArray);
     } else {    
         // Hiển thị orderArray với status tương ứng:
-        const filteredOrders = filterOrderByStatus(status);
+        const filteredOrdersIndex = filterOrderByStatus(status);
         currentOrderPage = 1; // Đặt lại trang hiện tại về 1
-        displayOrdersTable(filteredOrders);
+        displayOrdersTable(filteredOrdersIndex, true);
     }
 }
 document.getElementById('filter__status-selection').addEventListener('change', displayOrderByStatus);
@@ -1121,9 +1443,9 @@ document.getElementById('filter__status-selection').addEventListener('change', d
  */
 function displaySortOrderArrayByDistrict(){
     document.getElementById('order__sort-by-district').addEventListener('click',(event) => {
-        const sortedOrders = sortOrderByDistrict();
+        const sortedOrdersIndex = sortOrderByDistrict();
         currentOrderPage = 1; // Đặt lại trang hiện tại về 1
-        displayOrdersTable(sortedOrders);
+        displayOrdersTable(sortedOrdersIndex, true);
     });
 }
 displaySortOrderArrayByDistrict();
@@ -1149,45 +1471,6 @@ function resetOrderFilter(){
 }
 resetOrderFilter();
 
-function showOrderDetails(orderIndex) {
-    const modalOrderDetails = document.getElementById('modal-detailorder');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'flex';
-    }
-
-    // Lấy thông tin đơn hàng
-    const order = orderArray[orderIndex];
-
-    // Điền dữ liệu vào pop-up
-    document.getElementById('detail-order-customername').innerText = order.name;
-    document.getElementById('detail-order-phone').innerText = order.phone;
-    document.getElementById('detail-order-address').innerText = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
-    document.getElementById('detail-date').innerText = (order.date).toLocaleDateString('vi-VN');;
-    document.getElementById('detail-status').innerText = order.status;
-
-    // Hiển thị các sản phẩm trong đơn hàng
-    let checkoutCartHTML = '';
-    order.checkoutCart.forEach(product => {
-        checkoutCartHTML += `
-            <div class="product-item">
-                <span>${product.name}</span>
-                <span>${product.quantity}</span>
-                <span>${formatPrice(product.price)}</span>
-            </div>
-        `;
-    });
-    document.getElementById('detail-checkoutCart').innerHTML = checkoutCartHTML;
-    document.getElementById('detail-total-payment').innerHTML = formatPrice(order.calculateTotalPayment());
-    // Thêm sự kiện đóng pop-up
-    document.getElementById('close-detailorder').addEventListener('click', closeDetailOrderBox);
-}
-
-function closeDetailOrderBox() {
-    const modalOrderDetails = document.getElementById('modal-detailorder');
-    if (modalOrderDetails) {
-        modalOrderDetails.style.display = 'none';
-    }
-}
 
 
 /** FUNC: thống kê, tạo ra một array các product đã được bán, trong đó:
@@ -1349,7 +1632,7 @@ function showStatisticsProductBillPopup(orderProductArray) {
                                 <p>Số điện thoại: <span id="detailStatistic-phone">${order.phone}</span></p>
                                 <p>Địa chỉ: <span id="detailStatistic-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
                                 <p>Thời điểm đặt hàng: <span id="detailStatistic-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
-                                <p>Trạng thái: <span id="detailStatistic-status">${order.status}</span></p>                        
+                                <p>Trạng thái: <span id="detailStatistic-status">${convertOrderStatusToVN(order.status)}</span></p>                        
                             </div>
                             <div class="checkout-detailStatistic">
                                 <div class="checkout-detailStatistic">
@@ -1474,7 +1757,7 @@ function showStatisticsCustomerBillPopup(orderCustomerArray){
                                 <p>Số điện thoại: <span id="detailStatistic-phone">${order.phone}</span></p>
                                 <p>Địa chỉ: <span id="detailStatistic-address">${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}</span></p>
                                 <p>Thời điểm đặt hàng: <span id="detailStatistic-date">${(order.date).toLocaleDateString('vi-VN')}</span></p>
-                                <p>Trạng thái: <span id="detailStatistic-status">${order.status}</span></p>                        
+                                <p>Trạng thái: <span id="detailStatistic-status">${convertOrderStatusToVN(order.status)}</span></p>                        
                             </div>
                             <div class="checkout-detailStatistic">
                                 <div class="checkout-detailStatistic">
@@ -1547,7 +1830,12 @@ function filterStatisticsByDate(){
 
         // Kiểm tra nếu cả hai ngày đều đã được nhập
         if (!dateStartValue || !dateEndValue) {
-            alert("Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc.");
+            // alert("Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc.");
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Vui lòng nhập đầy đủ cả ngày bắt đầu và ngày kết thúc!',
+                type: 'warning'
+            });
             return;
         }
 
@@ -1557,7 +1845,12 @@ function filterStatisticsByDate(){
 
         // Kiểm tra ngày bắt đầu có trước hoặc bằng ngày kết thúc
         if (dateStart > dateEnd) {
-            alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.");
+            // alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.");
+            customAlert({
+                title: 'Thất bại!',
+                message: 'Ngày bắt đầu phải trước hoặc bằng ngày kết thúc. Vui lòng nhập lại.!',
+                type: 'warning'
+            });
             return;
         }
 
@@ -1617,6 +1910,25 @@ function formatPrice(price) {
         currency: 'VND'
     }).format(price);
 }
+function convertOrderStatusToVN(status) {
+    switch (status) {
+        case 'UNPROCESSED': return 'Chưa xử lý';
+        case 'CONFIRMED': return 'Đã xác nhận';
+        case 'SUCCEEDED': return 'Thành công';
+        case 'FAILED': return 'Đã hủy';
+        default: return 'Không xác định';
+    }
+}
+function convertOrderStatusToForm(vnStatus){
+    switch(vnStatus){
+        case 'Chưa xử lý': return 'UNPROCESSED';
+        case 'Đã xác nhận': return 'CONFIRMED' ;
+        case 'Thành công': return 'SUCCEEDED';
+        case 'Đã hủy': return 'FAILED' ;
+        default: return 'Không xác định';
+    }
+}
+
 /** Hàm kiểm tra 2 ngày được nhập có lệ hay không:
     1. Cả 2 ngày phải nhập đủ
     2. Ngày start phải trước hoặc bằng ngày end 
@@ -1638,7 +1950,7 @@ function isValidDateRange(start, end) {
 
 window.login = login;
 
-window.showDetailProductBox = showProductDetails;
+window.showDetailsProductBox = showDetailsProductBox;
 window.closeDetailProductBox = closeDetailProductBox;
 window.showChangeProductBox = showChangeProductBox;
 window.closeChangeProductBox = closeChangeProductBox;
@@ -1660,3 +1972,5 @@ window.closeDetailOrderBox = closeDetailOrderBox;
 window.updateSelectColor = updateSelectColor;
 
 window.showStatisticsProductBill = showStatisticsProductBill;
+
+window.updateVersionIndex = updateVersionIndex;

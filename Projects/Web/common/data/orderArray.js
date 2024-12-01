@@ -1,5 +1,5 @@
 import {customerArray, Address} from './customerArray.js';
-
+import {customAlert, customConfirm} from './utilities.js'
 
 /** ORDER CLASS: đối tượng hóa đơn, sau khi user chọn product trong cart và thanh toán. */
 class Order {
@@ -41,7 +41,12 @@ class Order {
                 // Nếu chưa xử lí -> CONFIRMED | FAILED
                 if(newStatus === 'SUCCEEDED'){
                     //...
-                    alert('Failed: Đơn hàng chưa được xác nhận');
+                    // alert('Failed: Đơn hàng chưa được xác nhận');
+                    customAlert({
+                        title: 'Thất bại!',
+                        message: 'Đơn hàng chưa được xác nhận!',
+                        type: 'warning'
+                    });
                     console.log('Failed: Đơn hàng chưa được xác nhận');
                 } else {
                     this.status = newStatus;
@@ -51,7 +56,12 @@ class Order {
             case 'CONFIRMED':
                 // Nếu đã xác nhận -> SUCCEEDED | FAILED
                 if(newStatus === 'UNPROCESSED'){
-                    alert('Failed: Đơn hàng đã được xác nhận');
+                    // alert('Failed: Đơn hàng đã được xác nhận');
+                    customAlert({
+                        title: 'Thất bại!',
+                        message: 'Đơn hàng chưa được xác nhận!',
+                        type: 'warning'
+                    });
                     console.log('Failed: Trạng thái không hợp lệ (Đơn hàng đã được xác nhận)');
                 } else {
                     this.status = newStatus;
@@ -60,11 +70,21 @@ class Order {
                 break;
             /** Khi đã ở trạng thái SUCCEEDED | FAILED: trạng thái bị vô hiệu hóa. */
             case 'SUCCEEDED':
-                alert('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                // alert('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa!',
+                    type: 'warning'
+                });
                 console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             case 'FAILED':
-                alert('Failed: Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa');
+                // alert('Failed: Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa');
+                customAlert({
+                    title: 'Thất bại!',
+                    message: 'Đơn hàng đã thất bại. Trạng thái bị vô hiệu hóa!',
+                    type: 'warning'
+                });
                 console.log('Failed: Đơn hàng đã hoàn thành. Trạng thái bị vô hiệu hóa');
                 break;
             default:
@@ -124,40 +144,55 @@ function isBetweenTwoDate(checkDate, stDate, ndDate){
 
 /* FUNC: Trả vê một order array với date nằm trong khoảng [stDate, ndDate] */
 export function filterOrdersBetweenTwoDate(stDate, ndDate){
-    const filterDateArray = [];
-    orderArray.forEach((order) => {
+    const filterDateArrayIndex = [];
+    orderArray.forEach((order, index) => {
         if(true === isBetweenTwoDate(order.date, stDate, ndDate)){
             console.log('Include: ', order.date);
-            filterDateArray.push(order);
+            filterDateArrayIndex.push(index);
         }
     });
-    return filterDateArray;
+    return filterDateArrayIndex;
 }
 
 /** FUNC: trả về một order array với status tương ứng */
 export function filterOrderByStatus(status){
-    const filterStatusArray = [];
-    orderArray.forEach((order) => {
+    const filterStatusArrayIndex = [];
+    orderArray.forEach((order, index) => {
         if(status === order.status){
-            filterStatusArray.push(order);
+            filterStatusArrayIndex.push(index);
         }
     });
-    return filterStatusArray;
+    return filterStatusArrayIndex;
 }
 
 /** FUNC: trả về một order array mới với các quận được sắp xếp:
  * 1. Số nhỏ -> số lớn
  * 2. Alphabet
  */
-export function sortOrderByDistrict(){
-    return orderArray.slice().sort((orderA, orderB) => {
-        const districtA = orderA.address.district;
-        const districtB = orderB.address.district;
-        // const districtA = getDistrictByCustomerId(orderA.customerId);
-        // const districtB = getDistrictByCustomerId(orderB.customerId);
+export function sortOrderByDistrict() {
+    
+    const orderArrayWithIndex = [];
+    orderArray.forEach((order, index) => {
+        orderArrayWithIndex.push({
+            order: order,
+            index: index,
+        });
+    });
+    const sortedArray = orderArrayWithIndex.slice().sort((orderA, orderB) => {
+        const districtA = orderA.order.address.district;
+        const districtB = orderB.order.address.district;
         return compareDistrict(districtA, districtB);
     });
+
+    const indexArray = [];
+    sortedArray.forEach((orderWithIndex) => {
+        indexArray.push(orderWithIndex.index);
+    });
+
+    // Trả về mảng đã sắp xếp
+    return indexArray;
 }
+
 
 function compareDistrict(districtA, districtB){
     // Kiểm tra xem 2 district có phải là số ?
