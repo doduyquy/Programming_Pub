@@ -1178,48 +1178,75 @@ function getOrdersByPage(page) {
     return currentOrdersArray.slice(start, end);
 }
 
-function displayOrdersTable(orders) {
-    // Cập nhật mảng đơn hàng hiện tại
-    currentOrdersArray = orders;
-
-    // Tính toán tổng số trang dựa trên tổng số đơn hàng
-    totalOrderPages = Math.ceil(currentOrdersArray.length / itemsPerPageOrder);
-
-    // Điều chỉnh currentOrderPage nếu vượt quá tổng số trang
-    if (currentOrderPage > totalOrderPages) {
-        currentOrderPage = totalOrderPages;
-    }
-    if (currentOrderPage < 1) {
-        currentOrderPage = 1;
-    }
-
-    // Lấy ra các đơn hàng của trang hiện tại
-    const currentPageOrders = getOrdersByPage(currentOrderPage);
-
+function displayOrdersTable(orders, withCondition = false) {
     let tableHTML = ``;
-    currentPageOrders.forEach((order, index) => {
-        const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + index; // Tính chỉ số thực
-        const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
-        const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
-        tableHTML += `
-            <tr>
-                <td>${order.customerId}</td>
-                <td>${order.name}</td>
-                <td>${order.phone}</td>
-                <td>${formattedDate}</td>
-                <td>${formattedAddress}</td>    
-                <td>
-                    <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
-                </td>
-                <td> 
-                    <button class="order-status-table" id="order-status-inTable-${realIndex}" data-table-status="${order.status}">
-                    ${convertOrderStatusToVN(order.status)}
-                    </button>
-                </td>
-            </tr> 
-        `;
-        console.log("Status in table: " + order.status);
-    });
+    if(withCondition == false){
+        // Cập nhật mảng đơn hàng hiện tại
+        currentOrdersArray = orders;
+    
+        // Tính toán tổng số trang dựa trên tổng số đơn hàng
+        totalOrderPages = Math.ceil(currentOrdersArray.length / itemsPerPageOrder);
+    
+        // Điều chỉnh currentOrderPage nếu vượt quá tổng số trang
+        if (currentOrderPage > totalOrderPages) {
+            currentOrderPage = totalOrderPages;
+        }
+        if (currentOrderPage < 1) {
+            currentOrderPage = 1;
+        }
+    
+        // Lấy ra các đơn hàng của trang hiện tại
+        const currentPageOrders = getOrdersByPage(currentOrderPage);
+    
+        currentPageOrders.forEach((order, index) => {
+            const realIndex = (currentOrderPage - 1) * itemsPerPageOrder + index; // Tính chỉ số thực
+            const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+            const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
+            tableHTML += `
+                <tr>
+                    <td>${order.customerId}</td>
+                    <td>${order.name}</td>
+                    <td>${order.phone}</td>
+                    <td>${formattedDate}</td>
+                    <td>${formattedAddress}</td>    
+                    <td>
+                        <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
+                    </td>
+                    <td> 
+                        <button class="order-status-table" id="order-status-inTable-${realIndex}" data-table-status="${order.status}">
+                        ${convertOrderStatusToVN(order.status)}
+                        </button>
+                    </td>
+                </tr> 
+            `;
+            console.log("Status in table: " + order.status);
+        });
+    } else {
+        // Mảng index (return của các tính năng)
+        orders.forEach((index) => {
+            const order = orderArray[index];
+            const formattedDate = new Date(order.date).toLocaleDateString('vi-VN');
+            const formattedAddress = `${order.address.numberAndRoad}, ${order.address.district}, ${order.address.city}`;
+            tableHTML += `
+                <tr>
+                    <td>${order.customerId}</td>
+                    <td>${order.name}</td>
+                    <td>${order.phone}</td>
+                    <td>${formattedDate}</td>
+                    <td>${formattedAddress}</td>    
+                    <td>
+                        <button class="detail-btn" data-index="${index}">Chi tiết</button>
+                    </td>
+                    <td> 
+                        <button class="order-status-table" id="order-status-inTable-${index}" data-table-status="${order.status}">
+                        ${convertOrderStatusToVN(order.status)}
+                        </button>
+                    </td>
+                </tr> 
+            `;
+            console.log("Status in table: " + order.status);
+        });
+    }
     document.getElementById('orders-table-content__body').innerHTML = tableHTML;
     
     // Thêm sự kiện cho nút chi tiết
@@ -1242,20 +1269,25 @@ function displayOrdersTable(orders) {
 
 displayOrdersTable(orderArray);
 
-function updateOrderColor(selectElement){
-    const status = selectElement.innerText; // Lấy giá trị trạng thái
-    console.log("Value: " + status);
-    selectElement.setAttribute('data-status', (status)); // Gắn data-status
-    console.log(`Updated table color for status: ${status}`);
+function updateOrderStatusTable(index, newStatus) {
+    // Cập nhật trạng thái trong mảng orderArray
+    orderArray[index].status = newStatus;
+
+    // Tìm phần tử trong bảng có chỉ số tương ứng
+    const statusButton = document.getElementById(`order-status-inTable-${index}`);
+    if (statusButton) {
+        // Cập nhật nội dung văn bản và thuộc tính data-table-status
+        statusButton.textContent = convertOrderStatusToVN(newStatus);
+        statusButton.setAttribute('data-table-status', newStatus);
+    }
 }
+
 // Function to update the color of the select box
 function updateSelectColor(selectElement) {
     const status = selectElement.value; // Lấy giá trị trạng thái
     selectElement.setAttribute('data-status', status); // Gắn data-status
     console.log(`Updated select color for status: ${status}`);
 }
-
-
 
 /** FUNC: thay đổi status của từng order */
 function handleStatusChange(orderIndex, newStatus) {
@@ -1274,6 +1306,8 @@ function handleStatusChange(orderIndex, newStatus) {
             document.getElementById(`order-status-inTable-${orderIndex}`).textContent = convertOrderStatusToVN(newStatus);
             document.getElementById(`order-status-inTable-${orderIndex}`).setAttribute('data-status', newStatus); // Thêm data-status cho ô trong bảng
             console.log(orderIndex + ' ' + newStatus);
+
+            updateOrderStatusTable(orderIndex, newStatus);
         } else {
             // Khôi phục trạng thái cũ trong select box
             document.getElementById(`order-status__selection-${orderIndex}`).value = previousStatus;
@@ -1377,12 +1411,12 @@ function displayOrdersByDate() {
         dateEnd = new Date(dateEndElem.value);
         
         // Mảng các order trong 2 date đã chọn
-        const filterOrderArray = filterOrdersBetweenTwoDate(dateStart, dateEnd);
+        const filterOrderArrayIndex = filterOrdersBetweenTwoDate(dateStart, dateEnd);
         // Hiển thị bảng:
-        displayOrdersTable(filterOrderArray);
+        displayOrdersTable(filterOrderArrayIndex, true);
 
         console.log("Filter table: ");
-        console.log(filterOrderArray);
+        console.log(filterOrderArrayIndex);
     });
 }
 displayOrdersByDate();
@@ -1396,9 +1430,9 @@ function displayOrderByStatus(){
         displayOrdersTable(orderArray);
     } else {    
         // Hiển thị orderArray với status tương ứng:
-        const filteredOrders = filterOrderByStatus(status);
+        const filteredOrdersIndex = filterOrderByStatus(status);
         currentOrderPage = 1; // Đặt lại trang hiện tại về 1
-        displayOrdersTable(filteredOrders);
+        displayOrdersTable(filteredOrdersIndex, true);
     }
 }
 document.getElementById('filter__status-selection').addEventListener('change', displayOrderByStatus);
@@ -1409,9 +1443,9 @@ document.getElementById('filter__status-selection').addEventListener('change', d
  */
 function displaySortOrderArrayByDistrict(){
     document.getElementById('order__sort-by-district').addEventListener('click',(event) => {
-        const sortedOrders = sortOrderByDistrict();
+        const sortedOrdersIndex = sortOrderByDistrict();
         currentOrderPage = 1; // Đặt lại trang hiện tại về 1
-        displayOrdersTable(sortedOrders);
+        displayOrdersTable(sortedOrdersIndex, true);
     });
 }
 displaySortOrderArrayByDistrict();

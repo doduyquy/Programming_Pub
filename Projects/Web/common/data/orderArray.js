@@ -144,40 +144,55 @@ function isBetweenTwoDate(checkDate, stDate, ndDate){
 
 /* FUNC: Trả vê một order array với date nằm trong khoảng [stDate, ndDate] */
 export function filterOrdersBetweenTwoDate(stDate, ndDate){
-    const filterDateArray = [];
-    orderArray.forEach((order) => {
+    const filterDateArrayIndex = [];
+    orderArray.forEach((order, index) => {
         if(true === isBetweenTwoDate(order.date, stDate, ndDate)){
             console.log('Include: ', order.date);
-            filterDateArray.push(order);
+            filterDateArrayIndex.push(index);
         }
     });
-    return filterDateArray;
+    return filterDateArrayIndex;
 }
 
 /** FUNC: trả về một order array với status tương ứng */
 export function filterOrderByStatus(status){
-    const filterStatusArray = [];
-    orderArray.forEach((order) => {
+    const filterStatusArrayIndex = [];
+    orderArray.forEach((order, index) => {
         if(status === order.status){
-            filterStatusArray.push(order);
+            filterStatusArrayIndex.push(index);
         }
     });
-    return filterStatusArray;
+    return filterStatusArrayIndex;
 }
 
 /** FUNC: trả về một order array mới với các quận được sắp xếp:
  * 1. Số nhỏ -> số lớn
  * 2. Alphabet
  */
-export function sortOrderByDistrict(){
-    return orderArray.slice().sort((orderA, orderB) => {
-        const districtA = orderA.address.district;
-        const districtB = orderB.address.district;
-        // const districtA = getDistrictByCustomerId(orderA.customerId);
-        // const districtB = getDistrictByCustomerId(orderB.customerId);
+export function sortOrderByDistrict() {
+    
+    const orderArrayWithIndex = [];
+    orderArray.forEach((order, index) => {
+        orderArrayWithIndex.push({
+            order: order,
+            index: index,
+        });
+    });
+    const sortedArray = orderArrayWithIndex.slice().sort((orderA, orderB) => {
+        const districtA = orderA.order.address.district;
+        const districtB = orderB.order.address.district;
         return compareDistrict(districtA, districtB);
     });
+
+    const indexArray = [];
+    sortedArray.forEach((orderWithIndex) => {
+        indexArray.push(orderWithIndex.index);
+    });
+
+    // Trả về mảng đã sắp xếp
+    return indexArray;
 }
+
 
 function compareDistrict(districtA, districtB){
     // Kiểm tra xem 2 district có phải là số ?
