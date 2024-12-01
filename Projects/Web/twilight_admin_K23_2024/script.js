@@ -3,16 +3,50 @@ import { customerArray } from '../common/data/customerArray.js'; // Import class
 import { orderArray, addOrderToArray, filterOrderByStatus, filterOrdersBetweenTwoDate, sortOrderByDistrict, addTestOrderToArray, createStatisticsProductArray, createStatisticsCustomerArray } from '../common/data/orderArray.js'; 
 import {customAlert, customConfirm} from '../common/data/utilities.js';
 
-localStorage.removeItem('productArray');
 
 // LOGIN
-// document.addEventListener('DOMContentLoaded', function() {
-//     const loginPopup = document.getElementById('login-popup');
-//     const overlay = document.getElementById('overlay');
-//     loginPopup.style.display = 'block';
-//     overlay.style.display = 'block';
+document.addEventListener('DOMContentLoaded', function() {
+    const loginPopup = document.getElementById('login-popup');
+    const overlay = document.getElementById('overlay');
+    const wrap = document.getElementById('wrap');
 
-// });
+    // Function to check login status and session expiration
+    function checkAdminLogin() {
+        const adminLoggedIn = localStorage.getItem('adminLoggedIn');
+        const loginTimestamp = localStorage.getItem('loginTimestamp');
+
+        if (adminLoggedIn && loginTimestamp) {
+            const currentTime = Date.now();
+            const sessionDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+            if (currentTime - parseInt(loginTimestamp) < sessionDuration) {
+                // Admin is logged in and session is still valid
+                loginPopup.style.display = 'none';
+                overlay.style.display = 'none';
+                wrap.style.display = 'block';
+                return true;
+            } else {
+                // Session has expired
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('loginTimestamp');
+                loginPopup.style.display = 'block';
+                overlay.style.display = 'block';
+                wrap.style.display = 'none';
+                return false;
+            }
+        } else {
+            // Admin is not logged in
+            loginPopup.style.display = 'block';
+            overlay.style.display = 'block';
+            wrap.style.display = 'none';
+            return false;
+        }
+    }
+
+    // Call checkAdminLogin on page load
+    checkAdminLogin();
+});
+
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -21,11 +55,14 @@ function login() {
         document.getElementById('login-popup').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('wrap').style.display = 'block';
+
+        // Store login status and timestamp in localStorage
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('loginTimestamp', Date.now().toString());
     } else {
         document.getElementById('error-message').style.display = 'block';
     }
 }
-
 
 // SIDEBAR 
 function updateContentWidth() {
@@ -118,6 +155,7 @@ function showMainItem(itemId) {
     if (item) {
         item.style.display = 'block';  // Hiển thị main-item theo id
     }
+    localStorage.setItem('currentPage', itemId); // Lưu trạng thái trang hiện tại
 }
 // Đặt event 'click' cho phần main-item tương ứng tại sidebar
 function showCorrespondingMain(){
@@ -634,9 +672,21 @@ function addProduct(event) {
     const size = document.getElementById('new-size').value.trim();
     const f = document.getElementById('new-f').value.trim();
     const imgInput = document.getElementById('new-image-upload');
-    let img = 'img-prd/img-add2.png';
+    let imgPath = '../common/images/img-prd/default.png'; // Đường dẫn mặc định nếu không có ảnh
+
     if (imgInput.files && imgInput.files[0]) {
-        img = URL.createObjectURL(imgInput.files[0]);
+        const file = imgInput.files[0];
+        const imgURL = URL.createObjectURL(file);
+
+        // Tạo liên kết tải xuống
+        const a = document.createElement('a');
+        a.href = imgURL;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        // Lưu đường dẫn ảnh
+        imgPath = `../common/images/img-prd/${file.name}`;
     }
 
     if (!chip || !pin || !size || !f) {
@@ -649,7 +699,7 @@ function addProduct(event) {
     }
 
     const newProduct = {
-        productId: allProducts.length > 0 ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString() : "1",
+        productId: generateNewProductId(),
         brandId: brand,
         name: productName,
         price: prices,
@@ -658,7 +708,7 @@ function addProduct(event) {
         pin: pin,
         size: size,
         f: f,
-        img: img
+        img: imgPath
     };
 
     allProducts.push(newProduct);
@@ -672,6 +722,11 @@ function addProduct(event) {
     });
 
     document.querySelector('.subsection form').reset();
+}
+function generateNewProductId() {
+    return allProducts.length > 0
+        ? (parseInt(allProducts[allProducts.length - 1].productId) + 1).toString()
+        : "1";
 }
 // Xóa sản phẩm
 function deleteProduct(productIndex) {
