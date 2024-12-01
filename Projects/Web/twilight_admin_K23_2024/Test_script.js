@@ -631,6 +631,20 @@ function addProduct(event) {
     let img = 'img-prd/img-add2.png';
     if (imgInput.files && imgInput.files[0]) {
         img = URL.createObjectURL(imgInput.files[0]);
+
+        // Create a temporary link element to download the image
+        const link = document.createElement('a');
+        link.href = img;
+        link.download = imgInput.files[0].name;
+
+        // Append the link to the body
+        document.body.appendChild(link);
+
+        // Trigger the download
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
     }
 
     if (!chip || !pin || !size || !f) {
