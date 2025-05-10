@@ -5,47 +5,47 @@ import {customAlert, customConfirm} from '../common/data/utilities.js';
 
 
 // LOGIN
-document.addEventListener('DOMContentLoaded', function() {
-    const loginPopup = document.getElementById('login-popup');
-    const overlay = document.getElementById('overlay');
-    const wrap = document.getElementById('wrap');
+// document.addEventListener('DOMContentLoaded', function() {
+//     const loginPopup = document.getElementById('login-popup');
+//     const overlay = document.getElementById('overlay');
+//     const wrap = document.getElementById('wrap');
 
-    // Function to check login status and session expiration
-    function checkAdminLogin() {
-        const adminLoggedIn = localStorage.getItem('adminLoggedIn');
-        const loginTimestamp = localStorage.getItem('loginTimestamp');
+//     // Function to check login status and session expiration
+//     function checkAdminLogin() {
+//         const adminLoggedIn = localStorage.getItem('adminLoggedIn');
+//         const loginTimestamp = localStorage.getItem('loginTimestamp');
 
-        if (adminLoggedIn && loginTimestamp) {
-            const currentTime = Date.now();
-            const sessionDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
+//         if (adminLoggedIn && loginTimestamp) {
+//             const currentTime = Date.now();
+//             const sessionDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-            if (currentTime - parseInt(loginTimestamp) < sessionDuration) {
-                // Admin is logged in and session is still valid
-                loginPopup.style.display = 'none';
-                overlay.style.display = 'none';
-                wrap.style.display = 'block';
-                return true;
-            } else {
-                // Session has expired
-                localStorage.removeItem('adminLoggedIn');
-                localStorage.removeItem('loginTimestamp');
-                loginPopup.style.display = 'block';
-                overlay.style.display = 'block';
-                wrap.style.display = 'none';
-                return false;
-            }
-        } else {
-            // Admin is not logged in
-            loginPopup.style.display = 'block';
-            overlay.style.display = 'block';
-            wrap.style.display = 'none';
-            return false;
-        }
-    }
+//             if (currentTime - parseInt(loginTimestamp) < sessionDuration) {
+//                 // Admin is logged in and session is still valid
+//                 loginPopup.style.display = 'none';
+//                 overlay.style.display = 'none';
+//                 wrap.style.display = 'block';
+//                 return true;
+//             } else {
+//                 // Session has expired
+//                 localStorage.removeItem('adminLoggedIn');
+//                 localStorage.removeItem('loginTimestamp');
+//                 loginPopup.style.display = 'block';
+//                 overlay.style.display = 'block';
+//                 wrap.style.display = 'none';
+//                 return false;
+//             }
+//         } else {
+//             // Admin is not logged in
+//             loginPopup.style.display = 'block';
+//             overlay.style.display = 'block';
+//             wrap.style.display = 'none';
+//             return false;
+//         }
+//     }
 
-    // Call checkAdminLogin on page load
-    checkAdminLogin();
-});
+//     // Call checkAdminLogin on page load
+//     checkAdminLogin();
+// });
 
 function login() {
     const username = document.getElementById('username').value;
@@ -328,7 +328,7 @@ let currentVersionIndex = 0; // Biến toàn cục để lưu trữ phiên bản
 
 // Sau khi tạo bảng sản phẩm
 function displayProductPage(page) {
-    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá<br> Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Thông tin</th><th>Hành động</th></tr>';
+    let s = '<tr><th>#ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Giá<br> Phiên Bản <input type="number" id="version-index" value="' + (currentVersionIndex + 1) + '" min="1" max="' + getMaxVersions() + '" onchange="updateVersionIndex(this.value - 1)"></th><th>Chi tiết</th><th>Sửa</th><th>Xóa</th></tr>';
     let dem = 0;
     const start = (page - 1) * itemsPerPageProduct;
     const end = start + itemsPerPageProduct;
@@ -343,11 +343,13 @@ function displayProductPage(page) {
             '<td>' + product.brandId.toUpperCase() + '</td>' +
             '<td>' + (product.price[currentVersionIndex] !== undefined ? formatPrice(product.price[currentVersionIndex]) : '-') + '</td>' +
             '<td>' +
-                '<button class="detail-btn" data-index="' + i + '">Chi tiết</button>' +
+                '<button class="detail-btn" data-index="' + i + '"><img src="../common/images/detail.png" alt="Chi tiết"></button>' +
             '</td>' +
             '<td>' +
-                '<button class="delete-btn" data-index="' + i + '">Xóa</button>' +
-                '<button class="edit-btn" data-index="' + i + '">Sửa</button>' +
+            '<button class="edit-btn" data-index="' + i + '"><img src="../common/images/modify.png" alt="Sửa"></button>' +
+            '</td>' +
+            '<td>' +
+            '<button class="delete-btn" data-index="' + i + '"><img src="../common/images/delete.png" alt="Xóa"></button>' +
             '</td>' +
         '</tr>';
         dem++;
@@ -355,6 +357,7 @@ function displayProductPage(page) {
             break; // Nếu đã đủ số sản phẩm trên một trang thì dừng
         }
     }
+    
     document.getElementById('product-table-content__body').innerHTML = s; // Hiển thị nội dung bảng
     updatePagination('product'); // Cập nhật nút phân trang
 
@@ -960,8 +963,8 @@ function displayCustomerPage(page) {
             '<td class="table-cell-password" data-password="' + customer.password + '">' + '*'.repeat(customer.password.length) + '</td>' +
             '<td>' + customer.phone + '</td>' +
             '<td>' + customer.address.numberAndRoad + ', ' + customer.address.district + ', ' + customer.address.city + '</td>' +
-            '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '>Sửa</button>' + '</td>' +
-            '<td>' + '<button class="key-customer-btn">' + (customer.locked ? 'MỞ KHÓA' : 'KHÓA') + '</button>' +'</td>' +
+            '<td>' + '<button class="edit-btn" data-index="' + i + '"' + (customer.locked ? ' disabled' : '') + '><img src="../common/images/modify.png" alt="Sửa"></button>' + '</td>' +
+            '<td>' + '<button class="key-customer-btn">' + (customer.locked ? `<img src="../common/images/lock.png" alt="Khóa">` : `<img src="../common/images/unlock.png" alt="Mở khóa">`) + '</button>' +'</td>' +
         '</tr>';
         dem++;
         if (dem == itemsPerPageCustomer) {
@@ -1265,7 +1268,7 @@ function displayOrdersTable(orders, withCondition = false) {
                     <td>${formattedDate}</td>
                     <td>${formattedAddress}</td>    
                     <td>
-                        <button class="detail-btn" data-index="${realIndex}">Chi tiết</button>
+                        <button class="detail-btn" data-index="${realIndex}"><img src="../common/images/detail.png" alt="Chi tiết"></button>
                     </td>
                     <td> 
                         <button class="order-status-table" id="order-status-inTable-${realIndex}" data-table-status="${order.status}">

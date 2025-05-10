@@ -618,7 +618,8 @@ body {
 }
 
 /*css cho nút sửa sản phẩm ở Danh sách sản phẩm*/
-#container #leftsection #table_list .table-content .edit-btn, .detail-btn,
+/* #container #leftsection #table_list .table-content .edit-btn, .detail-btn, */
+/* #container #leftsection #table_list .table-content .edit-btn, */
 .statistics-product__show-bill-btn, .statistics-customer__show-bill-btn{
     background-color: var(--blue);
     color: #fff;
@@ -629,6 +630,35 @@ body {
     margin-left: 5px;
     white-space: nowrap;
 }
+/* Format icon detail, delete, modify */
+.detail-btn img,
+.add-btn img,
+.reset-btn img {
+    width: 40px;
+    height: 40px;
+}
+.delete-btn img,
+.edit-btn img, 
+.key-customer-btn img {
+    height: 30px;
+    width: 30px;
+}
+/*css cho nút XÓA sản phẩm ở DS SẢN PHẨM và XÓA-clear toàn bộ thông tin nhập ở THÊM SẢN PHẨM*/
+#container .delete-btn, 
+#container .edit-btn,
+#container .detail-btn,
+#container .add-btn,
+#container .reset-btn,
+#container .key-customer-btn {
+    /* background-color: #d9534f; */
+    /* color: #fff; */
+    /* padding: 6px 12px; */
+    background: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 
 /*pagination web*/
 #container #leftsection #pagination-products,
@@ -671,15 +701,6 @@ body {
     background-color: var(--blue);
     color: white;
     border: 1px solid var(--blue);
-}
-/*css cho nút XÓA sản phẩm ở DS SẢN PHẨM và XÓA-clear toàn bộ thông tin nhập ở THÊM SẢN PHẨM*/
-#container .delete-btn {
-    background-color: #d9534f;
-    color: #fff;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 #container #rightsection {
@@ -806,7 +827,7 @@ body {
     justify-content: space-between;
     margin-top: 20px;
 }
-
+/* 
 .delete-btn, .add-btn {
     flex: 1;
     margin: 0 5px;
@@ -835,7 +856,7 @@ body {
 
 .add-btn:hover {
     background-color: #0056b3;
-}
+} */
 
 .product-image-container {
     width: 70px; /* Chiều rộng cố định */
@@ -856,16 +877,6 @@ body {
     border-radius: 5px; /* Tùy chọn: bo tròn góc ảnh */
 }
 
-
-/* Nút thêm sản phẩm (có thể đem đi nơi khác sử dụng) */
-#container .add-btn{
-    background-color: var(--blue);
-    color: #fff;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
 
 /* POP-UP SỬA SẢN PHẨM */
@@ -1064,8 +1075,7 @@ body {
 
 
 /* MAIN__CUSTOMERS*/
-
-.key-customer-btn {
+/* .key-customer-btn {
     background-color: #d9534f;
     color: #fff;
     padding: 6px 12px;
@@ -1073,7 +1083,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     
-}
+} */
 /* CSS cho ô mật khẩu */
 .table-cell-password {
     text-align: center;
