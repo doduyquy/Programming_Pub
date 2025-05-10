@@ -283,6 +283,7 @@ html, body {
     border: none;
     border-radius: 9999px;
     margin-right: -42px;
+    font-size: 14px;
 }
 
 .search-button {
@@ -1135,6 +1136,23 @@ overflow-y: auto !important;
         .nav-link{
             padding: 0 0.5rem !important;
         }
+        .nav-text {
+            margin-left: 0.3rem !important;
+        }
+        .home-filter__label{
+            margin-right: 0 !important; 
+        }
+        .home-product-item__price-current
+        {
+            margin: 0 !important;
+        }
+        .nav-value{
+            font-size: 0.85rem !important;
+            font-weight: bold !important;
+        }
+        .nav-label{
+            font-size: 0.75rem !important;
+        }
 
 }
 
@@ -1883,7 +1901,7 @@ overflow-y: auto !important;
     padding: 0 12px;
     font-size: 1rem;
     border-radius: 2px;
-    border: 1px solid gray;
+    border: 1px solid #999;
     outline: none;
 }
 .category{
@@ -1910,7 +1928,7 @@ overflow-y: auto !important;
     color: rgb(45, 45, 45);
 }
 .category-list{
-    margin-top: -10px;
+    margin-top: -5px;
     padding: 0 0 8px 0;
     list-style: none;
 }
@@ -2050,7 +2068,7 @@ overflow-y: auto !important;
     position: absolute;
     left: 0;
     right: 0;
-    top: 20px;
+    top: 36px;
     border-radius: 2px;
     background-color: white;
     padding: 10px 16px;
@@ -2067,7 +2085,7 @@ overflow-y: auto !important;
     display: block;
     position: absolute;
     top: -10px;
-    right: -1px;
+    right: -2px;
     width: 180px;
     height: 12px;
 
